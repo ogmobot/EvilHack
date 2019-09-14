@@ -2257,12 +2257,16 @@ struct obj *obj;
     if (u.dz) {
         if (u.dz < 0 && !Is_airlevel(&u.uz) && !Underwater
             && !Is_waterlevel(&u.uz)) {
-            pline_The("gold hits the %s, then falls back on top of your %s.",
-                      ceiling(u.ux, u.uy), body_part(HEAD));
-            /* some self damage? */
-            if (uarmh)
-                pline("Fortunately, you are wearing %s!",
-                      an(helm_simple_name(uarmh)));
+            if (obj->quan == 1L) {
+                You("toss the coin. %s!", rn2(2) ? "Heads" : "Tails");
+            } else {
+                pline_The("gold hits the %s, then falls back on top of your %s.",
+                        ceiling(u.ux, u.uy), body_part(HEAD));
+                /* some self damage? */
+                if (uarmh)
+                    pline("Fortunately, you are wearing %s!",
+                        an(helm_simple_name(uarmh)));
+            }
         }
         bhitpos.x = u.ux;
         bhitpos.y = u.uy;
