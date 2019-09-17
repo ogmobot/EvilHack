@@ -839,6 +839,8 @@ boolean artif;
 
             if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE);
+            else if (!rn2(500))
+                otmp = create_oprop(otmp, TRUE);
 
             if (Is_medusa_level(&u.uz) && otmp->otyp == ORCISH_ARROW) {
                 bless(otmp);
@@ -1038,6 +1040,8 @@ boolean artif;
                 blessorcurse(otmp, 10);
             if (artif && !rn2(40))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE);
+            else if (!rn2(500))
+                otmp = create_oprop(otmp, TRUE);
             /* simulate lacquered armor for samurai */
             if (Role_if(PM_SAMURAI) && otmp->otyp == SPLINT_MAIL
                 && (moves <= 1 || In_quest(&u.uz))) {
@@ -3078,15 +3082,14 @@ struct obj *otmp2;
 /* for objects which are normally iron or metal */
 static const struct icp metal_materials[] = {
     {75, 0}, /* default to base type, iron or metal */
-    { 5, IRON},
+    { 5, BONE},
     { 5, WOOD},
-    { 4, SILVER},
+    { 5, SILVER},
     { 4, COPPER},
     { 3, MITHRIL},
     { 1, GOLD},
     { 1, GLASS},
-    { 1, PLATINUM},
-    { 1, BONE}
+    { 1, PLATINUM}
 };
 
 /* for objects which are normally wooden */
@@ -3136,8 +3139,8 @@ static const struct icp elven_materials[] = {
 
 /* for objects of orcish make - no mithril! */
 static const struct icp orcish_materials[] = {
-    {70, IRON},
-    {20, BONE},
+    {65, IRON},
+    {25, BONE},
     {10, MINERAL}
 };
 
@@ -3187,8 +3190,8 @@ static const struct icp elven_helm_boots_materials[] = {
 
 static const struct icp dwarvish_weapon_materials[] = {
     {70, IRON},
-    {15, MITHRIL},
-    {15, GEMSTONE} /* gemstone is very hard and very sharp */
+    {25, MITHRIL},
+    { 5, GEMSTONE} /* gemstone is very hard and very sharp */
 };
 
 static const struct icp bow_materials[] = {

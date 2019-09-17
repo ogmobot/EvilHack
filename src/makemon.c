@@ -230,7 +230,7 @@ struct trobj Level20Kit3[] = {
 
 struct trobj Level20Kit4[] = {
         { BLACK_DRAGON_SCALE_MAIL, (4 | RND_SPE), ARMOR_CLASS, 1, 1 },
-        { GAUNTLETS_OF_POWER, (4 | RND_SPE), ARMOR_CLASS, 1, 1 },
+        { GAUNTLETS, (4 | RND_SPE), ARMOR_CLASS, 1, 1 },
         { WATER_WALKING_BOOTS, (4 | RND_SPE), ARMOR_CLASS, 1, 1 },
         { CLOAK_OF_DISPLACEMENT, (4 | RND_SPE), ARMOR_CLASS, 1, 1 },
         { HELM_OF_BRILLIANCE, (4 | RND_SPE), ARMOR_CLASS, 1, UNDEF_BLESS },
@@ -243,7 +243,7 @@ struct trobj Level10Kit1[] = {
 	{ ARMOR, (2 | RND_SPE), ARMOR_CLASS, 1, UNDEF_BLESS },
 	{ HELMET, (2 | RND_SPE), ARMOR_CLASS, 1, UNDEF_BLESS },
 	{ HIGH_BOOTS, (2 | RND_SPE), ARMOR_CLASS, 1, UNDEF_BLESS },
-	{ GLOVES, (2 | RND_SPE), ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ GAUNTLETS, (2 | RND_SPE), ARMOR_CLASS, 1, UNDEF_BLESS },
 	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS },
 	{ 0, 0, 0, 0, 0 }
 };
@@ -540,6 +540,8 @@ register struct monst *mtmp;
 		    if (mtmp->m_lev >= 20 || rn2(400) < mtmp->m_lev * mtmp->m_lev) {
 		        if (!rn2(100 + 10 * nartifact_exist())) {
 			    mk_artifact(otmp, sgn(mtmp->data->maligntyp));
+                        } else if (!rn2(40)) {
+                            create_oprop(otmp, FALSE);
 			}
 		    }
 		}
@@ -554,9 +556,11 @@ register struct monst *mtmp;
 	}
 	if (bag) {
 	    int count = (mtmp->m_lev * mtmp->m_lev) / 25;
-	    if (count < 1) count = 1;
-	    if (count > 10) count = 10;
-		count += rn2((mtmp->m_lev / 10) + 2);
+	    if (count < 1)
+                count = 1;
+	    if (count > 10)
+                count = 10;
+	    count += rn2((mtmp->m_lev / 10) + 2);
 	    while (count-- > 0) {
 	        int otyp =
 		        (rn2(2) ? rnd_offensive_item(mtmp) :
@@ -627,7 +631,9 @@ register struct monst *mtmp;
                     m_initthrow(mtmp, ORCISH_ARROW, 12);
                     w1 = rn2(2) ? ORCISH_DAGGER : KNIFE;
                 } else
-                    w1 = rn2(2) ? ORCISH_SPEAR : ORCISH_SHORT_SWORD;
+                    w1 = rn2(2) ? ORCISH_SPEAR
+                                : rn2(2) ? ORCISH_SHORT_SWORD
+                                         : ORCISH_SCIMITAR;
                 break;
             case PM_HUMAN_SERGEANT:
             case PM_GNOMISH_SERGEANT:
@@ -737,7 +743,7 @@ register struct monst *mtmp;
                 }
                 break;
             case PM_ORCISH_LIEUTENANT:
-                w1 = rn2(2) ? BROADSWORD : SCIMITAR;
+                w1 = rn2(2) ? BROADSWORD : ORCISH_SCIMITAR;
                 break;
             case PM_GIANT_LIEUTENANT:
                 w1 = rn2(2) ? LONG_SWORD : BATTLE_AXE;
@@ -933,9 +939,15 @@ register struct monst *mtmp;
             otmp = mksobj(LONG_SWORD, FALSE, FALSE);
 
             /* maybe make it special */
-            if (!rn2(20) || is_lord(ptr))
+            if (!rn2(20) || is_lord(ptr)) {
                 otmp = oname(otmp,
                              artiname(ART_SUNSWORD));
+                if (!otmp->oartifact) {
+                    otmp = oname(otmp, "");
+                    if (!rn2(20))
+                        create_oprop(otmp, FALSE);
+                }
+            }
             bless(otmp);
             otmp->oerodeproof = TRUE;
             spe2 = rn2(4);
@@ -1018,7 +1030,7 @@ register struct monst *mtmp;
                 : rn2(2) ? PM_MORDOR_ORC : PM_URUK_HAI) {
         case PM_MORDOR_ORC:
             if (!rn2(3))
-                (void) mongets(mtmp, SCIMITAR);
+                (void) mongets(mtmp, ORCISH_SCIMITAR);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHIELD);
             if (!rn2(3))
@@ -1032,7 +1044,7 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHORT_SWORD);
             if (!rn2(3))
-                (void) mongets(mtmp, DWARVISH_BOOTS);
+                (void) mongets(mtmp, ORCISH_BOOTS);
             if (!rn2(3)) {
                 (void) mongets(mtmp, ORCISH_BOW);
                 m_initthrow(mtmp, ORCISH_ARROW, 12);
@@ -1044,7 +1056,7 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_CLOAK);
             if (!rn2(3))
-                (void) mongets(mtmp, ORCISH_SHORT_SWORD);
+                (void) mongets(mtmp, ORCISH_SPEAR);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHIELD);
             if (!rn2(3)) {
@@ -1056,19 +1068,21 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_CLOAK);
             if (!rn2(3))
-                (void) mongets(mtmp, WAR_HAMMER);
+                (void) mongets(mtmp, ORCISH_SCIMITAR);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_SHIELD);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_MORNING_STAR);
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_CHAIN_MAIL);
+            if (!rn2(3))
+                (void) mongets(mtmp, ORCISH_BOOTS);
             break;
         default:
             if (mm != PM_ORC_SHAMAN && rn2(2))
                 (void) mongets(mtmp, (mm == PM_GOBLIN || rn2(2) == 0)
                                          ? ORCISH_DAGGER
-                                         : SCIMITAR);
+                                         : ORCISH_SCIMITAR);
         }
         break;
     case S_OGRE:
@@ -1457,7 +1471,18 @@ register struct monst *mtmp;
                 mac += 2 + mongets(mtmp, HIGH_BOOTS);
 
             if (mac < 10 && rn2(3))
-                mac += 1 + mongets(mtmp, GLOVES);
+                mac += 1 + mongets(mtmp, (rn2(3)) ? GLOVES
+                                                  : GAUNTLETS);
+                struct obj* gauntlets = m_carrying(mtmp, GAUNTLETS);
+                if (gauntlets && (ptr == &mons[PM_ELVEN_SOLDIER]
+                     || ptr == &mons[PM_ELVEN_SERGEANT]
+                     || ptr == &mons[PM_ELVEN_LIEUTENANT]
+                     || ptr == &mons[PM_ELVEN_CAPTAIN]))
+                    set_material(gauntlets, MITHRIL);
+                else if (gauntlets && (ptr == &mons[PM_ORCISH_SOLDIER]
+                         || ptr == &mons[PM_ORCISH_SERGEANT]
+                         || ptr == &mons[PM_ORCISH_LIEUTENANT]))
+                    set_material(gauntlets, BONE);
             else if (mac < 10 && rn2(2) && (!MH_GIANT || !MH_ELF || !MH_ORC))
                 mac += 1 + mongets(mtmp, CLOAK);
             else if (mac < 10 && rn2(2) && (ptr == &mons[PM_ELVEN_SOLDIER]

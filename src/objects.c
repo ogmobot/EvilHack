@@ -84,7 +84,7 @@ OBJECT(OBJ("strange object", None),
        0, ILLOBJ_CLASS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 
 /* weapons ... */
-#define WEAPON(name,desc,kn,mg,bi,prob,wt,                \
+#define WEAPON(name,desc,kn,mg,bi,prob,wt,            \
                cost,sdam,ldam,hitbon,typ,sub,metal,color) \
     OBJECT(OBJ(name,desc),                                          \
            BITS(kn, mg, 1, 0, 0, 1, 0, 0, bi, 0, typ, sub, metal),  \
@@ -193,6 +193,8 @@ WEAPON("dwarvish short sword", "broad short sword",
        0, 0, 0,  2,  30,  10,  7,  8, 0, P,   P_SHORT_SWORD, IRON, HI_METAL),
 WEAPON("scimitar", "curved sword",
        0, 0, 0, 15,  40,  15,  8,  8, 0, S,   P_SCIMITAR, IRON, HI_METAL),
+WEAPON("orcish scimitar", "crude curved sword",
+       0, 0, 0, 15,  40,  15,  6,  8, 0, S,   P_SCIMITAR, IRON, CLR_BLACK),
 WEAPON("saber", None,
        1, 0, 0,  6,  40,  75,  8,  8, 0, S,   P_SABER, IRON, HI_METAL),
 WEAPON("broadsword", None,
@@ -502,7 +504,7 @@ SHIELD("large shield", None,
 SHIELD("dwarvish roundshield", "large round shield",
        0, 0, 0,          0, 4, 0, 100, 10, 8, 0,  IRON, HI_METAL),
 SHIELD("shield of reflection", "polished shield",
-       0, 1, 0, REFLECTING, 3, 0,  50, 50, 8, 0,  SILVER, HI_SILVER),
+       0, 0, 0, REFLECTING, 3, 0,  50, 50, 8, 0,  SILVER, HI_SILVER),
 
 /* gloves */
 /* These have their color but not material shuffled, so the IRON must
@@ -511,6 +513,8 @@ SHIELD("shield of reflection", "polished shield",
  */
 GLOVES("gloves", "old gloves",
        0, 0,          0, 16, 1, 10,   8, 9, 0,  LEATHER, HI_LEATHER),
+GLOVES("gauntlets", "falconry gloves",
+       0, 0,          0, 12, 1, 30,  50, 9, 0,  IRON, CLR_BROWN),
 GLOVES("gauntlets of fumbling", "padded gloves",
        0, 1,   FUMBLING,  8, 1, 10,  50, 9, 0,  LEATHER, HI_LEATHER),
 GLOVES("gauntlets of power", "riding gloves",
@@ -523,6 +527,8 @@ BOOTS("low boots", "walking shoes",
       0, 0,          0, 25, 2, 10,  8, 9, 0, LEATHER, HI_LEATHER),
 BOOTS("dwarvish boots", "hard shoes",
       0, 0,          0,  7, 2, 50, 16, 8, 0, IRON, HI_METAL),
+BOOTS("orcish boots", "crude shoes",
+      0, 0,          0,  8, 2, 50, 16, 8, 0, IRON, CLR_BLACK),
 BOOTS("high boots", "jackboots",
       0, 0,          0, 15, 2, 20, 12, 8, 0, LEATHER, HI_LEATHER),
 /* with shuffled appearances... */
@@ -679,7 +685,7 @@ TOOL("credit card",         None, 1, 0, 0, 0, 15,  1, 10, PLASTIC, CLR_WHITE),
 /* light sources */
 TOOL("tallow candle",   "candle", 0, 1, 0, 0, 20,  2, 10, WAX, CLR_WHITE),
 TOOL("wax candle",      "candle", 0, 1, 0, 0,  5,  2, 20, WAX, CLR_WHITE),
-TOOL("lantern",       None, 1, 0, 0, 0, 30, 30, 12, COPPER, CLR_YELLOW),
+TOOL("lantern",             None, 1, 0, 0, 0, 30, 30, 12, COPPER, CLR_YELLOW),
 TOOL("oil lamp",          "lamp", 0, 0, 0, 0, 45, 20, 10, COPPER, CLR_YELLOW),
 TOOL("magic lamp",        "lamp", 0, 0, 1, 0, 15, 20, 50, COPPER, CLR_YELLOW),
 /* other tools */
@@ -724,7 +730,7 @@ WEPTOOL("pick-axe", None,
 WEPTOOL("grappling hook", "iron hook",
         0, 0, 0,  5,  30,  50,  2,  6, WHACK,  P_FLAIL,    IRON, HI_METAL),
 WEPTOOL("unicorn horn", None,
-        1, 1, 0,  0,  20, 100,  8, 10, PIERCE, P_UNICORN_HORN,
+        1, 1, 1,  0,  20, 100,  8, 10, PIERCE, P_UNICORN_HORN,
                                                            BONE, CLR_WHITE),
         /* 3.4.1: unicorn horn left classified as "magic" */
 /* two unique tools;
@@ -865,13 +871,13 @@ SCROLL("earth",                          "KIRJE",  1,  18, 200),
 SCROLL("punishment",            "VE FORBRYDERNE",  1,  15, 300),
 SCROLL("charging",                "HACKEM MUCHE",  1,  15, 300),
 SCROLL("stinking cloud",             "VELOX NEB",  1,  15, 300),
+SCROLL("magic detection",        "FOOBIE BLETCH",  1,  40, 100),
     /* Extra descriptions, shuffled into use at start of new game.
      * Code in win/share/tilemap.c depends on SCR_STINKING_CLOUD preceding
      * these and on how many of them there are.  If a real scroll gets added
      * after stinking cloud or the number of extra descriptions changes,
      * tilemap.c must be modified to match.
      */
-SCROLL(None,      "FOOBIE BLETCH",  1,   0, 100),
 SCROLL(None,              "TEMOV",  1,   0, 100),
 SCROLL(None,         "GARVEN DEH",  1,   0, 100),
 SCROLL(None,            "READ ME",  1,   0, 100),

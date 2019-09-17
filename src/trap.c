@@ -332,6 +332,8 @@ struct monst *victim;
         pline("%s %s", Yobjnam2(otmp, "are"), txt);
     }
     if (!rn2(2)) {
+        if (otmp == uarmg)
+            Glib &= ~FROMOUTSIDE;
         otmp->greased = 0;
         if (carried(otmp)) {
             pline_The("grease dissolves.");
@@ -989,6 +991,8 @@ static const char *const spearmsgs[] = {
     "imitating a meat popsicle"
 };
 
+extern struct obj *stack;
+
 void
 dotrap(trap, trflags)
 register struct trap *trap;
@@ -1065,6 +1069,7 @@ unsigned trflags;
         otmp = t_missile(ARROW, trap);
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
             ; /* nothing */
+            stack = (struct obj *) 0;
         } else if (thitu(8, dmgval(otmp, &youmonst), &otmp, "arrow")) {
             if (otmp)
                 obfree(otmp, (struct obj *) 0);
@@ -1108,6 +1113,7 @@ unsigned trflags;
         oldumort = u.umortality;
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
             ; /* nothing */
+            stack = (struct obj *) 0;
         } else if (thitu(7, dmgval(otmp, &youmonst), &otmp, "little dart")) {
             if (otmp) {
                 if (otmp->opoisoned)
@@ -1748,6 +1754,7 @@ struct obj *otmp;
     steed->mx = u.ux;
     steed->my = u.uy;
     trapkilled = steedhit = FALSE;
+    stack = (struct obj *) 0;
 
     switch (tt) {
     case ARROW_TRAP:
@@ -2299,6 +2306,8 @@ register struct monst *mtmp;
     struct permonst *mptr = mtmp->data;
     struct obj *otmp;
     struct monst* mtmp2;
+
+    stack = (struct obj *) 0;
 
     if (!trap) {
         mtmp->mtrapped = 0;      /* perhaps teleported? */
@@ -3816,7 +3825,9 @@ boolean force;
             update_inventory();
         return ER_GREASED;
     } else if (Is_container(obj) && !Is_box(obj)
-               && (obj->otyp != OILSKIN_SACK || (obj->cursed && !rn2(3)))) {
+               && (!(obj->otyp == OILSKIN_SACK
+                   || obj->oprops & ITEM_OILSKIN)
+               || (obj->cursed && !rn2(3)))) {
         if (carried(obj))
             pline("Water gets into your %s!", ostr);
 
