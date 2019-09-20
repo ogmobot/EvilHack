@@ -2266,8 +2266,8 @@ struct obj *obj;
     if (u.dz) {
         if (u.dz < 0 && !Is_airlevel(&u.uz) && !Underwater
             && !Is_waterlevel(&u.uz)) {
-            if (obj->quan == 1L && !is_pool(u.ux, u.uy) && !is_lava(u.ux, u.uy)) {
-                pline_The("coin lands on the %s. %s!", surface(u.ux, u.uy), rn2(2) ? "Heads" : "Tails");
+            if (obj->quan == 1L) {
+                You("toss the coin. %s!", rn2(2) ? "Heads" : "Tails");
             } else {
                 pline_The("gold hits the %s, then falls back on top of your %s.",
                         ceiling(u.ux, u.uy), body_part(HEAD));
