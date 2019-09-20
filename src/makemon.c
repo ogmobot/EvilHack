@@ -1148,27 +1148,18 @@ register struct monst *mtmp;
         case PM_BALROG:
             (void) mongets(mtmp, BULLWHIP);
             (void) mongets(mtmp, BROADSWORD);
-            struct obj* sword = m_carrying(mtmp, BROADSWORD);
-            if (sword)
-                set_material(sword, rn2(2) ? IRON : MITHRIL);
             break;
         case PM_ORCUS:
             (void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
             break;
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
-            struct obj* tri = m_carrying(mtmp, TRIDENT);
-            if (tri)
-                set_material(tri, rn2(2) ? IRON : MITHRIL);
             break;
         case PM_DISPATER:
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
             (void) mongets(mtmp, FLAIL);
-            struct obj* fla = m_carrying(mtmp, FLAIL);
-            if (fla)
-                set_material(fla, rn2(2) ? IRON : MITHRIL);
             break;
         }
         /* prevent djinn and mail daemons from leaving objects when
@@ -1188,93 +1179,32 @@ register struct monst *mtmp;
         case 1:
             if (strongmonst(ptr))
                 (void) mongets(mtmp, BATTLE_AXE);
-                struct obj* btlaxe = m_carrying(mtmp, BATTLE_AXE);
-                if (btlaxe && is_demon(ptr))
-                    set_material(btlaxe, rn2(2) ? IRON : MITHRIL);
             else
                 m_initthrow(mtmp, DART, 12);
-                struct obj* drt = m_carrying(mtmp, DART);
-                if (drt && is_demon(ptr))
-                    set_material(drt, rn2(2) ? IRON : MITHRIL);
-                if (drt && is_elf(ptr))
-                    set_material(drt, rn2(2) ? WOOD : MITHRIL);
-                if (drt && is_orc(ptr))
-                    set_material(drt, rn2(2) ? IRON : BONE);
             break;
         case 2:
             if (strongmonst(ptr))
                 (void) mongets(mtmp, TWO_HANDED_SWORD);
-                struct obj* twosword = m_carrying(mtmp, TWO_HANDED_SWORD);
-                if (twosword && is_demon(ptr))
-                    set_material(twosword, rn2(2) ? IRON : MITHRIL);
             else {
                 (void) mongets(mtmp, CROSSBOW);
                 m_initthrow(mtmp, CROSSBOW_BOLT, 12);
-                struct obj* cross = m_carrying(mtmp, CROSSBOW);
-                struct obj* crossb = m_carrying(mtmp, CROSSBOW_BOLT);
-                if (cross && is_demon(ptr))
-                    set_material(cross, rn2(2) ? IRON : MITHRIL);
-                if (cross && is_elf(ptr))
-                    set_material(cross, rn2(2) ? WOOD : MITHRIL);
-                if (cross && is_orc(ptr))
-                    set_material(cross, rn2(2) ? IRON : STONE);
-                if (crossb && is_demon(ptr))
-                    set_material(crossb, rn2(2) ? IRON : MITHRIL);
-                if (crossb && is_elf(ptr))
-                    set_material(crossb, rn2(2) ? WOOD : MITHRIL);
-                if (crossb && is_orc(ptr))
-                    set_material(crossb, rn2(2) ? IRON : BONE);
             }
             break;
         case 3:
             (void) mongets(mtmp, BOW);
             m_initthrow(mtmp, ARROW, 12);
-            struct obj* bow = m_carrying(mtmp, BOW);
-            struct obj* arrow = m_carrying(mtmp, ARROW);
-            if (bow && is_demon(ptr))
-                set_material(bow, rn2(2) ? IRON : MITHRIL);
-            if (bow && is_elf(ptr))
-                set_material(bow, rn2(2) ? WOOD : MITHRIL);
-            if (bow && is_orc(ptr))
-                set_material(bow, rn2(2) ? IRON : BONE);
-            if (arrow && is_demon(ptr))
-                set_material(arrow, rn2(2) ? IRON : MITHRIL);
-            if (arrow && is_elf(ptr))
-                set_material(arrow, rn2(2) ? WOOD : MITHRIL);
-            if (arrow && is_orc(ptr))
-                set_material(arrow, rn2(2) ? IRON : BONE);
             break;
         case 4:
             if (strongmonst(ptr))
                 (void) mongets(mtmp, LONG_SWORD);
-                struct obj* lsword = m_carrying(mtmp, LONG_SWORD);
-                if (lsword && is_demon(ptr))
-                    set_material(lsword, rn2(2) ? IRON : MITHRIL);
             else
                 m_initthrow(mtmp, DAGGER, 3);
-                struct obj* dag = m_carrying(mtmp, DAGGER);
-                if (dag && is_demon(ptr))
-                    set_material(dag, rn2(2) ? IRON : MITHRIL);
-                if (dag && is_elf(ptr))
-                    set_material(dag, rn2(2) ? WOOD : MITHRIL);
-                if (dag && is_orc(ptr))
-                    set_material(dag, rn2(2) ? IRON : BONE);
             break;
         case 5:
             if (strongmonst(ptr))
                 (void) mongets(mtmp, LUCERN_HAMMER);
-                struct obj* luc = m_carrying(mtmp, LUCERN_HAMMER);
-                if (luc && is_demon(ptr))
-                    set_material(luc, rn2(2) ? IRON : MITHRIL);
             else
                 (void) mongets(mtmp, AKLYS);
-                struct obj* akl = m_carrying(mtmp, AKLYS);
-                if (akl && is_demon(ptr))
-                    set_material(akl, rn2(2) ? IRON : MITHRIL);
-                if (akl && is_elf(ptr))
-                    set_material(akl, rn2(2) ? WOOD : MITHRIL);
-                if (akl && is_orc(ptr))
-                    set_material(akl, rn2(2) ? IRON : BONE);
             break;
         default:
             break;
@@ -1417,25 +1347,23 @@ register struct monst *mtmp;
             if (mac < -1 && rn2(5) && !MH_GIANT)
                 mac += 7 + mongets(mtmp, (rn2(5)) ? PLATE_MAIL
                                                   : CRYSTAL_PLATE_MAIL);
-                    struct obj* plate_mail = m_carrying(mtmp, PLATE_MAIL);
-                    if (plate_mail)
-                        set_material(plate_mail, METAL);
-            else if (mac < 3 && rn2(5) && (!MH_GIANT || !MH_ELF || !MH_ORC))
-                mac +=
-                    6 + mongets(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
-            else if (mac < 3 && rn2(5) && (ptr == &mons[PM_ELVEN_SOLDIER]
-                     || ptr == &mons[PM_ELVEN_SERGEANT] || ptr == &mons[PM_ELVEN_LIEUTENANT]
-                     || ptr == &mons[PM_ELVEN_CAPTAIN]))
-                mac +=
-                    6 + mongets(mtmp, (rn2(3)) ? ELVEN_CHAIN_MAIL : BANDED_MAIL);
-                    struct obj* banded_mail = m_carrying(mtmp, BANDED_MAIL);
-                    if (banded_mail)
-                        set_material(banded_mail, MITHRIL);
+            else if (mac < 3 && rn2(5)
+                       && (!MH_GIANT || !MH_ELF || !MH_ORC))
+                mac += 6 + mongets(mtmp, (rn2(3)) ? SPLINT_MAIL
+                                                  : BANDED_MAIL);
+            else if (mac < 3 && rn2(5)
+                     && (ptr == &mons[PM_ELVEN_SOLDIER]
+                         || ptr == &mons[PM_ELVEN_SERGEANT]
+                         || ptr == &mons[PM_ELVEN_LIEUTENANT]
+                         || ptr == &mons[PM_ELVEN_CAPTAIN]))
+                mac += 6 + mongets(mtmp, (rn2(3)) ? ELVEN_CHAIN_MAIL
+                                                  : BANDED_MAIL);
             else if (rn2(5) && (!MH_GIANT || !MH_ELF || !MH_ORC))
                 mac += 3 + mongets(mtmp, (rn2(3)) ? RING_MAIL
                                                   : STUDDED_ARMOR);
             else if (rn2(5) && (ptr == &mons[PM_ORCISH_SOLDIER]
-                     || ptr == &mons[PM_ORCISH_SERGEANT] || ptr == &mons[PM_ORCISH_LIEUTENANT]))
+                                || ptr == &mons[PM_ORCISH_SERGEANT]
+                                || ptr == &mons[PM_ORCISH_LIEUTENANT]))
                 mac += 3 + mongets(mtmp, (rn2(3)) ? ORCISH_RING_MAIL
                                                   : ARMOR);
             else
@@ -1445,24 +1373,32 @@ register struct monst *mtmp;
                 mac += 1 + mongets(mtmp, HELMET);
             else if (mac < 10 && rn2(2) && (!MH_ELF || !MH_ORC))
                 mac += 1 + mongets(mtmp, DENTED_POT);
-            else if (mac < 10 && rn2(3) && (ptr == &mons[PM_ELVEN_SOLDIER]
-                     || ptr == &mons[PM_ELVEN_SERGEANT] || ptr == &mons[PM_ELVEN_LIEUTENANT]
-                     || ptr == &mons[PM_ELVEN_CAPTAIN]))
+            else if (mac < 10 && rn2(3)
+                     && (ptr == &mons[PM_ELVEN_SOLDIER]
+                         || ptr == &mons[PM_ELVEN_SERGEANT]
+                         || ptr == &mons[PM_ELVEN_LIEUTENANT]
+                         || ptr == &mons[PM_ELVEN_CAPTAIN]))
                 mac += 1 + mongets(mtmp, ELVEN_HELM);
-            else if (mac < 10 && rn2(3) && (ptr == &mons[PM_ORCISH_SOLDIER]
-                     || ptr == &mons[PM_ORCISH_SERGEANT] || ptr == &mons[PM_ORCISH_LIEUTENANT]))
+            else if (mac < 10 && rn2(3)
+                     && (ptr == &mons[PM_ORCISH_SOLDIER]
+                         || ptr == &mons[PM_ORCISH_SERGEANT]
+                         || ptr == &mons[PM_ORCISH_LIEUTENANT]))
                 mac += 1 + mongets(mtmp, ORCISH_HELM);
 
             if (mac < 10 && rn2(3) && (!MH_ELF || !MH_ORC))
                 mac += 1 + mongets(mtmp, SMALL_SHIELD);
             else if (mac < 10 && rn2(2) && (!MH_ELF || !MH_ORC))
                 mac += 2 + mongets(mtmp, LARGE_SHIELD);
-            else if (mac < 10 && rn2(2) && (ptr == &mons[PM_ELVEN_SOLDIER]
-                     || ptr == &mons[PM_ELVEN_SERGEANT] || ptr == &mons[PM_ELVEN_LIEUTENANT]
-                     || ptr == &mons[PM_ELVEN_CAPTAIN]))
+            else if (mac < 10 && rn2(2)
+                     && (ptr == &mons[PM_ELVEN_SOLDIER]
+                         || ptr == &mons[PM_ELVEN_SERGEANT]
+                         || ptr == &mons[PM_ELVEN_LIEUTENANT]
+                         || ptr == &mons[PM_ELVEN_CAPTAIN]))
                 mac += 2 + mongets(mtmp, ELVEN_SHIELD);
-            else if (mac < 10 && rn2(2) && (ptr == &mons[PM_ORCISH_SOLDIER]
-                     || ptr == &mons[PM_ORCISH_SERGEANT] || ptr == &mons[PM_ORCISH_LIEUTENANT]))
+            else if (mac < 10 && rn2(2)
+                     && (ptr == &mons[PM_ORCISH_SOLDIER]
+                         || ptr == &mons[PM_ORCISH_SERGEANT]
+                         || ptr == &mons[PM_ORCISH_LIEUTENANT]))
                 mac += 2 + mongets(mtmp, ORCISH_SHIELD);
 
             if (mac < 10 && rn2(3) && !MH_CENTAUR)
@@ -1473,24 +1409,18 @@ register struct monst *mtmp;
             if (mac < 10 && rn2(3))
                 mac += 1 + mongets(mtmp, (rn2(3)) ? GLOVES
                                                   : GAUNTLETS);
-                struct obj* gauntlets = m_carrying(mtmp, GAUNTLETS);
-                if (gauntlets && (ptr == &mons[PM_ELVEN_SOLDIER]
-                     || ptr == &mons[PM_ELVEN_SERGEANT]
-                     || ptr == &mons[PM_ELVEN_LIEUTENANT]
-                     || ptr == &mons[PM_ELVEN_CAPTAIN]))
-                    set_material(gauntlets, MITHRIL);
-                else if (gauntlets && (ptr == &mons[PM_ORCISH_SOLDIER]
-                         || ptr == &mons[PM_ORCISH_SERGEANT]
-                         || ptr == &mons[PM_ORCISH_LIEUTENANT]))
-                    set_material(gauntlets, BONE);
             else if (mac < 10 && rn2(2) && (!MH_GIANT || !MH_ELF || !MH_ORC))
                 mac += 1 + mongets(mtmp, CLOAK);
-            else if (mac < 10 && rn2(2) && (ptr == &mons[PM_ELVEN_SOLDIER]
-                     || ptr == &mons[PM_ELVEN_SERGEANT] || ptr == &mons[PM_ELVEN_LIEUTENANT]
-                     || ptr == &mons[PM_ELVEN_CAPTAIN]))
+            else if (mac < 10 && rn2(2)
+                     && (ptr == &mons[PM_ELVEN_SOLDIER]
+                         || ptr == &mons[PM_ELVEN_SERGEANT]
+                         || ptr == &mons[PM_ELVEN_LIEUTENANT]
+                         || ptr == &mons[PM_ELVEN_CAPTAIN]))
                 mac += 1 + mongets(mtmp, ELVEN_CLOAK);
-            else if (mac < 10 && rn2(2) && (ptr == &mons[PM_ORCISH_SOLDIER]
-                     || ptr == &mons[PM_ORCISH_SERGEANT] || ptr == &mons[PM_ORCISH_LIEUTENANT]))
+            else if (mac < 10 && rn2(2)
+                     && (ptr == &mons[PM_ORCISH_SOLDIER]
+                         || ptr == &mons[PM_ORCISH_SERGEANT]
+                         || ptr == &mons[PM_ORCISH_LIEUTENANT]))
                 mac += 1 + mongets(mtmp, ORCISH_CLOAK);
 
             nhUse(mac); /* suppress 'dead increment' from static analyzer */
@@ -2861,6 +2791,7 @@ register struct monst *mtmp;
 int otyp;
 {
     register struct obj *otmp;
+    int tryct;
     int spe;
 
     if (!otyp)
@@ -2910,8 +2841,40 @@ int otyp;
                 otmp->oerodeproof = TRUE;
         }
 
+        /* if mtmp would hate the material of the object they're getting,
+         * rerandomize it */
+        tryct = 0;
+        if (otmp->oclass == WEAPON_CLASS
+            && is_weptool(otmp) && otmp->oclass == ARMOR_CLASS
+            && otmp->oclass == AMULET_CLASS) {
+            while (mon_hates_material(mtmp, otmp->material)) {
+                init_obj_material(otmp);
+                tryct++;
+                if (tryct >= 1) {
+                    /* will anything work? */
+                    int mat;
+                    for (mat = 1; mat < NUM_MATERIAL_TYPES; ++mat) {
+                        if (valid_obj_material(otmp, mat)
+                            && !mon_hates_material(mtmp, mat)) {
+                            set_material(otmp, mat);
+                            break;
+                        }
+                    }
+                    if (mat == NUM_MATERIAL_TYPES) {
+                        impossible("mon %d doesn't like any materials for obj %d",
+                                   monsndx(mtmp->data), otmp->otyp);
+                        set_material(otmp, objects[otmp->otyp].oc_material);
+                    }
+                    break;
+                }
+            }
+        }
+
         spe = otmp->spe;
-        (void) mpickobj(mtmp, otmp); /* might free otmp */
+        if (mpickobj(mtmp, otmp)) {
+            /* otmp was freed via merging with something else */
+            otmp = (struct obj *) 0;
+        }
         return spe;
     }
     return 0;

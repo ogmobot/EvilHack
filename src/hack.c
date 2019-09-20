@@ -1,4 +1,4 @@
-/* NetHack 3.6	hack.c	$NHDT-Date: 1565288730 2019/08/08 18:25:30 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.215 $ */
+/* NetHack 3.6	hack.c	$NHDT-Date: 1568509227 2019/09/15 01:00:27 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.216 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -2394,28 +2394,42 @@ boolean pick;
     if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) {
         mtmp->mundetected = mtmp->msleeping = 0;
         switch (mtmp->data->mlet) {
-        case S_PIERCER:
+        case S_PIERCER: {
+            int dmg = d(4, 6);
+            if (Half_physical_damage)
+                dmg = (dmg + 1) / 2;
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
             if (mtmp->mtame) { /* jumps to greet you, not attack */
                 ;
-            } else if (uarmh && is_metallic(uarmh)) {
-                pline("Its blow glances off your %s.",
-                      helm_simple_name(uarmh));
             } else if (u.uac + 3 <= rnd(20)) {
                 You("are almost hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
+            } else if (uarmh) {
+                if (breaktest(uarmh) && (mtmp->data == &mons[PM_GLASS_PIERCER]
+                                         && uarmh->material == GLASS)) {
+                    struct obj* helm = uarmh;
+                    pline("It pierces and shatters your helm!");
+                    setworn(NULL, W_ARMH);
+                    update_inventory();
+                    breakobj(helm, u.ux, u.uy, FALSE, TRUE);
+                    /* glass piercer actually piercing glass. Give it some bonus
+                     * damage. */
+                    dmg += rnd(6);
+                }
+                else if (is_hard(uarmh)) {
+                    pline("Its blow glances off your %s.",
+                        helm_simple_name(uarmh));
+                    dmg = (dmg + 1) / 2;
+                }
+                mdamageu(mtmp, dmg);
             } else {
-                int dmg;
-
                 You("are hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-                dmg = d(4, 6);
-                if (Half_physical_damage)
-                    dmg = (dmg + 1) / 2;
                 mdamageu(mtmp, dmg);
             }
             break;
+        }
         default: /* monster surprises you. */
             if (mtmp->mtame)
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
@@ -3104,7 +3118,7 @@ const char *msg_override;
            if life-saved while poly'd and Unchanging (explore or wizard mode
            declining to die since can't be both Unchanging and Lifesaved) */
         if (Upolyd && !strncmpi(nomovemsg, "You survived that ", 18))
-            You("are %s", an(mons[u.umonnum].mname)); /* (ignore Hallu) */
+            You("are %s.", an(mons[u.umonnum].mname)); /* (ignore Hallu) */
     }
     nomovemsg = 0;
     u.usleep = 0;
