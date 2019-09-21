@@ -242,9 +242,9 @@ unsigned *ospecial;
             obj_color(offset);
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;
-	if (level.objects[x][y] && is_soko_prize_flag(level.objects[x][y])) {
-	    sokoban_prize_color();
-	}
+        if (level.objects[x][y] && is_soko_prize_flag(level.objects[x][y])) {
+            sokoban_prize_color();
+        }
     } else if ((offset = (glyph - GLYPH_RIDDEN_OFF)) >= 0) { /* mon ridden */
         idx = mons[offset].mlet + SYM_OFF_M;
         if (has_rogue_color)

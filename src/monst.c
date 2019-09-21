@@ -704,11 +704,11 @@ NEARDATA struct permonst mons[] = {
     /* From SporkHack
      */
     MON("goblin shaman", S_ORC, LVL(2, 9, 10, 0, -4), (G_GENO | 2),
-	A(ATTK(AT_MAGC, AD_CLRC, 0, 0),
-	  NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-	SIZ(400, 100, MS_ORC, MZ_SMALL), MR_POISON, 0,
-	M1_HUMANOID | M1_OMNIVORE, M2_COLLECT,
-	M3_INFRAVISIBLE | M3_INFRAVISION, 0, MH_ORC, 5, CLR_GREEN),
+        A(ATTK(AT_MAGC, AD_CLRC, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(400, 100, MS_ORC, MZ_SMALL), MR_POISON, 0,
+        M1_HUMANOID | M1_OMNIVORE, M2_COLLECT,
+        M3_INFRAVISIBLE | M3_INFRAVISION, 0, MH_ORC, 5, CLR_GREEN),
     /* Goblin outriders and captains ride wolves/wargs respectively
      * see src/makemon.c */
     MON("goblin outrider", S_ORC, LVL(4, 10, 10, 0, -5), (G_GENO | G_SGROUP | 2),
@@ -872,17 +872,17 @@ NEARDATA struct permonst mons[] = {
         /* In reality, they tunnel instead of cutting lumber.  Oh, well. */
         M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE, 0, 0, 4, CLR_BROWN),
     MON("enormous rat", S_RODENT, LVL(6, 8, 5, 0, 0), (G_GENO | G_SGROUP | 1),
-	A(ATTK(AT_BITE, AD_PHYS, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+        A(ATTK(AT_BITE, AD_PHYS, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
-	SIZ(400, 150, MS_SQEEK, MZ_MEDIUM), 0, 0,
-	M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
+        SIZ(400, 150, MS_SQEEK, MZ_MEDIUM), 0, 0,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
         0, 0, 7, CLR_BROWN),
     MON("rodent of unusual size", S_RODENT,
         LVL(8, 8, 2, 0, 0), (G_GENO | G_SGROUP | 1),
-	A(ATTK(AT_BITE, AD_PHYS, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+        A(ATTK(AT_BITE, AD_PHYS, 2, 6), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
-	SIZ(600, 250, MS_SQEEK, MZ_MEDIUM), 0, 0,
-	M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
+        SIZ(600, 250, MS_SQEEK, MZ_MEDIUM), 0, 0,
+        M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, M2_HOSTILE, M3_INFRAVISIBLE,
         0, 0, 9, CLR_BROWN),
     MON("honey badger", S_RODENT,
         LVL(10, 12, 0, 0, 0), (G_GENO | 1),
@@ -1699,12 +1699,12 @@ struct permonst _mons2[] = {
     /* From SporkHack.
      */
     MON("hill giant shaman", S_GIANT, LVL(7, 10, 4, 0, -3), (G_GENO | 2),
-	A(ATTK(AT_MAGC, AD_CLRC, 0, 0),
-	  NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-	SIZ(2200, 700, MS_BOAST, MZ_HUGE), 0, 0,
-	M1_HUMANOID | M1_CARNIVORE,
-	M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS,
-	M3_INFRAVISIBLE | M3_INFRAVISION, 0, MH_GIANT, 10, HI_ZAP),
+        A(ATTK(AT_MAGC, AD_CLRC, 0, 0),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(2200, 700, MS_BOAST, MZ_HUGE), 0, 0,
+        M1_HUMANOID | M1_CARNIVORE,
+        M2_STRONG | M2_ROCKTHROW | M2_NASTY | M2_COLLECT | M2_JEWELS,
+        M3_INFRAVISIBLE | M3_INFRAVISION, 0, MH_GIANT, 10, HI_ZAP),
     MON("hill giant", S_GIANT, LVL(8, 10, 6, 0, -2), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK),
@@ -2217,9 +2217,9 @@ struct permonst _mons2[] = {
      * as possible - 28FEB2019)
      */
     MON("shambling horror", S_UMBER, LVL(12, 12, 0, 0, 0), (G_NOCORPSE | 1),
-	A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-	SIZ(25, 25, MS_SILENT, MZ_TINY), 0, 0,
-	M1_CARNIVORE, M2_NOPOLY | M2_HOSTILE,
+        A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(25, 25, MS_SILENT, MZ_TINY), 0, 0,
+        M1_CARNIVORE, M2_NOPOLY | M2_HOSTILE,
         0, 0, 0, 15, DRAGON_SILVER),
     /*
      * Vampires
@@ -3281,10 +3281,10 @@ struct permonst _mons2[] = {
     /* From SporkHack.
      */
     MON("giant turtle", S_LIZARD, LVL(7, 2, -8, 10, 0), (G_GENO | 1),
-	A(ATTK(AT_BITE, AD_PHYS, 4, 6),
-	  NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-	SIZ(4000, 1200, MS_HISS, MZ_HUGE), MR_STONE, MR_STONE,
-	M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_HERBIVORE
+        A(ATTK(AT_BITE, AD_PHYS, 4, 6),
+          NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(4000, 1200, MS_HISS, MZ_HUGE), MR_STONE, MR_STONE,
+        M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_HERBIVORE
             | M1_AMPHIBIOUS | M1_SWIM,
         M2_HOSTILE | M2_STRONG, 0, 0, 0, 8, CLR_BRIGHT_GREEN),
     MON("lizard", S_LIZARD, LVL(5, 6, 6, 10, 0), (G_GENO | 5),

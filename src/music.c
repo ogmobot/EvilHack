@@ -69,7 +69,7 @@ int distance;
             continue;
         if ((distm = distu(mtmp->mx, mtmp->my)) < distance) {
             mtmp->msleeping = 0;
-	    if (!mtmp->mstone || mtmp->mstone > 2)
+        if (!mtmp->mstone || mtmp->mstone > 2)
                 mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
             /* may scare some monsters -- waiting monsters excluded */
@@ -184,8 +184,8 @@ struct monst *bugler; /* monster that played instrument */
             continue;
         if (is_mercenary(mtmp->data) && mtmp->data != &mons[PM_GUARD]) {
             mtmp->mpeaceful = mtmp->msleeping = mtmp->mfrozen = 0;
-	    if (!mtmp->mstone || mtmp->mstone > 2)
-		mtmp->mcanmove = 1;
+        if (!mtmp->mstone || mtmp->mstone > 2)
+            mtmp->mcanmove = 1;
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             if (canseemon(mtmp))
                 pline("%s is now ready for battle!", Monnam(mtmp));
@@ -433,8 +433,8 @@ int force;
                 case DOOR: /* Make the door collapse */
                     if (levl[x][y].doormask == D_NODOOR)
                         goto do_pit;
-		    if (In_sokoban(&u.uz) && (levl[x][y].doormask | D_TRAPPED))
-		    	break;
+                    if (In_sokoban(&u.uz) && (levl[x][y].doormask | D_TRAPPED))
+                        break;
                     if (cansee(x, y))
                         pline_The("door collapses.");
                     if (*in_rooms(x, y, SHOPBASE))

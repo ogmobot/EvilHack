@@ -399,7 +399,7 @@ has_luckitem()
     register struct obj *otmp;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
-	if (confers_luck(otmp)) return TRUE;
+        if (confers_luck(otmp)) return TRUE;
     return FALSE;
 }
 
@@ -1006,10 +1006,10 @@ int oldlevel, newlevel;
         prevabil = *(abil->ability);
         if (!(Race_if(PM_GIANT) && (abil->ability == &HStealth))) {
         if (oldlevel < abil->ulevel && newlevel >= abil->ulevel) {
-	    /* Must do this check before we set the FROMEXPER flag */
-	    if ((*(abil->ability) & TIMEOUT) < 100) {
-	        bShowMsgAnyway = 1;
-	    }
+            /* Must do this check before we set the FROMEXPER flag */
+            if ((*(abil->ability) & TIMEOUT) < 100) {
+                bShowMsgAnyway = 1;
+            }
 
             if (abil->ulevel == 1)
             /* Abilities gained at level 1 can never be lost

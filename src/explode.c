@@ -449,7 +449,7 @@ int expltype;
                     else if (resists_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
                         damage_mon(mtmp, mdam, adtyp);
-			damage_mon(mtmp, idamres + idamnonres, adtyp);
+                        damage_mon(mtmp, idamres + idamnonres, adtyp);
                 }
                 if (DEADMONSTER(mtmp)) {
                     int xkflg = ((adtyp == AD_FIRE
@@ -531,10 +531,10 @@ int expltype;
             context.botl = 1;
         }
 
-	/* You resisted the damage, lets not keep that to ourselves */
-	if (uhurt == 1) {
-	    monstseesu(1 << (adtyp-1));
-	}
+        /* You resisted the damage, lets not keep that to ourselves */
+        if (uhurt == 1) {
+            monstseesu(1 << (adtyp-1));
+        }
 
         if (u.uhp <= 0 || (Upolyd && u.mh <= 0)) {
             if (Upolyd) {

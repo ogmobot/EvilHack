@@ -1078,12 +1078,12 @@ int pm;
         check_intrinsics = TRUE; /* might also convey poison resistance */
         break;
     case PM_STALKER:
-	incr_itimeout(&HInvis, (long) rn1(100, 50));
-	if (!Invis) {
-	    if (!Blind && !BInvis) self_invis_message();
-	} else {
-	    incr_itimeout(&HSee_invisible, (long) rn1(100, 50));
-	}
+        incr_itimeout(&HInvis, (long) rn1(100, 50));
+        if (!Invis) {
+            if (!Blind && !BInvis) self_invis_message();
+        } else {
+            incr_itimeout(&HSee_invisible, (long) rn1(100, 50));
+        }
         newsym(u.ux, u.uy);
         /*FALLTHRU*/
     case PM_YELLOW_LIGHT:
@@ -1211,7 +1211,7 @@ int pm;
         for (i = 1; i <= LAST_PROP; i++) {
             if (!intrinsic_possible(i, ptr))
                 continue;
-	    givit(i, ptr);
+            givit(i, ptr);
         }
 
         /* tmp = corpse_intrinsic(ptr);
@@ -2186,7 +2186,7 @@ struct obj *otmp;
             break;
         }
         case RIN_SUSTAIN_ABILITY:
-	case AMULET_OF_FLYING:
+        case AMULET_OF_FLYING:
         case AMULET_OF_LIFE_SAVING:
         case AMULET_OF_REFLECTION: /* nice try */
             /* can't eat Amulet of Yendor or fakes,

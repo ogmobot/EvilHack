@@ -412,11 +412,11 @@ struct mkroom *sroom;
         gold->quan = (long) rn1(50 * level_difficulty(), 10);
         gold->owt = weight(gold);
         /* the royal coffers */
-	if (depth(&u.uz) > 15) {
-	    chest = mksobj_at(IRON_SAFE, mm.x, mm.y, TRUE, FALSE);
-	} else {
-	    chest = mksobj_at(CHEST, mm.x, mm.y, TRUE, FALSE);
-	}
+        if (depth(&u.uz) > 15) {
+            chest = mksobj_at(IRON_SAFE, mm.x, mm.y, TRUE, FALSE);
+        } else {
+            chest = mksobj_at(CHEST, mm.x, mm.y, TRUE, FALSE);
+        }
         add_to_container(chest, gold);
         chest->owt = weight(chest);
         chest->spe = 2; /* so it can be found later */

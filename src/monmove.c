@@ -642,22 +642,21 @@ register struct monst *mtmp;
         register struct monst *mtmp2 = mfind_target(mtmp);
         if (mtmp2 &&
             (mtmp2 != &youmonst ||
-    	 dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 2) &&
-    	 (mtmp2 != mtmp))
-        {
+            dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > 2) &&
+            (mtmp2 != mtmp)) {
             int res;
-          	res = (mtmp2 == &youmonst) ? mattacku(mtmp)
-          	                           : mattackm(mtmp, mtmp2);
+            res = (mtmp2 == &youmonst) ? mattacku(mtmp)
+                                       : mattackm(mtmp, mtmp2);
             if (res & MM_AGR_DIED)
-    	          return 1; /* Oops. */
+                return 1; /* Oops. */
 
-    	      /* return 0; */ /* that was our move for the round */
+            /* return 0; */ /* that was our move for the round */
         }
     }
 
     /* check to see if we should stash something */
     if (m_stash_items(mtmp, FALSE))
-	return 0;
+        return 0;
 
     /*  Now the actual movement phase
      */
@@ -861,15 +860,15 @@ register struct obj *container;
     boolean likegold = 0, likegems = 0, likeobjs = 0, likemagic = 0, uses_items = 0;
     boolean can_open = 0, can_unlock = 0;
     register int pctload = (curr_mon_load(mtmp) * 100) /
-	max_mon_load(mtmp);
+        max_mon_load(mtmp);
     register struct obj *otmp;
 
     can_open = !(nohands(mtmp->data) || verysmall(mtmp->data));
     can_unlock = ((can_open &&
                   (m_carrying(mtmp, SKELETON_KEY) ||
-		   m_carrying(mtmp, LOCK_PICK) ||
-		   m_carrying(mtmp, CREDIT_CARD))) ||
-		   mtmp->iswiz || is_rider(mtmp->data));
+                   m_carrying(mtmp, LOCK_PICK) ||
+                   m_carrying(mtmp, CREDIT_CARD))) ||
+                   mtmp->iswiz || is_rider(mtmp->data));
 
     if (!Is_container(container)) return FALSE;
 
@@ -878,26 +877,26 @@ register struct obj *container;
     likegold = (likes_gold(mtmp->data) && pctload < 95);
     likegems = (likes_gems(mtmp->data) && pctload < 85);
     uses_items = (!mindless(mtmp->data) && !is_animal(mtmp->data)
-		  && pctload < 75);
+                  && pctload < 75);
     likeobjs = (likes_objs(mtmp->data) && pctload < 75);
     likemagic = (likes_magic(mtmp->data) && pctload < 85);
 
     if (!likegold && !likegems && !uses_items && !likeobjs && !likemagic)
-	return FALSE;
+        return FALSE;
 
     for(otmp = container->cobj; otmp; otmp = otmp->nobj) {
-	if(((likegold && otmp->oclass == COIN_CLASS) ||
-	   (likeobjs && index(practical, otmp->oclass) &&
-	    (otmp->otyp != CORPSE || (mtmp->data->mlet == S_NYMPH
-	     && !is_rider(&mons[otmp->corpsenm])))) ||
-	    (likemagic && index(magical, otmp->oclass)) ||
-	    (uses_items && searches_for_item(mtmp, otmp)) ||
-	    (likegems && otmp->oclass == GEM_CLASS &&
-	     otmp->material != MINERAL)) && touch_artifact(otmp, mtmp))
-	return TRUE;
-	}
+        if(((likegold && otmp->oclass == COIN_CLASS) ||
+           (likeobjs && index(practical, otmp->oclass) &&
+            (otmp->otyp != CORPSE || (mtmp->data->mlet == S_NYMPH
+             && !is_rider(&mons[otmp->corpsenm])))) ||
+            (likemagic && index(magical, otmp->oclass)) ||
+            (uses_items && searches_for_item(mtmp, otmp)) ||
+            (likegems && otmp->oclass == GEM_CLASS &&
+             otmp->material != MINERAL)) && touch_artifact(otmp, mtmp))
+            return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 /* Return values:
@@ -1065,7 +1064,7 @@ register int after;
     /* teleport if that lies in our nature */
     if (mon_prop(mtmp, TELEPORT) && !rn2(ptr == &mons[PM_TENGU] ? 5 : 85)
         && !tele_restrict(mtmp) && !((mtmp->isshk || mtmp->ispriest) && mtmp->mpeaceful)) {
-	if (!decide_to_teleport(mtmp) || rn2(2))
+        if (!decide_to_teleport(mtmp) || rn2(2))
             (void) rloc(mtmp, TRUE);
         else
             mnexto(mtmp);
@@ -1082,7 +1081,7 @@ register int after;
     appr = mtmp->mflee ? -1 : 1;
     /* does this monster like to play keep-away? */
     if (is_skittish(ptr) && (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) < 10)) {
-	appr = -1;
+        appr = -1;
     }
     if (mtmp->mconf || (u.uswallow && mtmp == u.ustuck)) {
         appr = 0;
@@ -1636,10 +1635,10 @@ register int after;
 
                 if (likeobjs)
                     picked |= mpickstuff(mtmp, practical);
-		if (mhp > mtmp->mhp) {
+                if (mhp > mtmp->mhp) {
                     mmoved = 3;
-		    goto end;
-		}
+                    goto end;
+                }
 
                 if (likemagic)
                     picked |= mpickstuff(mtmp, magical);

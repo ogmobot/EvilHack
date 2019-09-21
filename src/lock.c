@@ -371,15 +371,15 @@ int rx, ry;
 
     /* If this is a stethoscope, we know where we came from */
     if (picktyp == STETHOSCOPE) {
-	cc.x = rx; cc.y = ry;
+        cc.x = rx; cc.y = ry;
     } else {
-	if (!get_adjacent_loc((char *) 0, "Invalid location!", u.ux, u.uy, &cc))
+        if (!get_adjacent_loc((char *) 0, "Invalid location!", u.ux, u.uy, &cc))
             return PICKLOCK_DID_NOTHING;
     }
 
     /* Very clumsy special case for this, but forcing the player to
      * a)pply > just to open a safe, when a)pply . works in all other cases? */
-    if (cc.x == u.ux && cc.y == u.uy || picktyp == STETHOSCOPE) {	/* pick lock on a container */
+    if (cc.x == u.ux && cc.y == u.uy || picktyp == STETHOSCOPE) {   /* pick lock on a container */
         const char *verb;
         char qsfx[QBUFSZ];
         boolean it;
@@ -430,15 +430,15 @@ int rx, ry;
                 if (c == 'n')
                     continue;
 
-		if (otmp->otyp == IRON_SAFE && picktyp != STETHOSCOPE) {
-		    You("aren't sure how to go about opening the safe that way.");
-		    return 0;
-		}
+                if (otmp->otyp == IRON_SAFE && picktyp != STETHOSCOPE) {
+                    You("aren't sure how to go about opening the safe that way.");
+                    return 0;
+                }
 
-		if (!otmp->olocked && otmp->otyp == IRON_SAFE) {
-		    You_cant("change the combination.");
-		    return 0;
-		}
+                if (!otmp->olocked && otmp->otyp == IRON_SAFE) {
+                    You_cant("change the combination.");
+                    return 0;
+                }
 
                 if (otmp->obroken) {
                     You_cant("fix its broken lock with %s.", doname(pick));
@@ -459,9 +459,9 @@ int rx, ry;
                 case SKELETON_KEY:
                     ch = 75 + ACURR(A_DEX);
                     break;
-		case STETHOSCOPE:
-	            ch = 5 + 2 * ACURR(A_DEX) * Role_if(PM_ROGUE);
-		    break;
+                case STETHOSCOPE:
+                    ch = 5 + 2 * ACURR(A_DEX) * Role_if(PM_ROGUE);
+                    break;
                 default:
                     ch = 0;
                 }
@@ -601,10 +601,10 @@ doforce()
     xlock.box = (struct obj *) 0;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (Is_box(otmp)) {
-	    if (otmp->otyp == IRON_SAFE) {
-	        You("would need dynamite to force %s.", the(xname(otmp)));
-		continue;
-	    }
+            if (otmp->otyp == IRON_SAFE) {
+                You("would need dynamite to force %s.", the(xname(otmp)));
+                continue;
+            }
             if (otmp->obroken || !otmp->olocked) {
                 /* force doname() to omit known "broken" or "unlocked"
                    prefix so that the message isn't worded redundantly;

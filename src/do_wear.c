@@ -358,9 +358,9 @@ Cloak_on(VOID_ARGS)
 
     switch (uarmc->otyp) {
     case ORCISH_CLOAK:
-	if (Race_if(PM_ORC)) {
-	}
-	break;
+        if (Race_if(PM_ORC)) {
+        }
+        break;
     case DWARVISH_CLOAK:
     case CLOAK_OF_MAGIC_RESISTANCE:
     case ROBE:
@@ -421,10 +421,10 @@ Cloak_off(VOID_ARGS)
     setworn((struct obj *) 0, W_ARMC);
     switch (otyp) {
     case ORCISH_CLOAK:
-	if (Race_if(PM_ORC)) {
-		u.uac -= 2;
-	}
-	break;
+        if (Race_if(PM_ORC)) {
+            u.uac -= 2;
+        }
+        break;
     case DWARVISH_CLOAK:
     case CLOAK_OF_PROTECTION:
     case CLOAK_OF_MAGIC_RESISTANCE:
@@ -786,45 +786,45 @@ Armor_on(VOID_ARGS)
     long oldprop2 = EStealth & W_ARM;
 
     if (uarm) {
-	switch (uarm->otyp) {
-	    case GOLD_DRAGON_SCALE_MAIL:
-	    case GOLD_DRAGON_SCALES:
-                ESick_resistance |= W_ARM;
-		begin_burn(uarm, FALSE);
-		if (!Blind)
-		    pline("%s to glow.", Tobjnam(uarm, "begin"));
-		break;
-	    case BLUE_DRAGON_SCALE_MAIL:
-	    case BLUE_DRAGON_SCALES:
-		if (!oldprop && !Very_fast) {
-		    pline("You speed up%s.", Fast ? " a bit more" : "");
-		}
-		EFast |= W_ARM;
-		break;
-	    case YELLOW_DRAGON_SCALE_MAIL:
-	    case YELLOW_DRAGON_SCALES:
-		EStone_resistance |= W_ARM;
-		break;
-	    case WHITE_DRAGON_SCALE_MAIL:
-	    case WHITE_DRAGON_SCALES:
-		EWwalking |= W_ARM;
-		break;
-            case SHIMMERING_DRAGON_SCALE_MAIL:
-            case SHIMMERING_DRAGON_SCALES:
-                You_feel("that monsters have difficulty pinpointing your location.");
-                if (!oldprop2 && !HStealth && !BStealth) {
-                    You("move very quietly.");
-                } else if (Levitation || Flying) {
-                    You("float imperceptibly.");
-                }
-                EStealth |= W_ARM;
-                break;
-            case SILVER_DRAGON_SCALE_MAIL:
-            case SILVER_DRAGON_SCALES:
-                ECold_resistance |= W_ARM;
-                break;
-	    default:
-		break;
+        switch (uarm->otyp) {
+        case GOLD_DRAGON_SCALE_MAIL:
+        case GOLD_DRAGON_SCALES:
+            ESick_resistance |= W_ARM;
+            begin_burn(uarm, FALSE);
+            if (!Blind)
+                pline("%s to glow.", Tobjnam(uarm, "begin"));
+            break;
+        case BLUE_DRAGON_SCALE_MAIL:
+        case BLUE_DRAGON_SCALES:
+            if (!oldprop && !Very_fast) {
+                pline("You speed up%s.", Fast ? " a bit more" : "");
+            }
+            EFast |= W_ARM;
+            break;
+        case YELLOW_DRAGON_SCALE_MAIL:
+        case YELLOW_DRAGON_SCALES:
+            EStone_resistance |= W_ARM;
+            break;
+        case WHITE_DRAGON_SCALE_MAIL:
+        case WHITE_DRAGON_SCALES:
+            EWwalking |= W_ARM;
+            break;
+        case SHIMMERING_DRAGON_SCALE_MAIL:
+        case SHIMMERING_DRAGON_SCALES:
+            You_feel("that monsters have difficulty pinpointing your location.");
+            if (!oldprop2 && !HStealth && !BStealth) {
+                You("move very quietly.");
+            } else if (Levitation || Flying) {
+                You("float imperceptibly.");
+            }
+            EStealth |= W_ARM;
+            break;
+        case SILVER_DRAGON_SCALE_MAIL:
+        case SILVER_DRAGON_SCALES:
+            ECold_resistance |= W_ARM;
+            break;
+        default:
+            break;
         }
     }
     /*
@@ -841,41 +841,41 @@ int
 Armor_off(VOID_ARGS)
 {
     if (uarm) {
-	switch (uarm->otyp) {
-	    case GOLD_DRAGON_SCALE_MAIL:
-	    case GOLD_DRAGON_SCALES:
-                ESick_resistance &= ~W_ARM;
-		end_burn(uarm, FALSE);
-		if (!Blind)
-		    pline("%s glowing.", Tobjnam(uarm, "stop"));
-		break;
-	    case BLUE_DRAGON_SCALE_MAIL:
-	    case BLUE_DRAGON_SCALES:
-		EFast &= ~W_ARM;
-		if (!Very_fast) {
-		    pline("You slow down.");
-		}
-                break;
-	    case YELLOW_DRAGON_SCALE_MAIL:
-	    case YELLOW_DRAGON_SCALES:
-	        EStone_resistance &= ~W_ARM;
-		break;
-	    case WHITE_DRAGON_SCALE_MAIL:
-	    case WHITE_DRAGON_SCALES:
-		EWwalking &= ~W_ARM;
-                break;
-            case SHIMMERING_DRAGON_SCALE_MAIL:
-            case SHIMMERING_DRAGON_SCALES:
-                You_feel("that monsters no longer have difficulty pinpointing your location.");
-                EStealth &= ~W_ARM;
-                You("sure are noisy.");
-                break;
-            case SILVER_DRAGON_SCALE_MAIL:
-            case SILVER_DRAGON_SCALES:
-                ECold_resistance &= ~W_ARM;
-                break;
-	    default:
-		break;
+        switch (uarm->otyp) {
+        case GOLD_DRAGON_SCALE_MAIL:
+        case GOLD_DRAGON_SCALES:
+            ESick_resistance &= ~W_ARM;
+            end_burn(uarm, FALSE);
+            if (!Blind)
+                pline("%s glowing.", Tobjnam(uarm, "stop"));
+            break;
+        case BLUE_DRAGON_SCALE_MAIL:
+        case BLUE_DRAGON_SCALES:
+            EFast &= ~W_ARM;
+            if (!Very_fast) {
+                pline("You slow down.");
+            }
+            break;
+        case YELLOW_DRAGON_SCALE_MAIL:
+        case YELLOW_DRAGON_SCALES:
+            EStone_resistance &= ~W_ARM;
+            break;
+        case WHITE_DRAGON_SCALE_MAIL:
+        case WHITE_DRAGON_SCALES:
+            EWwalking &= ~W_ARM;
+            break;
+        case SHIMMERING_DRAGON_SCALE_MAIL:
+        case SHIMMERING_DRAGON_SCALES:
+            You_feel("that monsters no longer have difficulty pinpointing your location.");
+            EStealth &= ~W_ARM;
+            You("sure are noisy.");
+            break;
+        case SILVER_DRAGON_SCALE_MAIL:
+        case SILVER_DRAGON_SCALES:
+            ECold_resistance &= ~W_ARM;
+            break;
+        default:
+            break;
         }
     }
     oprops_off(uarm, W_ARM);
@@ -895,40 +895,40 @@ int
 Armor_gone()
 {
     if (uarm) {
-	switch (uarm->otyp) {
-	    case GOLD_DRAGON_SCALE_MAIL:
-	    case GOLD_DRAGON_SCALES:
-                ESick_resistance &= ~W_ARM;
-		end_burn(uarm, FALSE);
-		break;
-	    case BLUE_DRAGON_SCALE_MAIL:
-	    case BLUE_DRAGON_SCALES:
-		EFast &= ~W_ARM;
-		if (!Very_fast) {
-		    pline("You slow down.");
-		}
-		break;
-	    case YELLOW_DRAGON_SCALE_MAIL:
-	    case YELLOW_DRAGON_SCALES:
-		EStone_resistance &= ~W_ARM;
-		break;
-	    case WHITE_DRAGON_SCALE_MAIL:
-	    case WHITE_DRAGON_SCALES:
-		EWwalking &= ~W_ARM;
-                break;
-            case SHIMMERING_DRAGON_SCALE_MAIL:
-            case SHIMMERING_DRAGON_SCALES:
-                You_feel("that monsters no longer have difficulty pinpointing your location.");
-                EStealth &= ~W_ARM;
-                You("sure are noisy.");
-                break;
-            case SILVER_DRAGON_SCALE_MAIL:
-            case SILVER_DRAGON_SCALES:
-                ECold_resistance &= ~W_ARM;
-                break;
-	    default:
-		break;
-	}
+        switch (uarm->otyp) {
+        case GOLD_DRAGON_SCALE_MAIL:
+        case GOLD_DRAGON_SCALES:
+            ESick_resistance &= ~W_ARM;
+            end_burn(uarm, FALSE);
+            break;
+        case BLUE_DRAGON_SCALE_MAIL:
+        case BLUE_DRAGON_SCALES:
+            EFast &= ~W_ARM;
+            if (!Very_fast) {
+                pline("You slow down.");
+            }
+            break;
+        case YELLOW_DRAGON_SCALE_MAIL:
+        case YELLOW_DRAGON_SCALES:
+            EStone_resistance &= ~W_ARM;
+            break;
+        case WHITE_DRAGON_SCALE_MAIL:
+        case WHITE_DRAGON_SCALES:
+            EWwalking &= ~W_ARM;
+            break;
+        case SHIMMERING_DRAGON_SCALE_MAIL:
+        case SHIMMERING_DRAGON_SCALES:
+            You_feel("that monsters no longer have difficulty pinpointing your location.");
+            EStealth &= ~W_ARM;
+            You("sure are noisy.");
+            break;
+        case SILVER_DRAGON_SCALE_MAIL:
+        case SILVER_DRAGON_SCALES:
+            ECold_resistance &= ~W_ARM;
+            break;
+        default:
+            break;
+        }
     }
     oprops_off(uarm, W_ARM);
     context.takeoff.mask &= ~W_ARM;
@@ -1015,13 +1015,13 @@ Amulet_on()
     case AMULET_OF_YENDOR:
         break;
     case AMULET_OF_FLYING:
-	if (!(EFlying & ~W_AMUL) && !is_flyer(youmonst.data)) {
-	    You_feel("like flying!");
-	    if (!Levitation)
-		float_up();
-		makeknown(AMULET_OF_FLYING);
-	    }
-	break;
+        if (!(EFlying & ~W_AMUL) && !is_flyer(youmonst.data)) {
+            You_feel("like flying!");
+            if (!Levitation)
+                float_up();
+            makeknown(AMULET_OF_FLYING);
+        }
+        break;
     }
 }
 
@@ -1076,9 +1076,9 @@ Amulet_off()
     case AMULET_OF_YENDOR:
         break;
     case AMULET_OF_FLYING:
-	setworn((struct obj *) 0, W_AMUL);
-	(void) float_down(0L, 0L);
-	return;
+        setworn((struct obj *) 0, W_AMUL);
+        (void) float_down(0L, 0L);
+        return;
     }
     setworn((struct obj *) 0, W_AMUL);
     return;
@@ -2329,47 +2329,47 @@ find_ac()
     racial_bonus = Race_if(PM_ORC) ? 2 : Race_if(PM_ELF) ? 1 : Race_if(PM_DWARF) ? 1 : 0;
 
     if (uarm) {
-	uac -= ARM_BONUS(uarm);
-	if ((Race_if(PM_ORC) && (uarm->otyp == ORCISH_CHAIN_MAIL || uarm->otyp == ORCISH_RING_MAIL)) ||
-			(Race_if(PM_ELF) && uarm->otyp == ELVEN_CHAIN_MAIL) ||
-			(Race_if(PM_DWARF) && uarm->otyp == DWARVISH_CHAIN_MAIL)) {
-		uac -= racial_bonus;
-	}
+        uac -= ARM_BONUS(uarm);
+        if ((Race_if(PM_ORC) && (uarm->otyp == ORCISH_CHAIN_MAIL || uarm->otyp == ORCISH_RING_MAIL))
+            || (Race_if(PM_ELF) && uarm->otyp == ELVEN_CHAIN_MAIL)
+            || (Race_if(PM_DWARF) && uarm->otyp == DWARVISH_CHAIN_MAIL)) {
+            uac -= racial_bonus;
+        }
     }
 
     if (uarmc) {
-	uac -= ARM_BONUS(uarmc);
-	if ((Race_if(PM_ORC) && uarmc->otyp == ORCISH_CLOAK) ||
-			(Race_if(PM_ELF) && uarmc->otyp == ELVEN_CLOAK) ||
-			(Race_if(PM_DWARF) && uarmc->otyp == DWARVISH_CLOAK)) {
-		uac -= racial_bonus;
-	}
+        uac -= ARM_BONUS(uarmc);
+        if ((Race_if(PM_ORC) && uarmc->otyp == ORCISH_CLOAK)
+            || (Race_if(PM_ELF) && uarmc->otyp == ELVEN_CLOAK)
+            || (Race_if(PM_DWARF) && uarmc->otyp == DWARVISH_CLOAK)) {
+            uac -= racial_bonus;
+        }
     }
 
     if (uarmh) {
-	uac -= ARM_BONUS(uarmh);
-	if ((Race_if(PM_ORC) && uarmh->otyp == ORCISH_HELM) ||
-			(Race_if(PM_ELF) && uarmh->otyp == ELVEN_HELM) ||
-			(Race_if(PM_DWARF) && uarmh->otyp == DWARVISH_HELM)) {
-		uac -= racial_bonus;
-	}
+        uac -= ARM_BONUS(uarmh);
+        if ((Race_if(PM_ORC) && uarmh->otyp == ORCISH_HELM)
+            || (Race_if(PM_ELF) && uarmh->otyp == ELVEN_HELM)
+            || (Race_if(PM_DWARF) && uarmh->otyp == DWARVISH_HELM)) {
+            uac -= racial_bonus;
+        }
     }
 
     if (uarmf) {
-	uac -= ARM_BONUS(uarmf);
-	if ((Race_if(PM_ELF) && uarmf->otyp == ELVEN_BOOTS) ||
-			(Race_if(PM_DWARF) && uarmf->otyp == DWARVISH_BOOTS)) {
-		uac -= racial_bonus;
-	}
+        uac -= ARM_BONUS(uarmf);
+        if ((Race_if(PM_ELF) && uarmf->otyp == ELVEN_BOOTS)
+            || (Race_if(PM_DWARF) && uarmf->otyp == DWARVISH_BOOTS)) {
+            uac -= racial_bonus;
+        }
     }
 
     if (uarms) {
-	uac -= ARM_BONUS(uarms);
-	if ((Race_if(PM_ORC) && uarms->otyp == ORCISH_SHIELD) ||
-			(Race_if(PM_ELF) && uarms->otyp == ELVEN_SHIELD) ||
-			(Race_if(PM_DWARF) && uarms->otyp == DWARVISH_ROUNDSHIELD)) {
-		uac -= racial_bonus;
-	}
+        uac -= ARM_BONUS(uarms);
+        if ((Race_if(PM_ORC) && uarms->otyp == ORCISH_SHIELD)
+            || (Race_if(PM_ELF) && uarms->otyp == ELVEN_SHIELD)
+            || (Race_if(PM_DWARF) && uarms->otyp == DWARVISH_ROUNDSHIELD)) {
+            uac -= racial_bonus;
+        }
     }
 
     if (uarmg)

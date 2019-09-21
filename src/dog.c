@@ -124,9 +124,9 @@ boolean quietly;
         if (chance > 2)
             chance = otmp->blessed ? 0 : !otmp->cursed ? 1 : 2;
         /* 0,1,2:  b=80%,10,10; nc=10%,80,10; c=10%,10,80 */
-	if (Role_if(PM_KNIGHT) && mtmp->data->mlet == S_DRAGON) {
-	    chance = 2;
-	}
+        if (Role_if(PM_KNIGHT) && mtmp->data->mlet == S_DRAGON) {
+            chance = 2;
+        }
         if (chance > 0) {
             mtmp->mtame = 0;   /* not tame after all */
             if (chance == 2) { /* hostile (cursed figurine) */
@@ -170,10 +170,10 @@ makedog()
         petname = pseudoname;
     else if (pettype == PM_PONY) {
         petname = horsename;
-	/* hijack creation for chaotic knights */
-	if (u.ualign.type == A_CHAOTIC && Role_if(PM_KNIGHT)) {
+        /* hijack creation for chaotic knights */
+        if (u.ualign.type == A_CHAOTIC && Role_if(PM_KNIGHT)) {
             pettype = PM_NIGHTMARE;
-	}
+        }
     }
     else
         petname = catname;
@@ -858,10 +858,10 @@ register struct obj *obj;
         case LEMBAS_WAFER:
         case FOOD_RATION:
             if (is_human(mon->data)
-          	|| is_elf(mon->data)
-          	|| is_dwarf(mon->data)
-          	|| is_gnome(mon->data)
-          	|| is_orc(mon->data)
+                || is_elf(mon->data)
+                || is_dwarf(mon->data)
+                || is_gnome(mon->data)
+                || is_orc(mon->data)
                 || is_hobbit(mon->data)
                 || is_giant(mon->data)
                 || is_centaur(mon->data))

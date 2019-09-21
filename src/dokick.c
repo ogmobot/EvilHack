@@ -627,9 +627,9 @@ xchar x, y;
         if (range < 2)
             pline("%s", kickedobj->otyp == IRON_SAFE ? "CLANG!" : "THUD!");
         container_impact_dmg(kickedobj, x, y);
-	if (kickedobj->otyp == IRON_SAFE) {
-	    return 1;
-	}
+        if (kickedobj->otyp == IRON_SAFE) {
+            return 1;
+        }
         if (kickedobj->olocked) {
             if (!rn2(5) || (martial() && !rn2(2))) {
                 You("break open the lock!");

@@ -27,36 +27,36 @@ boolean
 elf_can_regen()
 {
     if (maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF))) {
-	if (uwep && is_iron(uwep)
+        if (uwep && is_iron(uwep)
             && !is_quest_artifact(uwep) && !uarmg)
             return 0;
-	if (uarm && is_iron(uarm) && !uarmu)
+        if (uarm && is_iron(uarm) && !uarmu)
             return 0;
-	if (uarmu && is_iron(uarmu))
+        if (uarmu && is_iron(uarmu))
             return 0;
-	if (uarmc && is_iron(uarmc) && !uarmu && !uarm)
+        if (uarmc && is_iron(uarmc) && !uarmu && !uarm)
             return 0;
-	if (uarmh && is_iron(uarmh)
+        if (uarmh && is_iron(uarmh)
             && !is_quest_artifact(uarmh))
             return 0;
-	if (uarms && is_iron(uarms) && !uarmg)
+        if (uarms && is_iron(uarms) && !uarmg)
             return 0;
-	if (uarmg && is_iron(uarmg))
+        if (uarmg && is_iron(uarmg))
             return 0;
-	if (uarmf && is_iron(uarmf))
+        if (uarmf && is_iron(uarmf))
             return 0;
-	if (uleft && is_iron(uleft))
+        if (uleft && is_iron(uleft))
             return 0;
-	if (uright && is_iron(uright))
+        if (uright && is_iron(uright))
             return 0;
-	if (uamul && is_iron(uamul) && !is_quest_artifact(uamul)
+        if (uamul && is_iron(uamul) && !is_quest_artifact(uamul)
             && !uarmu && !uarm)
             return 0;
-	if (ublindf && is_iron(ublindf))
+        if (ublindf && is_iron(ublindf))
             return 0;
-	if (uchain && is_iron(uchain))
+        if (uchain && is_iron(uchain))
             return 0;
-	if (uswapwep && is_iron(uswapwep)
+        if (uswapwep && is_iron(uswapwep)
             && u.twoweap && !uarmg)
             return 0;
     }
@@ -67,36 +67,36 @@ boolean
 orc_can_regen()
 {
     if (maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC))) {
-	if (uwep && is_mithril(uwep)
+        if (uwep && is_mithril(uwep)
             && !is_quest_artifact(uwep) && !uarmg)
             return 0;
-	if (uarm && is_mithril(uarm) && !uarmu)
+        if (uarm && is_mithril(uarm) && !uarmu)
             return 0;
-	if (uarmu && is_mithril(uarmu))
+        if (uarmu && is_mithril(uarmu))
             return 0;
-	if (uarmc && is_mithril(uarmc) && !uarmu && !uarm)
+        if (uarmc && is_mithril(uarmc) && !uarmu && !uarm)
             return 0;
-	if (uarmh && is_mithril(uarmh)
+        if (uarmh && is_mithril(uarmh)
             && !is_quest_artifact(uarmh))
             return 0;
-	if (uarms && is_mithril(uarms) && !uarmg)
+        if (uarms && is_mithril(uarms) && !uarmg)
             return 0;
-	if (uarmg && is_mithril(uarmg))
+        if (uarmg && is_mithril(uarmg))
             return 0;
-	if (uarmf && is_mithril(uarmf))
+        if (uarmf && is_mithril(uarmf))
             return 0;
-	if (uleft && is_mithril(uleft))
+        if (uleft && is_mithril(uleft))
             return 0;
-	if (uright && is_mithril(uright))
+        if (uright && is_mithril(uright))
             return 0;
         if (uamul && is_mithril(uamul) && !is_quest_artifact(uamul)
             && !uarmu && !uarm)
             return 0;
-	if (ublindf && is_mithril(ublindf))
+        if (ublindf && is_mithril(ublindf))
             return 0;
-	if (uchain && is_mithril(uchain))
+        if (uchain && is_mithril(uchain))
             return 0;
-	if (uswapwep && is_mithril(uswapwep)
+        if (uswapwep && is_mithril(uswapwep)
             && u.twoweap && !uarmg)
             return 0;
     }
@@ -215,50 +215,50 @@ boolean resuming;
                     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
                         mtmp->movement += mcalcmove(mtmp);
 
-		    /* From SporkHack
-		     * Vanilla generates a critter every 70-ish turns.
-		     * The rate accelerates to every 50 or so below the Castle,
-		     * and 'round every 25 turns once you've done the Invocation.
-		     *
-		     * We will push it even further.  Monsters post-Invocation
-		     * will almost always appear on the stairs (if present), and
-		     * much more frequently; this, along with the extra intervene()
-		     * calls, should certainly make it seem like you're wading back
-		     * through the teeming hordes.
-		     *
-		     * Aside from that, a more general clock should be put on things;
-		     * after about 30,000 turns, the frequency rate of appearance
-		     * and difficulty of monsters generated will slowly increase until
-		     * it reaches the point it will be at as if you were post-Invocation.
-		     *
-		     * 60,000 turns should be adequate as a target mark for this effect;
-	             * if you haven't ascended in 60,000 turns, you're intentionally
-		     * fiddling around somewhere and will certainly be strong enough
-		     * to handle anything that comes your way, so this won't be
-		     * dropping newbies off the edge of the planet.  -- DSR 12/2/07
-		     */
- 	            monclock = 70;
-	            if (u.uevent.udemigod) {
-		        monclock = 10;
-	            } else {
-		        if (depth(&u.uz) > depth(&stronghold_level)) {
-		            monclock = 50;
-		        }
-		        past_clock = moves - timeout_start;
-		        if (past_clock > 0) {
-		            monclock -= (past_clock/clock_base)*60;
-		        }
-	            }
-		    /* make sure we don't fall off the bottom */
-		    if (monclock < 10) {
+                    /* From SporkHack
+                     * Vanilla generates a critter every 70-ish turns.
+                     * The rate accelerates to every 50 or so below the Castle,
+                     * and 'round every 25 turns once you've done the Invocation.
+                     *
+                     * We will push it even further.  Monsters post-Invocation
+                     * will almost always appear on the stairs (if present), and
+                     * much more frequently; this, along with the extra intervene()
+                     * calls, should certainly make it seem like you're wading back
+                     * through the teeming hordes.
+                     *
+                     * Aside from that, a more general clock should be put on things;
+                     * after about 30,000 turns, the frequency rate of appearance
+                     * and difficulty of monsters generated will slowly increase until
+                     * it reaches the point it will be at as if you were post-Invocation.
+                     *
+                     * 60,000 turns should be adequate as a target mark for this effect;
+                     * if you haven't ascended in 60,000 turns, you're intentionally
+                     * fiddling around somewhere and will certainly be strong enough
+                     * to handle anything that comes your way, so this won't be
+                     * dropping newbies off the edge of the planet.  -- DSR 12/2/07
+                     */
+                    monclock = 70;
+                    if (u.uevent.udemigod) {
+                        monclock = 10;
+                    } else {
+                        if (depth(&u.uz) > depth(&stronghold_level)) {
+                            monclock = 50;
+                        }
+                        past_clock = moves - timeout_start;
+                        if (past_clock > 0) {
+                            monclock -= (past_clock/clock_base)*60;
+                        }
+                    }
+                    /* make sure we don't fall off the bottom */
+                    if (monclock < 10) {
                         monclock = 10;
                     }
 
-		    if (!rn2(monclock)) {
-		        if (u.uevent.udemigod && xupstair && rn2(10)) {
-			    (void) makemon((struct permonst *) 0, xupstair, yupstair,
+                    if (!rn2(monclock)) {
+                        if (u.uevent.udemigod && xupstair && rn2(10)) {
+                            (void) makemon((struct permonst *) 0, xupstair, yupstair,
                                            MM_ADJACENTOK);
-		        } else {
+                        } else {
                             (void) makemon((struct permonst *) 0, 0, 0,
                                            NO_MM_FLAGS);
                         }
@@ -278,9 +278,9 @@ boolean resuming;
                             /* gain a free action on 1/3 of turns */
                             if (rn2(3) == 0)
                                 moveamt += NORMAL_SPEED;
-			} else if (Slow) {
-			    /* average movement noticeably slower */
-			    if (rn2(3) != 0)
+                        } else if (Slow) {
+                            /* average movement noticeably slower */
+                            if (rn2(3) != 0)
                                 moveamt -= NORMAL_SPEED / 2;
                         }
                     }
@@ -514,23 +514,23 @@ boolean resuming;
             curs_on_u();
         }
 
-	if (elf_regen != elf_can_regen()) {
+        if (elf_regen != elf_can_regen()) {
             if (!Hallucination) {
-	        You_feel("%s.", (elf_regen) ? "itchy" : "relief");
+                You_feel("%s.", (elf_regen) ? "itchy" : "relief");
             } else {
                 You_feel("%s.", (elf_can_regen) ? "magnetic" : "like you are no longer failing Organic Chemistry");
             }
-	    elf_regen = elf_can_regen();
-	}
+            elf_regen = elf_can_regen();
+        }
 
-	if (orc_regen != orc_can_regen()) {
+        if (orc_regen != orc_can_regen()) {
             if (!Hallucination) {
-	        You_feel("%s.", (orc_regen) ? "tingly" : "relief");
+                You_feel("%s.", (orc_regen) ? "tingly" : "relief");
             } else {
                 You_feel("%s.", (orc_can_regen) ? "non-magnetic" : "like you are no longer failing Organic Chemistry");
             }
-	    orc_regen = orc_can_regen();
-	}
+            orc_regen = orc_can_regen();
+        }
 
         context.move = 1;
 

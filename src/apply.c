@@ -293,22 +293,22 @@ struct obj* tobj;
     }
 
     if (egg) {
-	if (Hallucination || tobj->cursed) {
-	    pline("You listen to the egg and guess... %s?",
+        if (Hallucination || tobj->cursed) {
+            pline("You listen to the egg and guess... %s?",
                   rndmonnam((char *) 0));
-	} else {
+        } else {
             if (tobj->blessed
                 && (stale_egg(egg) || egg->corpsenm == NON_PM)) {
                 pline("The egg doesn't really make any noise at all.");
-	    } else if (tobj->blessed
+            } else if (tobj->blessed
                 && (!stale_egg(egg) || !egg->corpsenm == NON_PM)) {
                 pline("You listen to the egg and guess... %s!",
                        mons[egg->corpsenm].mname);
             } else {
                 You("can't quite tell what's inside the egg.");
             }
-	}
-	return TRUE;
+        }
+        return TRUE;
     }
 
     /* using a stethoscope on a safe?  You safe-cracker, you. */
@@ -317,8 +317,8 @@ struct obj* tobj;
             pline("You attempt to crack the safe using the combination... %s?",
                   rndcolor());
         } else {
-	    pick_lock(tobj, rx, ry);
-	    return TRUE;
+            pick_lock(tobj, rx, ry);
+            return TRUE;
         }
     }
 
@@ -999,14 +999,14 @@ struct obj *obj;
             You_hear("%s stop moving.", something);
         paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp);
     } else if (monable && !mtmp->mcan && !mtmp->minvis
-	       && mtmp->data == &mons[PM_MAGICAL_EYE]) {
-	if (vis) {
+               && mtmp->data == &mons[PM_MAGICAL_EYE]) {
+        if (vis) {
             pline("%s sees its own glare in your mirror.",
-		  Monnam(mtmp));
-	    pline("%s is cancelled!", Monnam(mtmp));
+                  Monnam(mtmp));
+            pline("%s is cancelled!", Monnam(mtmp));
         }
         mtmp->mcan = 1;
-	monflee(mtmp, 0, FALSE, TRUE);
+        monflee(mtmp, 0, FALSE, TRUE);
     } else if (monable && mtmp->data == &mons[PM_UMBER_HULK]) {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
@@ -1892,12 +1892,12 @@ int magic; /* 0=Physical, otherwise skill level */
         nomul(-1);
         multi_reason = "jumping around";
         nomovemsg = "";
-             /* Knights get it for cheaper */
-	     if (Role_if(PM_KNIGHT)) {
-		     morehungry(rnd(10));
-	     } else {
-        morehungry(rnd(25));
-             }
+        /* Knights get it for cheaper */
+        if (Role_if(PM_KNIGHT)) {
+            morehungry(rnd(10));
+        } else {
+            morehungry(rnd(25));
+        }
         return 1;
     }
 }

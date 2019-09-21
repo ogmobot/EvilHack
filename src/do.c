@@ -1469,9 +1469,9 @@ boolean at_stairs, falling, portal;
     if (dunlev(newlevel) > dunlevs_in_dungeon(newlevel))
         newlevel->dlevel = dunlevs_in_dungeon(newlevel);
     if (newdungeon && In_endgame(newlevel)) { /* 1st Endgame Level !!! */
-	d_level newlev;
-	newlev.dnum = astral_level.dnum;
-	newlev.dlevel = dungeons[astral_level.dnum].entry_lev;
+        d_level newlev;
+        newlev.dnum = astral_level.dnum;
+        newlev.dlevel = dungeons[astral_level.dnum].entry_lev;
         if (!u.uhave.amulet)
             return;  /* must have the Amulet */
         if (!wizard) {/* wizard ^V can bypass Earth level */
@@ -1614,9 +1614,9 @@ boolean at_stairs, falling, portal;
         for (l_idx = 0; l_idx < n_dgns; ++l_idx)
             remdun_mapseen(l_idx);
 
-	pline("Well done, mortal!");
-	pline("But now thou must face the final Test...");
-	pline("Prove thyself worthy or perish!");
+        pline("Well done, mortal!");
+        pline("But now thou must face the final Test...");
+        pline("Prove thyself worthy or perish!");
     }
 
     if (Is_rogue_level(newlevel) || Is_rogue_level(&u.uz))
@@ -1904,7 +1904,7 @@ boolean at_stairs, falling, portal;
     (void) pickup(1);
 
 #ifdef WHEREIS_FILE
-	touch_whereis();
+    touch_whereis();
 #endif
 }
 

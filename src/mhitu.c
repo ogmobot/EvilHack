@@ -133,64 +133,64 @@ struct attack *mattk;
 
     register boolean nearmiss = (target == roll);
     register struct obj *blocker = (struct obj *)0;
-	/* 3 values for blocker
-	 *	No blocker:  (struct obj *) 0
-	 * 	Piece of armour:  object
-	 *	magical: &zeroobj
-	 */
+        /* 3 values for blocker
+         *      No blocker:  (struct obj *) 0
+         *      Piece of armour:  object
+         *      magical: &zeroobj
+         */
 
     if (target < roll) {
-	/* get object responsible
-	 * Work from the closest to the skin outwards
-	 */
+        /* get object responsible
+         * Work from the closest to the skin outwards
+         */
 
         /* Try undershirt */
-	if (uarmu && target <= roll) {
-		target += ARM_BONUS(uarmu);
-		if (target > roll) blocker = uarmu;
-	}
+        if (uarmu && target <= roll) {
+            target += ARM_BONUS(uarmu);
+            if (target > roll) blocker = uarmu;
+        }
 
-	/* Try body armour */
-	if (uarm && target <= roll) {
-		target += ARM_BONUS(uarm);
-		if (target > roll) blocker = uarm;
-	}
+        /* Try body armour */
+        if (uarm && target <= roll) {
+            target += ARM_BONUS(uarm);
+            if (target > roll) blocker = uarm;
+        }
 
-	if (uarmg && !rn2(10)) {
-		/* Try gloves */
-		target += ARM_BONUS(uarmg);
-		if (target > roll) blocker = uarmg;
-	}
+        if (uarmg && !rn2(10)) {
+            /* Try gloves */
+            target += ARM_BONUS(uarmg);
+            if (target > roll) blocker = uarmg;
+        }
 
-	if (uarmf && !rn2(10)) {
-		/* Try boots */
-		target += ARM_BONUS(uarmf);
-		if (target > roll) blocker = uarmf;
-	}
+        if (uarmf && !rn2(10)) {
+            /* Try boots */
+            target += ARM_BONUS(uarmf);
+            if (target > roll) blocker = uarmf;
+        }
 
-	if (uarmh && !rn2(5)) {
-		/* Try helm */
-		target += ARM_BONUS(uarmh);
-		if (target > roll) blocker = uarmh;
-	}
+        if (uarmh && !rn2(5)) {
+            /* Try helm */
+            target += ARM_BONUS(uarmh);
+            if (target > roll) blocker = uarmh;
+        }
 
-	if (uarmc && target <= roll) {
-		/* Try cloak */
-		target += ARM_BONUS(uarmc);
-		if (target > roll) blocker = uarmc;
-	}
+        if (uarmc && target <= roll) {
+            /* Try cloak */
+            target += ARM_BONUS(uarmc);
+            if (target > roll) blocker = uarmc;
+        }
 
-	if (uarms && target <= roll) {
-		/* Try shield */
-		target += ARM_BONUS(uarms);
-		if (target > roll) blocker = uarms;
-	}
+        if (uarms && target <= roll) {
+            /* Try shield */
+            target += ARM_BONUS(uarms);
+            if (target > roll) blocker = uarms;
+        }
 
-	if (target <= roll) {
-		/* Try spell protection */
-		target += u.uspellprot;
-		if (target > roll) blocker = (struct obj *) &zeroobj;
-	}
+        if (target <= roll) {
+            /* Try spell protection */
+            target += u.uspellprot;
+            if (target > roll) blocker = (struct obj *) &zeroobj;
+        }
     }
 
     if (!canspotmon(mtmp))
@@ -199,20 +199,20 @@ struct attack *mattk;
     if (could_seduce(mtmp, &youmonst, mattk) && !mtmp->mcan)
         pline("%s pretends to be friendly.", Monnam(mtmp));
     else {
-    if (!flags.verbose || !nearmiss && !blocker)
-	pline("%s misses.", Monnam(mtmp));
-    else if (!blocker)
-        rn2(2) ? You("dodge %s attack!", s_suffix(mon_nam(mtmp)))
-            : rn2(2) ? You("evade %s attack!", s_suffix(mon_nam(mtmp)))
-                     : pline("%s narrowly misses!", Monnam(mtmp));
-    else if (blocker == &zeroobj)
-	pline("%s is stopped by your golden haze.", Monnam(mtmp));
-    else
-	Your("%s %s%s %s attack.",
-		simple_typename(blocker->otyp),
-		rn2(2) ? "block" : "deflect",
-		(blocker == uarmg || blocker == uarmf) ? "" : "s",
-		s_suffix(mon_nam(mtmp)));
+        if (!flags.verbose || !nearmiss && !blocker)
+            pline("%s misses.", Monnam(mtmp));
+        else if (!blocker)
+            rn2(2) ? You("dodge %s attack!", s_suffix(mon_nam(mtmp)))
+                   : rn2(2) ? You("evade %s attack!", s_suffix(mon_nam(mtmp)))
+                            : pline("%s narrowly misses!", Monnam(mtmp));
+        else if (blocker == &zeroobj)
+            pline("%s is stopped by your golden haze.", Monnam(mtmp));
+        else
+            Your("%s %s%s %s attack.",
+                 simple_typename(blocker->otyp),
+                 rn2(2) ? "block" : "deflect",
+                 (blocker == uarmg || blocker == uarmf) ? "" : "s",
+                 s_suffix(mon_nam(mtmp)));
     }
     stop_occupation();
 }
@@ -273,10 +273,10 @@ u_slow_down()
 {
     if (!Fast && !Slow)
         You("slow down.");
-    else if (!Slow)	 /* speed of some sort */
+    else if (!Slow)  /* speed of some sort */
         You("feel a strange lethargy overcome you.");
     else
-	Your("lethargy seems to be settling in for the long haul.");
+        Your("lethargy seems to be settling in for the long haul.");
     incr_itimeout(&HSlow,rnd(11) + 12);
     exercise(A_DEX, FALSE);
 }
@@ -730,9 +730,9 @@ register struct monst *mtmp;
     /* find rings of increase accuracy */
     {
         struct obj *o;
-	for (o = mtmp->minvent; o; o = o->nobj)
-	     if (o->owornmask && o->otyp == RIN_INCREASE_ACCURACY)
-	         tmp += o->spe;
+        for (o = mtmp->minvent; o; o = o->nobj)
+            if (o->owornmask && o->otyp == RIN_INCREASE_ACCURACY)
+                tmp += o->spe;
     }
 
     /* make eels visible the moment they hit/miss us */
@@ -937,11 +937,11 @@ register struct monst *mtmp;
                     if (mon_wield_item(mtmp) != 0)
                         break;
                 }
-		if ((!MON_WEP(mtmp))
-		    || (is_launcher(MON_WEP(mtmp)))) {
-		    /* implies we could not find a HTH weapon */
-		    thrwmu(mtmp);
-	        }
+                if ((!MON_WEP(mtmp))
+                    || (is_launcher(MON_WEP(mtmp)))) {
+                    /* implies we could not find a HTH weapon */
+                    thrwmu(mtmp);
+                }
                 if (foundyou) {
                     mon_currwep = MON_WEP(mtmp);
                     if (mon_currwep) {
@@ -969,12 +969,12 @@ register struct monst *mtmp;
             else
                 sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
             break;
-	case AT_SCRE:
-	    if (range2) {
-		sum[i] = screamu(mtmp, mattk);
-	    }
-	    /* if you're nice and close, don't bother */
-	    break;
+        case AT_SCRE:
+            if (range2) {
+                sum[i] = screamu(mtmp, mattk);
+            }
+            /* if you're nice and close, don't bother */
+            break;
         default: /* no attack */
             break;
         }
@@ -1168,15 +1168,15 @@ register struct attack *mattk;
     /* find rings of increase damage */
     {
         struct obj *o;
-	for (o = mtmp->minvent; o; o = o->nobj)
-	     if (o->owornmask && o->otyp == RIN_INCREASE_DAMAGE)
-	         dmg += o->spe;
+        for (o = mtmp->minvent; o; o = o->nobj)
+            if (o->owornmask && o->otyp == RIN_INCREASE_DAMAGE)
+                dmg += o->spe;
     }
 
     /* elementals on their home plane hit very hard */
     if(is_home_elemental(mdat)) {
-	if (mtmp->mnum != PM_AIR_ELEMENTAL)
-		dmg += d((int)mattk->damn, (int)mattk->damd);  /* air elementals hit hard enough already */
+        if (mtmp->mnum != PM_AIR_ELEMENTAL)
+            dmg += d((int)mattk->damn, (int)mattk->damd);  /* air elementals hit hard enough already */
     }
 
     /*  Next a cancellation factor.
@@ -1273,9 +1273,9 @@ register struct attack *mattk;
                 hitmsg(mtmp, mattk);
                 }
             }
-	    if (mtmp->data == &mons[PM_WATER_ELEMENTAL]) {
-		goto do_rust;
-	}
+            if (mtmp->data == &mons[PM_WATER_ELEMENTAL]) {
+                goto do_rust;
+            }
         break;
     case AD_DISE:
         hitmsg(mtmp, mattk);
@@ -1651,23 +1651,23 @@ register struct attack *mattk;
 
     case AD_TLPT:
         hitmsg(mtmp, mattk);
-	if (uncancelled || mtmp->mnum == PM_BOOJUM) {
-	    /* "But oh, beamish nephew, beware of the day
-	     * if your Snark be a Boojum!  For then
-	     * You will softly and suddenly vanish away,
-	     * And never be met with again!" */
-	    if (mtmp->mnum == PM_BOOJUM) {
-		/* depending on what we are or if we can't teleport,
-		 * display appropriate messages */
-		if (!level.flags.noteleport) {
-		    You("suddenly vanish!");
+        if (uncancelled || mtmp->mnum == PM_BOOJUM) {
+            /* "But oh, beamish nephew, beware of the day
+             * if your Snark be a Boojum!  For then
+             * You will softly and suddenly vanish away,
+             * And never be met with again!" */
+            if (mtmp->mnum == PM_BOOJUM) {
+                /* depending on what we are or if we can't teleport,
+                 * display appropriate messages */
+                if (!level.flags.noteleport) {
+                    You("suddenly vanish!");
                 } else {
                     if (!Invis) {
                         You("suddenly %s!", See_invisible ? "become transparent" : "vanish");
                     }
                 }
-		incr_itimeout(&HInvis, d(6, 100));	  /* In multiple senses of 'vanish' :) */
-	    } else {
+                incr_itimeout(&HInvis, d(6, 100));    /* In multiple senses of 'vanish' :) */
+            } else {
                 if (flags.verbose)
                     Your("position suddenly seems %suncertain!",
                          (Teleport_control && !Stunned && !unconscious()) ? ""
@@ -2332,9 +2332,9 @@ struct attack *mattk;
                 monstseesu(M_SEEN_ELEC);
                 ugolemeffects(AD_ELEC, tmp);
                 tmp = 0;
-	    } else {
-		tmp = resist_reduce(tmp, SHOCK_RES);
-	    }
+            } else {
+                tmp = resist_reduce(tmp, SHOCK_RES);
+            }
         } else
             tmp = 0;
         break;
@@ -2470,8 +2470,8 @@ boolean ufound;
                 if (physical_damage)
                     tmp = Maybe_Half_Phys(tmp);
                 mdamageu(mtmp, tmp);
-		} else {
-		    monstseesu(1 << (mattk->adtyp-1));
+            } else {
+                monstseesu(1 << (mattk->adtyp-1));
             }
             break;
 
@@ -2698,8 +2698,8 @@ struct attack *mattk;
 
                 pline("%s attacks you with a fiery gaze!", Monnam(mtmp));
                 stop_occupation();
-	            dmg = resist_reduce(dmg, FIRE_RES);
-		    if (dmg < 1) {
+                dmg = resist_reduce(dmg, FIRE_RES);
+                if (dmg < 1) {
                     pline_The("fire feels mildly hot.");
                     monstseesu(M_SEEN_FIRE);
                 }
@@ -2725,8 +2725,8 @@ struct attack *mattk;
 
                 pline("%s attacks you with a chilling gaze!", Monnam(mtmp));
                 stop_occupation();
-		    dmg = resist_reduce(dmg, COLD_RES);
-		    if (dmg < 1) {
+                dmg = resist_reduce(dmg, COLD_RES);
+                if (dmg < 1) {
                     pline_The("chilling gaze feels mildly cool.");
                     monstseesu(M_SEEN_COLD);
                 }
@@ -2744,10 +2744,10 @@ struct attack *mattk;
             mtmp->mspec_used = mtmp->mspec_used + 3 + rn2(8);
 
             if (uwep && uwep->otyp == MIRROR && uwep->blessed) {
-	        pline("%s sees its own glare in your mirror.", Monnam(mtmp));
-	        pline("%s is cancelled!", Monnam(mtmp));
-	        mtmp->mcan = 1;
-	        monflee(mtmp, 0, FALSE, TRUE);
+                pline("%s sees its own glare in your mirror.", Monnam(mtmp));
+                pline("%s is cancelled!", Monnam(mtmp));
+                mtmp->mcan = 1;
+                monflee(mtmp, 0, FALSE, TRUE);
             } else {
                 change_luck(-1);
                 pline("You don't feel as lucky as before.");
@@ -2795,30 +2795,30 @@ struct attack *mattk;
     case AD_DISN:
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my) && mtmp->mcansee
             && multi >= 0 && !rn2(7)) {
-	    if (Disint_resistance) {
-	        pline("You bask in the %s aura of %s gaze.",
-		      hcolor(NH_BLACK), s_suffix(mon_nam(mtmp)));
-                monstseesu(M_SEEN_DISINT);
-		stop_occupation();
-	    } else {
-		pline("%s attacks you with a destructive gaze!",
-		      Monnam(mtmp));
-	    if (uarms) {
-		/* destroy shield; other possessions are safe */
-		(void) destroy_arm(uarms);
-	        break;
-	    } else if (uarm) {
-		/* destroy suit; if present, cloak goes too */
-		if (uarmc)
+        if (Disint_resistance) {
+            pline("You bask in the %s aura of %s gaze.",
+                  hcolor(NH_BLACK), s_suffix(mon_nam(mtmp)));
+            monstseesu(M_SEEN_DISINT);
+            stop_occupation();
+        } else {
+            pline("%s attacks you with a destructive gaze!",
+                  Monnam(mtmp));
+            if (uarms) {
+                /* destroy shield; other possessions are safe */
+                (void) destroy_arm(uarms);
+                break;
+            } else if (uarm) {
+                /* destroy suit; if present, cloak goes too */
+                if (uarmc)
                     (void) destroy_arm(uarmc);
                 (void) destroy_arm(uarm);
-	        break;
-	    }
-	    /* no shield or suit, you're dead; wipe out cloak
-	     and/or shirt in case of life-saving or bones */
-	    if (uarmc)
+                break;
+            }
+            /* no shield or suit, you're dead; wipe out cloak
+             and/or shirt in case of life-saving or bones */
+            if (uarmc)
                 (void) destroy_arm(uarmc);
-	    if (uarmu)
+            if (uarmu)
                 (void) destroy_arm(uarmu);
 
             /* If you want the beholders disintegration ray to behave similar
@@ -2842,13 +2842,13 @@ struct attack *mattk;
             && mtmp->mcansee && !rn2(3)) {
             int dmg = d(4, 4);
 
-	    You("meet %s strange gaze.",
+            You("meet %s strange gaze.",
                   s_suffix(mon_nam(mtmp)));
-	    (void) cancel_monst(&youmonst, (struct obj *) 0, FALSE, TRUE, FALSE);
+            (void) cancel_monst(&youmonst, (struct obj *) 0, FALSE, TRUE, FALSE);
             if (dmg)
                 mdamageu(mtmp, dmg);
-	    }
-	break;
+        }
+        break;
 /* #endif */ /* BEHOLDER */
     default:
         impossible("Gaze attack %d?", mattk->adtyp);
@@ -3305,7 +3305,7 @@ struct attack *mattk;
         cancelled = TRUE;
 
     switch (mattk->adtyp) {
-	case AD_STUN:
+    case AD_STUN:
         if (m_canseeu(mtmp) && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = 1; /* "stunned" */
@@ -3316,11 +3316,11 @@ struct attack *mattk;
                 if (m_canseeu(mtmp) && (Blind) && (Deaf)) {
                     You("sense a disturbing vibration in the air.");
                 }
-	        if (m_canseeu(mtmp) && canseemon(mtmp) && (!Deaf)) {
-		    pline("%s croaks hoarsely.", Monnam(mtmp));
-	        } else {
-		    You_hear("a hoarse croak nearby.");
-	        }
+                if (m_canseeu(mtmp) && canseemon(mtmp) && (!Deaf)) {
+                    pline("%s croaks hoarsely.", Monnam(mtmp));
+                } else {
+                    You_hear("a hoarse croak nearby.");
+                }
             } else {
                 int stun = d(4, 6);
 
@@ -3363,143 +3363,143 @@ struct attack *mattk;
     char plurbuf[BUFSZ];
 
     if (uarm) {
-	switch (uarm->otyp) {
-	    case GREEN_DRAGON_SCALE_MAIL:
-	    case GREEN_DRAGON_SCALES:
-		if (resists_poison(mtmp))
-                    return 1;
-
-		i = rn2(20);
-		if (i) {
-		    if (!rn2(3)) {
-                        if (canseemon(mtmp))
-                            pline("%s staggers from the poison!", Monnam(mtmp));
-                        damage_mon(mtmp, rnd(4), AD_DRST);
-                    }
-		} else {
-                    if (canseemon(mtmp))
-		        pline("%s is fatally poisoned!", Monnam(mtmp));
-                    mtmp->mhp = -1;
-                    xkilled(mtmp, XKILL_NOMSG);
-                    if (!DEADMONSTER(mtmp))
-                        return 1;
-                    return 2;
-		}
-                if (mtmp->mhp < 1) {
-                    if (canseemon(mtmp))
-                        pline("%s dies!", Monnam(mtmp));
-                    xkilled(mtmp, XKILL_NOMSG);
-                    if (!DEADMONSTER(mtmp))
-                        return 1;
-                    return 2;
-                }
+        switch (uarm->otyp) {
+        case GREEN_DRAGON_SCALE_MAIL:
+        case GREEN_DRAGON_SCALES:
+            if (resists_poison(mtmp))
                 return 1;
-		break;
-            case BLACK_DRAGON_SCALE_MAIL:
-            case BLACK_DRAGON_SCALES:
-                if (resists_disint(mtmp))
-                    return 1;
 
-                i = rn2(40);
-                if (i) {
-                    if (!rn2(3)) {
-                        if (canseemon(mtmp))
-                            pline("%s partially disintegrates!", Monnam(mtmp));
-                        mtmp->mhp -= rnd(4);
-                    }
-                } else {
+            i = rn2(20);
+            if (i) {
+                if (!rn2(3)) {
                     if (canseemon(mtmp))
-                        pline("%s is disintegrated completely!", Monnam(mtmp));
-                    xkilled(mtmp, XKILL_NOMSG | XKILL_NOCORPSE);
-                    if (!DEADMONSTER(mtmp))
-                        return 1;
-                    return 2;
+                        pline("%s staggers from the poison!", Monnam(mtmp));
+                    damage_mon(mtmp, rnd(4), AD_DRST);
                 }
-                if (mtmp->mhp < 1) {
-                    if (canseemon(mtmp))
-                        pline("%s dies!", Monnam(mtmp));
-                    xkilled(mtmp, XKILL_NOMSG);
-                    if (!DEADMONSTER(mtmp))
-                        return 1;
-                    return 2;
-                }
-                return 1;
-                break;
-	    case ORANGE_DRAGON_SCALE_MAIL:
-	    case ORANGE_DRAGON_SCALES:
-		if (resists_sleep(mtmp))
+            } else {
+                if (canseemon(mtmp))
+                    pline("%s is fatally poisoned!", Monnam(mtmp));
+                mtmp->mhp = -1;
+                xkilled(mtmp, XKILL_NOMSG);
+                if (!DEADMONSTER(mtmp))
                     return 1;
-
-		if (!rn2(3) && mtmp->mspeed != MSLOW) {
-                    if (canseemon(mtmp))
-		        pline("%s looks a little sluggish...", Monnam(mtmp));
-                    mtmp->mspeed = MSLOW;
-                }
-		return 1;
-		break;
-            case WHITE_DRAGON_SCALE_MAIL:
-            case WHITE_DRAGON_SCALES:
-                if (resists_cold(mtmp))
+                return 2;
+            }
+            if (mtmp->mhp < 1) {
+                if (canseemon(mtmp))
+                    pline("%s dies!", Monnam(mtmp));
+                xkilled(mtmp, XKILL_NOMSG);
+                if (!DEADMONSTER(mtmp))
                     return 1;
-
-                i = rn2(50);
-                if (i) {
-                    if (!rn2(3)) {
-                        if (canseemon(mtmp))
-                            pline("%s flinches from the cold!", Monnam(mtmp));
-                        damage_mon(mtmp, rnd(4), AD_COLD);
-                    }
-                } else {
-                    if (canseemon(mtmp))
-                        pline("%s is frozen solid!", Monnam(mtmp));
-                    damage_mon(mtmp, d(6, 6), AD_COLD);
+                return 2;
                 }
-                if (mtmp->mhp < 1) {
-                    if (canseemon(mtmp))
-                        pline("%s dies!", Monnam(mtmp));
-                    xkilled(mtmp, XKILL_NOMSG);
-                    if (!DEADMONSTER(mtmp))
-                        return 1;
-                    return 2;
-                }
+            return 1;
+            break;
+        case BLACK_DRAGON_SCALE_MAIL:
+        case BLACK_DRAGON_SCALES:
+            if (resists_disint(mtmp))
                 return 1;
-                break;
-            case RED_DRAGON_SCALE_MAIL:
-            case RED_DRAGON_SCALES:
-                if (resists_fire(mtmp))
+
+            i = rn2(40);
+            if (i) {
+                if (!rn2(3)) {
+                    if (canseemon(mtmp))
+                        pline("%s partially disintegrates!", Monnam(mtmp));
+                    mtmp->mhp -= rnd(4);
+                }
+            } else {
+                if (canseemon(mtmp))
+                    pline("%s is disintegrated completely!", Monnam(mtmp));
+                xkilled(mtmp, XKILL_NOMSG | XKILL_NOCORPSE);
+                if (!DEADMONSTER(mtmp))
                     return 1;
+                return 2;
+            }
+            if (mtmp->mhp < 1) {
+                if (canseemon(mtmp))
+                    pline("%s dies!", Monnam(mtmp));
+                xkilled(mtmp, XKILL_NOMSG);
+                if (!DEADMONSTER(mtmp))
+                    return 1;
+                return 2;
+            }
+            return 1;
+            break;
+        case ORANGE_DRAGON_SCALE_MAIL:
+        case ORANGE_DRAGON_SCALES:
+            if (resists_sleep(mtmp))
+                return 1;
 
-                i = rn2(50);
-                if (i) {
-                    if (!rn2(3)) {
-                        if (canseemon(mtmp))
-                            pline("%s is burned!", Monnam(mtmp));
-                        damage_mon(mtmp, rnd(4), AD_FIRE);
-                    }
-                } else {
-                    if (canseemon(mtmp))
-                        pline("%s is severely burned!", Monnam(mtmp));
-                    damage_mon(mtmp, d(6, 6), AD_FIRE);
-                }
-                if (mtmp->mhp < 1) {
-                    if (canseemon(mtmp))
-                        pline("%s dies!", Monnam(mtmp));
-                    xkilled(mtmp, XKILL_NOMSG);
-                    if (!DEADMONSTER(mtmp))
-                        return 1;
-                    return 2;
-                }
+            if (!rn2(3) && mtmp->mspeed != MSLOW) {
+                if (canseemon(mtmp))
+                    pline("%s looks a little sluggish...", Monnam(mtmp));
+                mtmp->mspeed = MSLOW;
+            }
+            return 1;
+            break;
+        case WHITE_DRAGON_SCALE_MAIL:
+        case WHITE_DRAGON_SCALES:
+            if (resists_cold(mtmp))
                 return 1;
-                break;
-            case GRAY_DRAGON_SCALE_MAIL:
-            case GRAY_DRAGON_SCALES:
-                if (!rn2(6))
-                    (void) cancel_monst(mtmp, (struct obj *) 0, TRUE, TRUE, FALSE);
+
+            i = rn2(50);
+            if (i) {
+                if (!rn2(3)) {
+                    if (canseemon(mtmp))
+                        pline("%s flinches from the cold!", Monnam(mtmp));
+                    damage_mon(mtmp, rnd(4), AD_COLD);
+                }
+            } else {
+                if (canseemon(mtmp))
+                    pline("%s is frozen solid!", Monnam(mtmp));
+                damage_mon(mtmp, d(6, 6), AD_COLD);
+            }
+            if (mtmp->mhp < 1) {
+                if (canseemon(mtmp))
+                    pline("%s dies!", Monnam(mtmp));
+                xkilled(mtmp, XKILL_NOMSG);
+                if (!DEADMONSTER(mtmp))
+                    return 1;
+                return 2;
+            }
+            return 1;
+            break;
+        case RED_DRAGON_SCALE_MAIL:
+        case RED_DRAGON_SCALES:
+            if (resists_fire(mtmp))
                 return 1;
-                break;
-	    default:	  /* all other types of armor, just pass on through */
-	        break;
-	}
+
+            i = rn2(50);
+            if (i) {
+                if (!rn2(3)) {
+                    if (canseemon(mtmp))
+                        pline("%s is burned!", Monnam(mtmp));
+                    damage_mon(mtmp, rnd(4), AD_FIRE);
+                }
+            } else {
+                if (canseemon(mtmp))
+                    pline("%s is severely burned!", Monnam(mtmp));
+                damage_mon(mtmp, d(6, 6), AD_FIRE);
+            }
+            if (mtmp->mhp < 1) {
+                if (canseemon(mtmp))
+                    pline("%s dies!", Monnam(mtmp));
+                xkilled(mtmp, XKILL_NOMSG);
+                if (!DEADMONSTER(mtmp))
+                    return 1;
+                return 2;
+            }
+            return 1;
+            break;
+        case GRAY_DRAGON_SCALE_MAIL:
+        case GRAY_DRAGON_SCALES:
+            if (!rn2(6))
+                (void) cancel_monst(mtmp, (struct obj *) 0, TRUE, TRUE, FALSE);
+            return 1;
+            break;
+        default:    /* all other types of armor, just pass on through */
+            break;
+        }
     }
 
     if (uarmg) {

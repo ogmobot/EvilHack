@@ -75,8 +75,8 @@ hack_artifacts()
        Dirge also... */
     if (!Role_if(PM_KNIGHT)) {
         artilist[ART_EXCALIBUR].role = NON_PM;
-	    artilist[ART_DIRGE].role = NON_PM;
-	}
+        artilist[ART_DIRGE].role = NON_PM;
+    }
 
     /* Demonbane should always be in the Priest's list of available toys
      * even though this might look a little odd when it comes out Chaotic */
@@ -135,25 +135,25 @@ int prop;
     switch (prop) {
         case SEARCHING:
             return SPFX_SEEK;
-	case WARNING:
+    case WARNING:
             return SPFX_WARN;
-	case TELEPAT:
+    case TELEPAT:
             return SPFX_ESP;
-	case HALLUC_RES:
+    case HALLUC_RES:
             return SPFX_HALRES;
-	case STEALTH:
+    case STEALTH:
             return SPFX_STLTH;
-	case REGENERATION:
+    case REGENERATION:
             return SPFX_REGEN;
-	case TELEPORT_CONTROL:
+    case TELEPORT_CONTROL:
             return SPFX_TCTRL;
-	case ENERGY_REGENERATION:
+    case ENERGY_REGENERATION:
             return SPFX_EREGEN;
-	case HALF_SPDAM:
+    case HALF_SPDAM:
             return SPFX_HSPDAM;
-	case HALF_PHDAM:
+    case HALF_PHDAM:
             return SPFX_HPHDAM;
-	case REFLECTING:
+    case REFLECTING:
             return SPFX_REFLECT;
     }
      return 0L;
@@ -829,14 +829,14 @@ long wp_mask;
         vision_full_recalc = 1;
     }
     if (spfx & SPFX_REFLECT) {
-	    /* Knights only have to carry the mirror; everyone else must wield it */
-	    if (Role_if(PM_KNIGHT)) {
-		    if (on) {
-			    EReflecting |= wp_mask;
-		    } else {
-			    EReflecting &= ~wp_mask;
-		    }
-	    } else if (wp_mask & (W_WEP | W_ARMG)) { /* or in Dragonbane's case, wear them */
+        /* Knights only have to carry the mirror; everyone else must wield it */
+        if (Role_if(PM_KNIGHT)) {
+            if (on) {
+                EReflecting |= wp_mask;
+            } else {
+                EReflecting &= ~wp_mask;
+            }
+        } else if (wp_mask & (W_WEP | W_ARMG)) { /* or in Dragonbane's case, wear them */
         if (on)
             EReflecting |= wp_mask;
         else
@@ -1594,12 +1594,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     }
     /* Sixth basic attack - poison */
     if (attacks(AD_DRST, otmp)) {
-	if (realizes_damage
+        if (realizes_damage
             && (otmp->oartifact
                 || ((otmp->oprops & ITEM_VENOM)
                     && (spec_dbon_applies || (otmp->oprops_known & ITEM_VENOM))))) {
             if (otmp->oartifact == ART_SWORD_OF_BHELEU)
-	        pline_The("gigantic blade %s %s!",
+                pline_The("gigantic blade %s %s!",
                           rn2(2) ? "poisons" : "eviscerates", hittee);
             else if (otmp->oclass == WEAPON_CLASS
                      && (otmp->oprops & ITEM_VENOM))
@@ -1639,102 +1639,102 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     atmp = &artilist[otmp->oartifact];
 
     if (atmp->spfx & (SPFX_DFLAGH | SPFX_DCLAS)) {
-	j = !rn2(10);	  /* 10% chance of instakill for some artifacts */
+        j = !rn2(10);     /* 10% chance of instakill for some artifacts */
         k = !rn2(20);     /* 5% chance if same weapon is used against the player */
-	switch (otmp->oartifact) {
-	    case ART_WEREBANE:
-		if (youattack && is_were(mdef->data) && j) {
-                    You("severly burn %s with your silver blade!", mon_nam(mdef));
-		    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-		} else if (youdefend && is_were(youmonst.data) && k) {
-                    pline("The silver blade gravely burns you!");
-			  *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-		} else {
-	   	    return FALSE;
-		}
-		return TRUE;
-	    case ART_GIANTSLAYER:
-                if (youattack && is_giant(mdef->data) && j) {
-                    You("eviscerate %s with a fatal swing!", mon_nam(mdef));
-                        *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-                } else if (youdefend && maybe_polyd(is_giant(youmonst.data), Race_if(PM_GIANT)) && k) {
-                    pline("The magical sword eviscerates you!");
-                          *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-                } else {
-                    return FALSE;
-                }
-                return TRUE;
-	    case ART_OGRESMASHER:
-		if (youattack && is_ogre(mdef->data) && j) {
-		    You("crush the %s skull!", s_suffix(mon_nam(mdef)));
-			*dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-		} else if (youdefend && is_ogre(youmonst.data) && k) {
-		    pline("The monstrous hammer crushes your skull!");
-		 	  *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-		} else {
-		    return FALSE;
-		}
-		return TRUE;
-	    case ART_TROLLSBANE:
-		if (youattack && is_troll(mdef->data) && j) {
-		    pline("As you strike %s, it bursts into flame!", mon_nam(mdef));
-			  *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-		} else if (youdefend && is_troll(youmonst.data) && k) {
-		    You("burst into flame as you are hit!");
-			*dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-		} else {
-		    return FALSE;
-		}
-		return TRUE;
-            case ART_ORCRIST:
-                if (youattack && is_orc(mdef->data) && j) {
-                    You("slice open %s throat!", s_suffix(mon_nam(mdef)));
-                        *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-                } else if (youdefend && maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)) && k) {
-                    You("feel Orcrist slice deep across your neck!");
-                        *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-                } else {
-                    return FALSE;
-                }
-                return TRUE;
-            case ART_STING:
-                if (youattack && is_orc(mdef->data) && j) {
-                    You("stab deep into %s heart!", s_suffix(mon_nam(mdef)));
-                        *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-                } else if (youdefend && maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)) && k) {
-                    You("feel Sting stab deep into your heart!");
-                        *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-                } else {
-                    return FALSE;
-                }
-                return TRUE;
-            case ART_GRIMTOOTH:
-                if (youattack && is_elf(mdef->data) && j) {
-                    You("push Grimtooth deep into the bowels of %s!", mon_nam(mdef));
-                        *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-                } else if (youdefend && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)) && k) {
-                    pline("Grimtooth penetrates your soft flesh, disembowelling you!");
-                          *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-                } else {
-                    return FALSE;
-                }
-                return TRUE;
-            case ART_SUNSWORD:
-                if (youattack && is_undead(mdef->data) && j) {
-                    pline("Sunsword flares brightly as it incinerates %s!", mon_nam(mdef));
-                          *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
-                } else if (youdefend && is_undead(youmonst.data) && k) {
-                    pline("The holy power of Sunsword incinerates your undead flesh!");
-                          *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
-                } else {
-                    return FALSE;
-                }
-                return TRUE;
-	    /* below this we don't get any additional handling, so drop through
-	     * just listed here for potential future reference */
-	    case ART_DEMONBANE:
-	    default:
-	        break;
+        switch (otmp->oartifact) {
+        case ART_WEREBANE:
+            if (youattack && is_were(mdef->data) && j) {
+                You("severly burn %s with your silver blade!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && is_were(youmonst.data) && k) {
+                pline("The silver blade gravely burns you!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_GIANTSLAYER:
+            if (youattack && is_giant(mdef->data) && j) {
+                You("eviscerate %s with a fatal swing!", mon_nam(mdef));
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && maybe_polyd(is_giant(youmonst.data), Race_if(PM_GIANT)) && k) {
+                pline("The magical sword eviscerates you!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_OGRESMASHER:
+            if (youattack && is_ogre(mdef->data) && j) {
+                You("crush the %s skull!", s_suffix(mon_nam(mdef)));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && is_ogre(youmonst.data) && k) {
+                pline("The monstrous hammer crushes your skull!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_TROLLSBANE:
+            if (youattack && is_troll(mdef->data) && j) {
+                pline("As you strike %s, it bursts into flame!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && is_troll(youmonst.data) && k) {
+                You("burst into flame as you are hit!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_ORCRIST:
+            if (youattack && is_orc(mdef->data) && j) {
+                You("slice open %s throat!", s_suffix(mon_nam(mdef)));
+                    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)) && k) {
+                You("feel Orcrist slice deep across your neck!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_STING:
+            if (youattack && is_orc(mdef->data) && j) {
+                You("stab deep into %s heart!", s_suffix(mon_nam(mdef)));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)) && k) {
+                You("feel Sting stab deep into your heart!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_GRIMTOOTH:
+            if (youattack && is_elf(mdef->data) && j) {
+                You("push Grimtooth deep into the bowels of %s!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)) && k) {
+                pline("Grimtooth penetrates your soft flesh, disembowelling you!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        case ART_SUNSWORD:
+            if (youattack && is_undead(mdef->data) && j) {
+                pline("Sunsword flares brightly as it incinerates %s!", mon_nam(mdef));
+                *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
+            } else if (youdefend && is_undead(youmonst.data) && k) {
+                pline("The holy power of Sunsword incinerates your undead flesh!");
+                *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+            } else {
+                return FALSE;
+            }
+            return TRUE;
+        /* below this we don't get any additional handling, so drop through
+         * just listed here for potential future reference */
+        case ART_DEMONBANE:
+        default:
+            break;
         }
         return msgprinted;
     }
@@ -1813,8 +1813,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                       mon_nam(mdef));
                 if (Hallucination && !flags.female)
                     pline("Good job Henry, but that wasn't Anne.");
-		if (is_zombie(mdef->data) || is_troll(mdef->data))
-		    mdef->mcan = 1; /* kinda hard to revive if you've lost your head... */
+                if (is_zombie(mdef->data) || is_troll(mdef->data))
+                    mdef->mcan = 1; /* kinda hard to revive if you've lost your head... */
                 otmp->dknown = TRUE;
                 return TRUE;
             } else {
