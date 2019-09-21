@@ -377,12 +377,12 @@ boolean on, silently;
     unseen = !canseemon(mon);
     if (obj->otyp == GOLD_DRAGON_SCALE_MAIL
         || obj->otyp == GOLD_DRAGON_SCALES) {
-	if (on)
-	    begin_burn(obj, FALSE);
-	else
-	    end_burn(obj, FALSE);
-	if (!unseen && !silently)
-	    if (on) pline("%s begins to glow.", The(xname(obj)));
+        if (on)
+            begin_burn(obj, FALSE);
+        else
+            end_burn(obj, FALSE);
+        if (!unseen && !silently)
+            if (on) pline("%s begins to glow.", The(xname(obj)));
     }
 
     if (!which)
@@ -555,7 +555,7 @@ register struct monst *mon;
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags
             && obj->otyp != RIN_INCREASE_DAMAGE
-	    && obj->otyp != RIN_INCREASE_ACCURACY)
+            && obj->otyp != RIN_INCREASE_ACCURACY)
             base -= ARM_BONUS(obj);
         /* since ARM_BONUS is positive, subtracting it increases AC */
     }
@@ -595,7 +595,7 @@ boolean creation;
 {
     struct obj *mw = MON_WEP(mon);
     boolean cursed_glove = (which_armor(mon, W_ARMG)
-			    && which_armor(mon, W_ARMG)->cursed);
+                            && which_armor(mon, W_ARMG)->cursed);
 
 #define RACE_EXCEPTION TRUE
     /* Note the restrictions here are the same as in dowear in do_wear.c
@@ -625,7 +625,7 @@ boolean creation;
 
     /* Two ring per monster; ring takes up a "hand" slot */
     if (!(mw && bimanual(mw) && mw->cursed && mw->otyp != CORPSE)
-	&& !cursed_glove)
+        && !cursed_glove)
         m_dowear_type(mon, W_RINGL, creation, FALSE);
     if (!(mw && mw->cursed && mw->otyp != CORPSE) && !cursed_glove)
         m_dowear_type(mon, W_RINGR, creation, FALSE);
@@ -717,19 +717,19 @@ boolean racialexception;
         case W_RINGR:
             /* Monsters can put on only the following rings. */
             if (obj->oclass != RING_CLASS
-		|| (obj->otyp != RIN_INVISIBILITY
-	            && obj->otyp != RIN_FIRE_RESISTANCE
-		    && obj->otyp != RIN_COLD_RESISTANCE
-		    && obj->otyp != RIN_POISON_RESISTANCE
-		    && obj->otyp != RIN_SHOCK_RESISTANCE
-		    && obj->otyp != RIN_REGENERATION
-		    && obj->otyp != RIN_TELEPORTATION
-		    && obj->otyp != RIN_TELEPORT_CONTROL
-		    && obj->otyp != RIN_SLOW_DIGESTION
-		    && obj->otyp != RIN_INCREASE_DAMAGE
-		    && obj->otyp != RIN_INCREASE_ACCURACY
-		    && obj->otyp != RIN_PROTECTION))
-		continue;
+                || (obj->otyp != RIN_INVISIBILITY
+                && obj->otyp != RIN_FIRE_RESISTANCE
+                && obj->otyp != RIN_COLD_RESISTANCE
+                && obj->otyp != RIN_POISON_RESISTANCE
+                && obj->otyp != RIN_SHOCK_RESISTANCE
+                && obj->otyp != RIN_REGENERATION
+                && obj->otyp != RIN_TELEPORTATION
+                && obj->otyp != RIN_TELEPORT_CONTROL
+                && obj->otyp != RIN_SLOW_DIGESTION
+                && obj->otyp != RIN_INCREASE_DAMAGE
+                && obj->otyp != RIN_INCREASE_ACCURACY
+                && obj->otyp != RIN_PROTECTION))
+                continue;
             break;
         }
         if (obj->owornmask)
@@ -1174,39 +1174,39 @@ struct obj *obj;
         case RIN_FIRE_RESISTANCE:
             if (!resists_fire(mon))
                 rc =  dmgtype(youmonst.data, AD_FIRE)
-		      || (uwep && uwep->oartifact == ART_FIRE_BRAND) ? 20 : 12;
+                      || (uwep && uwep->oartifact == ART_FIRE_BRAND) ? 20 : 12;
             break;
         case RIN_COLD_RESISTANCE:
             if (!resists_cold(mon))
                 rc = dmgtype(youmonst.data, AD_COLD)
-		     || (uwep && uwep->oartifact == ART_FROST_BRAND) ? 20 : 12;
+                     || (uwep && uwep->oartifact == ART_FROST_BRAND) ? 20 : 12;
             break;
-	case RIN_POISON_RESISTANCE:
+        case RIN_POISON_RESISTANCE:
             if (!resists_poison(mon))
                 rc = dmgtype(youmonst.data, AD_DRST)
-		     || dmgtype(youmonst.data, AD_DRCO)
-		     || dmgtype(youmonst.data, AD_DRDX) ? 20 : 10;
+                     || dmgtype(youmonst.data, AD_DRCO)
+                     || dmgtype(youmonst.data, AD_DRDX) ? 20 : 10;
             break;
-	case RIN_SHOCK_RESISTANCE:
+        case RIN_SHOCK_RESISTANCE:
             if (!resists_elec(mon))
                 rc = dmgtype(youmonst.data, AD_ELEC)
-		     || (uwep && uwep->oartifact == ART_MJOLLNIR) ? 20 : 10;
+                     || (uwep && uwep->oartifact == ART_MJOLLNIR) ? 20 : 10;
             break;
-	case RIN_REGENERATION:
+        case RIN_REGENERATION:
             rc = !mon_prop(mon, REGENERATION) ? 20 : 0;
-	    break;
-	case RIN_INVISIBILITY:
+            break;
+        case RIN_INVISIBILITY:
             if (mon->mtame || mon->mpeaceful)
-		/* Monsters actually don't know if you can
-		 * see invisible, but for tame or peaceful monsters
-		 * we'll make reservations.
-		 */
+                /* Monsters actually don't know if you can
+                 * see invisible, but for tame or peaceful monsters
+                 * we'll make reservations.
+                 */
                 rc = See_invisible ? 10 : 0;
             else rc = 30;
             break;
-	case RIN_INCREASE_DAMAGE:
-	case RIN_INCREASE_ACCURACY:
-	case RIN_PROTECTION:
+        case RIN_INCREASE_DAMAGE:
+        case RIN_INCREASE_ACCURACY:
+        case RIN_PROTECTION:
             if (obj->spe > 0)
                 rc = 10 + 3 * (obj->spe);
             else rc = 0;
@@ -1216,18 +1216,18 @@ struct obj *obj;
                 rc = obj->cursed ? 5 : 15;
             break;
         case RIN_TELEPORT_CONTROL:
-	    if (!mon_prop(mon, TELEPORT_CONTROL))
-	        rc = mon_prop(mon, TELEPORT) ? 20 : 5;
-	    break;
+            if (!mon_prop(mon, TELEPORT_CONTROL))
+                rc = mon_prop(mon, TELEPORT) ? 20 : 5;
+            break;
         case RIN_SLOW_DIGESTION:
             rc = dmgtype(youmonst.data, AD_DGST) ? 25 : 0;
             break;
-	}
-	old = which_armor(mon, W_RINGL);
-	if (old) update_mon_intrinsics(mon, old, TRUE, TRUE);
-	    old = which_armor(mon, W_RINGR);
-	if (old) update_mon_intrinsics(mon, old, TRUE, TRUE);
-	    return rc;
+        }
+        old = which_armor(mon, W_RINGL);
+        if (old) update_mon_intrinsics(mon, old, TRUE, TRUE);
+            old = which_armor(mon, W_RINGR);
+        if (old) update_mon_intrinsics(mon, old, TRUE, TRUE);
+            return rc;
 }
 
 /*

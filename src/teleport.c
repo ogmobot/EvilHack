@@ -369,8 +369,8 @@ boolean allow_drag;
     update_player_regions();
     /* Move your steed, too */
     if (u.usteed) {
-	u.usteed->mx = nux;
-	u.usteed->my = nuy;
+        u.usteed->mx = nux;
+        u.usteed->my = nuy;
     }
     /*
      *  Make sure the hero disappears from the old location.  This will

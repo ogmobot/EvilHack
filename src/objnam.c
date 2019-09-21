@@ -568,10 +568,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     if (obj->oprops_known & ITEM_MAGICAL
         && (((obj->oprops && !(obj->oprops_known & ~ITEM_MAGICAL))
-	    && (!objects[obj->otyp].oc_magic
-	        || !objects[obj->otyp].oc_name_known))
-	        || (!obj->oprops && objects[obj->otyp].oc_magic
-	            && !objects[obj->otyp].oc_name_known)))
+        && (!objects[obj->otyp].oc_magic
+            || !objects[obj->otyp].oc_name_known))
+            || (!obj->oprops && objects[obj->otyp].oc_magic
+                && !objects[obj->otyp].oc_name_known)))
         Strcat(buf, "magical ");
 
     switch (obj->oclass) {
@@ -589,8 +589,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcat(buf, actualn);
         else if (un)
             Sprintf(eos(buf), "amulet called %s", un);
-	else if (is_soko_prize_flag(obj))
-	    Strcpy(buf, "sokoban prize amulet");
+        else if (is_soko_prize_flag(obj))
+            Strcpy(buf, "sokoban prize amulet");
         else
             Sprintf(eos(buf), "%s amulet", dn);
         break;
