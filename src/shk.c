@@ -2207,7 +2207,6 @@ register struct monst *shkp; /* if angry, impose a surcharge */
 
     /* possible additional surcharges based on shk race, if one was passed in */
     if (shkp) {
-<<<<<<< HEAD
         switch (shkp->mnum) {
         default:
         case PM_HUMAN:
@@ -2614,10 +2613,10 @@ register struct monst *shkp;
          * it's going to be a lot harder to get a good deal out of a gnome unless
          * you're remarkably shrewd yourself */
         if (ACURR(A_INT) < 15) {
-                tmp -= tmp / 2L;
-            } else if (ACURR(A_INT) < 18) {
-                tmp -= tmp / 3L;
-            }
+            tmp -= tmp / 2L;
+        } else if (ACURR(A_INT) < 18) {
+            tmp -= tmp / 3L;
+        }
         break;
     case PM_MIND_FLAYER:
     case PM_MASTER_MIND_FLAYER:
@@ -2660,11 +2659,11 @@ register struct monst *shkp;
         /* Non-Elder-Race humanoids are not thought of highly */
         if (Race_if(PM_HUMAN) || Race_if(PM_GNOME)
             || Race_if(PM_HOBBIT) || Race_if(PM_ILLITHID)) {
-                tmp -= tmp / 3L;
-            }
-            if (Race_if(PM_DWARF)) {
-                tmp -= tmp / 2L; /* "dwarf tossing, only thing they're good for" */
-            }
+            tmp -= tmp / 3L;
+        }
+        if (Race_if(PM_DWARF)) {
+            tmp -= tmp / 2L; /* "dwarf tossing, only thing they're good for" */
+        }
         break;
     }
 

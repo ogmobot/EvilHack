@@ -1022,10 +1022,10 @@ u_init()
     }
 
     /* what a horrible night to have a curse */
-    shambler->mlevel += rnd(12) - 3;		/* shuffle level */
-    shambler->mmove = rn2(10) + 9;			/* slow to very fast */
-    shambler->ac = rn2(21) - 10;			/* any AC */
-    shambler->mr = rn2(5) * 25;			/* varying amounts of MR */
+    shambler->mlevel += rnd(12) - 3;        /* shuffle level */
+    shambler->mmove = rn2(10) + 9;          /* slow to very fast */
+    shambler->ac = rn2(21) - 10;            /* any AC */
+    shambler->mr = rn2(5) * 25;             /* varying amounts of MR */
     shambler->maligntyp = rn2(21) - 10;
 
     for (i = 0; i < rnd(4); i++) {
