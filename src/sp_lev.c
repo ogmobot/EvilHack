@@ -1133,7 +1133,7 @@ chk:
 
     if (in_mk_rndvault
         && (s_lowx != *lowx) && (s_ddx != *ddx)
-	&& (s_lowy != *lowy) && (s_ddy != *ddy))
+        && (s_lowy != *lowy) && (s_ddy != *ddy))
         return FALSE;
 
     return TRUE;
@@ -1295,12 +1295,12 @@ xchar rtype, rlit;
             r2.hy = yabs + htmp + rndpos;
             r1 = get_rect(&r2);
 
-	    dx = wtmp;
-	    dy = htmp;
+            dx = wtmp;
+            dy = htmp;
 
-	    if (r1 && !check_room(&xabs, &dx, &yabs, &dy, vault)) {
-		r1 = 0;
-	    }
+        if (r1 && !check_room(&xabs, &dx, &yabs, &dy, vault)) {
+            r1 = 0;
+        }
 
         }
     } while (++trycnt <= 100 && !r1);
@@ -5085,10 +5085,10 @@ redo_maploc:
         break;
     }
     if (ystart < 0 || ystart + ysize > ROWNO) {
-	if (in_mk_rndvault) {
-	    coder->exit_script = TRUE;
-	    goto skipmap;
-	}
+        if (in_mk_rndvault) {
+            coder->exit_script = TRUE;
+            goto skipmap;
+        }
         /* try to move the start a bit */
         ystart += (ystart > 0) ? -2 : 2;
         if (ysize == ROWNO)
@@ -5103,42 +5103,42 @@ redo_maploc:
         ysize = ROWNO;
     } else {
         xchar x, y, mptyp;
-	/* random vault should never overwrite anything */
-	if (in_mk_rndvault) {
-	    boolean isokp = TRUE;
-	    for (y = ystart - 1; y < ystart + ysize + 1; y++)
-		for (x = xstart - 1; x < xstart + xsize + 1; x++) {
-		    xchar mptyp;
-		    if (!isok(x, y)) {
-			isokp = FALSE;
-		    } else if (y < ystart || y >= (ystart + ysize) ||
-			x < xstart || x >= (xstart + xsize)) {
-			if (levl[x][y].typ != STONE)
+        /* random vault should never overwrite anything */
+        if (in_mk_rndvault) {
+            boolean isokp = TRUE;
+            for (y = ystart - 1; y < ystart + ysize + 1; y++)
+                for (x = xstart - 1; x < xstart + xsize + 1; x++) {
+                    xchar mptyp;
+                    if (!isok(x, y)) {
+                        isokp = FALSE;
+                    } else if (y < ystart || y >= (ystart + ysize) ||
+                        x < xstart || x >= (xstart + xsize)) {
+                        if (levl[x][y].typ != STONE)
                             isokp = FALSE;
-			if (levl[x][y].roomno != NO_ROOM)
+                        if (levl[x][y].roomno != NO_ROOM)
                             isokp = FALSE;
-		    } else {
-			mptyp = (mpmap->vardata.str[(y - ystart + 1) * xsize + (x - xstart + 1)] - 1);
-			if (mptyp >= MAX_TYPE)
+                    } else {
+                        mptyp = (mpmap->vardata.str[(y - ystart + 1) * xsize + (x - xstart + 1)] - 1);
+                        if (mptyp >= MAX_TYPE)
                            continue;
-			if (isok(x, y)) {
-			    if (levl[x][y].typ != STONE && levl[x][y].typ != mptyp)
+                        if (isok(x, y)) {
+                            if (levl[x][y].typ != STONE && levl[x][y].typ != mptyp)
                                 isokp = FALSE;
-			    if (levl[x][y].roomno != NO_ROOM)
+                            if (levl[x][y].roomno != NO_ROOM)
                                 isokp = FALSE;
-			} else isokp = FALSE;
-		    }
-		    if (!isokp) {
-			if ((tryct++ < 100) && (tmpmazepart.zaligntyp == 2)
-			    && ((tmpmazepart.halign < 0) || (tmpmazepart.valign < 0)) /* rnd pos */ )
-			    goto redo_maploc;
-			if (!((xsize * ysize) > 20)) /* !isbig() */
-			    rndvault_failed = TRUE;
-			coder->exit_script = TRUE;
-			goto skipmap;
-		    }
-		}
-	}
+                        } else isokp = FALSE;
+                    }
+                    if (!isokp) {
+                        if ((tryct++ < 100) && (tmpmazepart.zaligntyp == 2)
+                            && ((tmpmazepart.halign < 0) || (tmpmazepart.valign < 0)) /* rnd pos */ )
+                            goto redo_maploc;
+                        if (!((xsize * ysize) > 20)) /* !isbig() */
+                            rndvault_failed = TRUE;
+                        coder->exit_script = TRUE;
+                        goto skipmap;
+                    }
+                }
+        }
         /* Load the map */
         for (y = ystart; y < ystart + ysize; y++)
             for (x = xstart; x < xstart + xsize; x++) {
@@ -6195,9 +6195,9 @@ char *fnam;
     struct _sploader_cache *tmp = sp_loader_cache;
 
     while (tmp) {
-	if (!strcmp(tmp->fname, fnam))
+        if (!strcmp(tmp->fname, fnam))
             return tmp->lvl;
-	tmp = tmp->next;
+        tmp = tmp->next;
     }
     return NULL;
 }
@@ -6225,14 +6225,14 @@ const char *name;
     struct version_info vers_info;
 
     if (!(lvl = sp_lev_cache(name))) {
-	fd = dlb_fopen(name, RDBMODE);
-	if (!fd)
+        fd = dlb_fopen(name, RDBMODE);
+        if (!fd)
              return FALSE;
-	Fread((genericptr_t) &vers_info, sizeof vers_info, 1, fd);
-	if (!check_version(&vers_info, name, TRUE)) {
+        Fread((genericptr_t) &vers_info, sizeof vers_info, 1, fd);
+        if (!check_version(&vers_info, name, TRUE)) {
             (void) dlb_fclose(fd);
-	    goto give_up;
-	}
+            goto give_up;
+        }
 
     lvl = (sp_lev *) alloc(sizeof(sp_lev));
     if (!lvl) panic("alloc sp_lev");
@@ -6241,11 +6241,11 @@ const char *name;
     if (in_mk_rndvault) sp_lev_savecache(name, lvl);
     if (result) result = sp_level_coder(lvl);
         if (!in_mk_rndvault) {
-	    sp_level_free(lvl);
-	    Free(lvl);
+            sp_level_free(lvl);
+            Free(lvl);
         }
     } else {
-	result = sp_level_coder(lvl);
+        result = sp_level_coder(lvl);
     }
 
 give_up:

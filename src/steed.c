@@ -393,7 +393,7 @@ boolean force;      /* Quietly force this animal */
     }
     /* A Knight should be able to ride his own horse!
         so we get a bonus for all horse-like things */
-	role_modifier = (Role_if(PM_KNIGHT) && mtmp->data->mlet == S_UNICORN) ? 10 : 0;
+    role_modifier = (Role_if(PM_KNIGHT) && mtmp->data->mlet == S_UNICORN) ? 10 : 0;
     if (!force
         && (Confusion || Fumbling || Glib || Wounded_legs || otmp->cursed
             || (u.ulevel + mtmp->mtame+role_modifier < rnd(MAXULEV / 2 + 5)))) {
@@ -472,8 +472,8 @@ kick_steed()
                 u.usteed->mfrozen -= 2;
             else {
                 u.usteed->mfrozen = 0;
-		if (!u.usteed->mstone || u.usteed->mstone > 2)
-		    u.usteed->mcanmove = 1;
+                if (!u.usteed->mstone || u.usteed->mstone > 2)
+                    u.usteed->mcanmove = 1;
             }
             if (u.usteed->msleeping || !u.usteed->mcanmove)
                 pline("%s stirs.", He);

@@ -302,7 +302,7 @@ int *attk_count, *role_roll_penalty;
 
     /* gloves' bonus contributes if unarmed */
     if (!uwep && uarmg) {
-	tmp += uarmg->spe;
+        tmp += uarmg->spe;
     }
 
     /* encumbrance: with a lot of luggage, your agility diminishes */
@@ -328,23 +328,23 @@ int *attk_count, *role_roll_penalty;
      * you'll never have a chance greater than 75% to land a hit.
      */
     if (uwep && aatyp == AT_WEAP && !u.uswallow) {
-	wepskill = P_SKILL(weapon_type(uwep));
-	twowepskill = P_SKILL(P_TWO_WEAPON_COMBAT);
-	/* use the lesser skill of two-weapon or your primary */
-	useskill = (u.twoweap && twowepskill < wepskill) ? twowepskill : wepskill;
-	if ((useskill == P_UNSKILLED || useskill == P_ISRESTRICTED) && tmp > 15) {
-	    tmp = 15;
-	    if (!rn2(3)) {
+        wepskill = P_SKILL(weapon_type(uwep));
+        twowepskill = P_SKILL(P_TWO_WEAPON_COMBAT);
+        /* use the lesser skill of two-weapon or your primary */
+        useskill = (u.twoweap && twowepskill < wepskill) ? twowepskill : wepskill;
+        if ((useskill == P_UNSKILLED || useskill == P_ISRESTRICTED) && tmp > 15) {
+            tmp = 15;
+            if (!rn2(3)) {
                 /* using a corpse as a weapon... alrighty then */
-	        if (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep)) {
-		    You("struggle trying to use the %s as a weapon.",
+                if (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep)) {
+                    You("struggle trying to use the %s as a weapon.",
                          aobjnam(uwep, (char *) 0));
-	        } else if (useskill != P_ISRESTRICTED) {
-		    You("feel like you could use some more practice.");
-	        } else {
+                } else if (useskill != P_ISRESTRICTED) {
+                    You("feel like you could use some more practice.");
+                } else {
                     You("aren't sure you're doing this the right way...");
-	        }
-	    }
+                }
+            }
         }
     }
     return tmp;
@@ -1020,10 +1020,10 @@ int dieroll;
                             minstapetrify(mon, TRUE); */
                         if (resists_ston(mon))
                             break;
-			if (!mon->mstone) {
-			    mon->mstone = 5;
-			    mon->mstonebyu = TRUE;
-			}
+                        if (!mon->mstone) {
+                            mon->mstone = 5;
+                            mon->mstonebyu = TRUE;
+                        }
                         /* note: hp may be <= 0 even if munstoned==TRUE */
                         return (boolean) !DEADMONSTER(mon);
 #if 0
@@ -1074,10 +1074,10 @@ int dieroll;
                             minstapetrify(mon, TRUE); */
                         if (resists_ston(mon))
                             break;
-			if (!mon->mstone) {
-			    mon->mstone = 5;
-			    mon->mstonebyu = TRUE;
-			}
+                        if (!mon->mstone) {
+                            mon->mstone = 5;
+                            mon->mstonebyu = TRUE;
+                        }
                         return (boolean) (!DEADMONSTER(mon));
                     } else { /* ordinary egg(s) */
                         const char *eggp = (obj->corpsenm != NON_PM
@@ -1222,7 +1222,7 @@ int dieroll;
     }
 
     if (uarm && (uarm->otyp == RED_DRAGON_SCALE_MAIL || uarm->otyp == RED_DRAGON_SCALES)) {
-	tmp += rnd(6);
+        tmp += rnd(6);
     }
 
     if (valid_weapon_attack) {
@@ -1870,8 +1870,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                     tmp = 1;
             }
         }
-	if (youmonst.data == &mons[PM_WATER_ELEMENTAL])
-	    goto do_rust;
+        if (youmonst.data == &mons[PM_WATER_ELEMENTAL])
+            goto do_rust;
         break;
     case AD_FIRE:
         if (negated) {
@@ -2357,7 +2357,7 @@ register struct attack *mattk;
             case AD_DGST:
                 /* slow digestion protects against engulfing */
                 if (mon_prop(mdef, SLOW_DIGESTION)) {
-	            You("hurriedly regurgitate the indigestible %s.", m_monnam(mdef));
+                    You("hurriedly regurgitate the indigestible %s.", m_monnam(mdef));
                     end_engulf();
                     return 2;
                 }
@@ -2891,7 +2891,7 @@ register struct monst *mon;
                  || youmonst.data->mlet == S_GNOME) && !weapon_used)
                 goto use_weapon;
             sum[i] = castum(mon, mattk);
-             		continue;
+            continue;
             /*FALLTHRU*/
 
         case AT_NONE:
@@ -3161,12 +3161,12 @@ boolean wep_was_destroyed;
         break;
     case AD_RUST:
         if (mhit && !mon->mcan && weapon) {
-	    if (mon->data == &mons[PM_WATER_ELEMENTAL]) {
-		if (rn2(2))
+            if (mon->data == &mons[PM_WATER_ELEMENTAL]) {
+                if (rn2(2))
                     break;
-		if (Blind || !flags.verbose) You("are splashed!");
-		else You("are splashed by %s water!", s_suffix(mon_nam(mon)));
-	    }
+                if (Blind || !flags.verbose) You("are splashed!");
+                else You("are splashed by %s water!", s_suffix(mon_nam(mon)));
+            }
             if (aatyp == AT_KICK) {
                 if (uarmf)
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_RUST,
@@ -3388,15 +3388,15 @@ boolean wep_was_destroyed;
             You("are jolted with electricity!");
             tmp = resist_reduce(tmp, SHOCK_RES);
             mdamageu(mon, tmp);
-	    break;
-	case AD_DISE: /* specifically gray fungus */
-	    if (Sick_resistance) {
-		You("are infected, but it appears you are immune.");
-	    } else {
-		You("are diseased!");
-		mdamageu(mon, tmp);
-		make_sick(20, "bad case of the plague", TRUE, SICK_NONVOMITABLE);
-	    }
+            break;
+        case AD_DISE: /* specifically gray fungus */
+            if (Sick_resistance) {
+                You("are infected, but it appears you are immune.");
+            } else {
+                You("are diseased!");
+                mdamageu(mon, tmp);
+                make_sick(20, "bad case of the plague", TRUE, SICK_NONVOMITABLE);
+            }
             break;
         case AD_DRST: /* specifically green dragons */
             if (how_resistant(POISON_RES) == 100) {

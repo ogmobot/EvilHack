@@ -268,20 +268,20 @@ register struct monst *mtmp;
 
     /* Do we have the Amulet? Alrighty then... */
     if (Is_astralevel(&u.uz)) {
-	int targetx = u.ux, targety = u.uy;
-	aligntyp malign = sgn(mtmp->data->maligntyp);
+        int targetx = u.ux, targety = u.uy;
+        aligntyp malign = sgn(mtmp->data->maligntyp);
 
-	if (IS_ALTAR(levl[10][10].typ)
+        if (IS_ALTAR(levl[10][10].typ)
             && a_align(10, 10) == malign)
             targetx = 10, targety = 10;
-	else if (IS_ALTAR(levl[40][6].typ)
+        else if (IS_ALTAR(levl[40][6].typ)
                  && a_align(40, 6) == malign)
             targetx = 40, targety = 6;
-	else if (IS_ALTAR(levl[70][10].typ)
+        else if (IS_ALTAR(levl[70][10].typ)
                  && a_align(70, 10) == malign)
             targetx = 70, targety = 10;
 
-	return STRAT(STRAT_NONE, targetx, targety, mask);
+        return STRAT(STRAT_NONE, targetx, targety, mask);
     }
     return (unsigned long) STRAT_NONE;
 }
@@ -587,14 +587,14 @@ BOOLEAN_P centered_on_stairs;
     } else {
         count = 0;
         s_cls = summoner ? summoner->data->mlet : 0;
-	tmp = (u.ulevel > 3) ? u.ulevel/3 : 1;
-	/* if we don't have a casting monster, nasties appear around hero,
-	 * ...unless we're being called with the 'stairs' flag to block the
-	 * adventurer's return with the amulet */
-	if (centered_on_stairs && xupstair) {
+        tmp = (u.ulevel > 3) ? u.ulevel/3 : 1;
+        /* if we don't have a casting monster, nasties appear around hero,
+         * ...unless we're being called with the 'stairs' flag to block the
+         * adventurer's return with the amulet */
+        if (centered_on_stairs && xupstair) {
             bypos.x = xupstair;
             bypos.y = yupstair;
-	} else {
+        } else {
             bypos.x = u.ux;
             bypos.y = u.uy;
         }

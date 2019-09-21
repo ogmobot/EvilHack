@@ -489,13 +489,13 @@ killed_uniques(void)
     _killed_uniques[0] = '\0';
 
     for (int i = LOW_PM; i < NUMMONS; i++) {
-	if ((mons[i].geno & G_UNIQ) && mvitals[i].died) {
-    	    if (i == PM_LONG_WORM_TAIL)
+        if ((mons[i].geno & G_UNIQ) && mvitals[i].died) {
+            if (i == PM_LONG_WORM_TAIL)
                 continue;
-	    if (i == PM_HIGH_PRIEST)
+            if (i == PM_HIGH_PRIEST)
                 continue;
-	    Sprintf(eos(_killed_uniques), "%s,", mons[i].mname);
-	}
+            Sprintf(eos(_killed_uniques), "%s,", mons[i].mname);
+        }
     }
 
     int len;

@@ -387,9 +387,9 @@ struct monst *mon;
            so always subtract erosion even for blunt weapons. */
         tmp -= greatest_erosion(otmp);
 
-	/* Low AC subtracts damage, just as it does with players */
-	if (mac < 0)
-	    tmp -= rnd(-mac);
+        /* Low AC subtracts damage, just as it does with players */
+        if (mac < 0)
+            tmp -= rnd(-mac);
 
         if (tmp < 1)
             tmp = 1;
@@ -538,7 +538,7 @@ int x;
             && !((x == CORPSE || x == EGG)
                  && !touch_petrifies(&mons[otmp->corpsenm]))
             && (!otmp->oartifact || touch_artifact(otmp, mtmp))) {
-       	        if (!obest || dmgval(otmp, &youmonst) > dmgval(obest, &youmonst))
+                if (!obest || dmgval(otmp, &youmonst) > dmgval(obest, &youmonst))
                     obest = otmp;
         }
     }
@@ -583,17 +583,17 @@ struct obj *otmp;
     }
 
     if (((strongmonst(mtmp->data) && (mtmp->misc_worn_check & W_ARMS) == 0)
-	    || !objects[pwep[i]].oc_bimanual) &&
+        || !objects[pwep[i]].oc_bimanual) &&
         (objects[pwep[i]].oc_material != SILVER
- 	    || !mon_hates_material(mtmp, otmp->material)))
+        || !mon_hates_material(mtmp, otmp->material)))
     {
         for (i = 0; i < SIZE(pwep); i++)
         {
             if ( wep &&
-	         wep->otyp == pwep[i] &&
+                 wep->otyp == pwep[i] &&
                !(otmp->otyp == pwep[i] &&
-	         dmgval(otmp, &youmonst) > dmgval(wep, &youmonst)))
-	        return FALSE;
+                 dmgval(otmp, &youmonst) > dmgval(wep, &youmonst)))
+                return FALSE;
             if (otmp->otyp == pwep[i]) return TRUE;
         }
     }
@@ -606,8 +606,8 @@ struct obj *otmp;
         if ( wep &&
              wep->otyp == rwep[i] &&
            !(otmp->otyp == rwep[i] &&
-	     dmgval(otmp, &youmonst) > dmgval(wep, &youmonst)))
-	    return FALSE;
+             dmgval(otmp, &youmonst) > dmgval(wep, &youmonst)))
+            return FALSE;
         if (otmp->otyp == rwep[i]) return TRUE;
     }
 
@@ -648,10 +648,10 @@ register struct monst *mtmp;
     mwep = MON_WEP(mtmp);
     /* NO_WEAPON_WANTED means we already tried to wield and failed */
     mweponly = (mwelded(mwep) && mtmp->weapon_check == NO_WEAPON_WANTED);
-   	/* This check is disabled, as it's targeted towards attacking you
-   	   and not any arbitrary target. */
-   	/* if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 13 && couldsee(mtmp->mx, mtmp->my)) */
-   	{
+    /* This check is disabled, as it's targeted towards attacking you
+       and not any arbitrary target. */
+    /* if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 13 && couldsee(mtmp->mx, mtmp->my)) */
+    {
         for (i = 0; i < SIZE(pwep); i++) {
             /* Only strong monsters can wield big (esp. long) weapons.
              * Big weapon is basically the same as bimanual.
@@ -787,13 +787,13 @@ struct obj *otmp;
    }
 
     for (i = 0; i < SIZE(hwep); i++) {
-      	if (hwep[i] == CORPSE && !(mtmp->misc_worn_check & W_ARMG))
-      	    continue;
+        if (hwep[i] == CORPSE && !(mtmp->misc_worn_check & W_ARMG))
+            continue;
 
         if (wep && wep->otyp == hwep[i] &&
             !(otmp->otyp == hwep[i] &&
-  	        dmgval(otmp, &youmonst) > dmgval(wep, &youmonst)))
-  	        return FALSE;
+            dmgval(otmp, &youmonst) > dmgval(wep, &youmonst)))
+            return FALSE;
         if (otmp->otyp == hwep[i])
             return TRUE;
     }
@@ -1105,7 +1105,7 @@ dbon()
     if (uwep && bimanual(uwep)) {
         dbon *= 1.5;
     }
-	return dbon;
+    return dbon;
 }
 
 /* increase a towel's wetness */
@@ -1291,17 +1291,17 @@ can_almost_advance(skill)
 int skill;
 {
     if (P_RESTRICTED(skill)
-	|| P_SKILL(skill) >= P_MAX_SKILL(skill)
-	|| P_ADVANCE(skill) >= (unsigned) practice_needed_to_advance(P_SKILL(skill))
-	|| u.skills_advanced >= P_SKILL_LIMIT)
-	return 0;
+        || P_SKILL(skill) >= P_MAX_SKILL(skill)
+        || P_ADVANCE(skill) >= (unsigned) practice_needed_to_advance(P_SKILL(skill))
+        || u.skills_advanced >= P_SKILL_LIMIT)
+        return 0;
     else {
-	unsigned this_level, next_level, remaining;
-	this_level = P_SKILL(skill) > P_UNSKILLED
-	    ? (unsigned) practice_needed_to_advance(P_SKILL(skill - 1)) : 0;
-	next_level = (unsigned) practice_needed_to_advance(P_SKILL(skill));
-	remaining = next_level - P_ADVANCE(skill);
-	return remaining * 5 <= next_level - this_level;
+        unsigned this_level, next_level, remaining;
+        this_level = P_SKILL(skill) > P_UNSKILLED
+            ? (unsigned) practice_needed_to_advance(P_SKILL(skill - 1)) : 0;
+        next_level = (unsigned) practice_needed_to_advance(P_SKILL(skill));
+        remaining = next_level - P_ADVANCE(skill);
+        return remaining * 5 <= next_level - this_level;
     }
 }
 
@@ -1363,7 +1363,7 @@ enhance_weapon_skill()
                 eventually_advance++;
             else if (peaked_skill(i))
                 maxxed_cnt++;
-	    else if (can_almost_advance(i))
+            else if (can_almost_advance(i))
                 almost_advance++;
         }
 
@@ -1391,13 +1391,13 @@ enhance_weapon_skill()
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
                          MENU_UNSELECTED);
             }
-	    if (almost_advance > 0) {
-	        Sprintf(buf,
-		 "(Skill%s flagged by \">\" could be enhanced with just a little more exercise.)",
-			plur(almost_advance));
-		add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
-			 MENU_UNSELECTED);
-	    }
+            if (almost_advance > 0) {
+                Sprintf(buf,
+                 "(Skill%s flagged by \">\" could be enhanced with just a little more exercise.)",
+                        plur(almost_advance));
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+                         MENU_UNSELECTED);
+            }
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
                      MENU_UNSELECTED);
         }
@@ -1430,8 +1430,8 @@ enhance_weapon_skill()
                     prefix = "  * ";
                 else if (peaked_skill(i))
                     prefix = "  # ";
-		else if (can_almost_advance(i))
-		    prefix = "  > ";
+                else if (can_almost_advance(i))
+                    prefix = "  > ";
                 else
                     prefix =
                         (to_advance + eventually_advance + maxxed_cnt + almost_advance > 0)
@@ -1652,41 +1652,41 @@ struct obj *weapon;
             bonus = 0; /* if you're an expert, there shouldn't be a penalty */
             break;
         }
-	/* Heavy things are hard to use in your offhand unless you're
-	 * very good at what you're doing, or are very strong (see below).
-	 */
-	switch (P_SKILL(P_TWO_WEAPON_COMBAT)) {
-    	    default:
-                impossible(bad_skill, P_SKILL(P_TWO_WEAPON_COMBAT));
-	    case P_ISRESTRICTED:
-	    case P_UNSKILLED:
-                maxweight = 20; /* can use tridents/javelins, crysknives, unicorn horns or anything lighter */
-                break;
-	    case P_BASIC:
-                maxweight = 30; /* can use short swords/spears or a mace */
-                break;
-	    case P_SKILLED:
-        	maxweight = 40; /* can use sabers/long swords */
-                break;
-	    case P_EXPERT:
-                maxweight = 70; /* expert level can offhand any one-handed weapon */
-                break;
-	}
+        /* Heavy things are hard to use in your offhand unless you're
+         * very good at what you're doing, or are very strong (see below).
+         */
+        switch (P_SKILL(P_TWO_WEAPON_COMBAT)) {
+        default:
+            impossible(bad_skill, P_SKILL(P_TWO_WEAPON_COMBAT));
+        case P_ISRESTRICTED:
+        case P_UNSKILLED:
+            maxweight = 20; /* can use tridents/javelins, crysknives, unicorn horns or anything lighter */
+            break;
+        case P_BASIC:
+            maxweight = 30; /* can use short swords/spears or a mace */
+            break;
+        case P_SKILLED:
+            maxweight = 40; /* can use sabers/long swords */
+            break;
+        case P_EXPERT:
+            maxweight = 70; /* expert level can offhand any one-handed weapon */
+            break;
+        }
 
         /* basically no restrictions if you're a giant, or have giant strength */
         if (uarmg && uarmg->otyp == GAUNTLETS_OF_POWER
             || maybe_polyd(is_giant(youmonst.data), Race_if(PM_GIANT)))
             maxweight = 200;
 
-	if (uswapwep && uswapwep->owt > maxweight) {
-	    Your("%s seem%s very %s.",
+        if (uswapwep && uswapwep->owt > maxweight) {
+            Your("%s seem%s very %s.",
                  xname(uswapwep), uswapwep->quan == 1 ? "s" : "",
                  rn2(2) ? "unwieldy" : "cumbersome");
             if (!rn2(10))
                 Your("%s %s too heavy to effectively fight offhand with.",
                      xname(uswapwep), uswapwep->quan == 1 ? "is" : "are");
-	    bonus = -30;
-	}
+            bonus = -30;
+        }
     } else if (type == P_BARE_HANDED_COMBAT) {
         /*
          *        b.h. m.a. giant b.h. m.a.

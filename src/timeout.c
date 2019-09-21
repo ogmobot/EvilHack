@@ -491,48 +491,48 @@ nh_timeout()
         baseluck -= 1;
 
     if (u.uluck != baseluck) {
-	int timeout = 600;
-	int time_luck = stone_luck(FALSE);
-	/* Cursed luckstones slow bad luck timing out; blessed luckstones
-	 * slow good luck timing out; normal luckstones slow both;
-	 * neither is affected if you don't have a luckstone.
+        int timeout = 600;
+        int time_luck = stone_luck(FALSE);
+        /* Cursed luckstones slow bad luck timing out; blessed luckstones
+         * slow good luck timing out; normal luckstones slow both;
+         * neither is affected if you don't have a luckstone.
          * Luck is based at 0 usually, +1 if a full moon and -1 on Friday 13th
          */
-	if (has_luckitem() && (!time_luck
+        if (has_luckitem() && (!time_luck
             || (time_luck > 0 && u.uluck > baseluck)
             || (time_luck < 0 && u.uluck < baseluck))) {
 
-	/* The slowed timeout depends on the distance between your
-	 * luck (not including luck bonuses) and your base luck.
-	 *
-	 * distance	timeout
-	 * --------------------
-	 *  1		24800
-	 *  2		24200
-	 *  3		23200
-	 *  4		21800
-	 *  5		20000
-	 *  6		17800
-	 *  7		15200
-	 *  8		12200
-	 *  9		8800
-	 *  10		5000
-	 *  11		800
-	 */
-	int base_dist = u.uluck - baseluck;
-	int slow_timeout = 25000 - 200 * (base_dist * base_dist);
-	if (slow_timeout > timeout) timeout = slow_timeout;
-	}
+            /* The slowed timeout depends on the distance between your
+             * luck (not including luck bonuses) and your base luck.
+             *
+             * distance     timeout
+             * --------------------
+             *  1           24800
+             *  2           24200
+             *  3           23200
+             *  4           21800
+             *  5           20000
+             *  6           17800
+             *  7           15200
+             *  8           12200
+             *  9            8800
+             *  10           5000
+             *  11            800
+             */
+            int base_dist = u.uluck - baseluck;
+            int slow_timeout = 25000 - 200 * (base_dist * base_dist);
+            if (slow_timeout > timeout) timeout = slow_timeout;
+        }
 
-	if (u.uhave.amulet || u.ugangr) timeout = timeout / 2;
+        if (u.uhave.amulet || u.ugangr) timeout = timeout / 2;
 
-	if (moves >= u.luckturn + timeout) {
-	    if (u.uluck > baseluck)
-		u.uluck--;
-	    else if (u.uluck < baseluck)
-		u.uluck++;
+        if (moves >= u.luckturn + timeout) {
+            if (u.uluck > baseluck)
+                u.uluck--;
+            else if (u.uluck < baseluck)
+                u.uluck++;
             u.luckturn = moves;
-	}
+        }
     }
     if (u.uinvulnerable)
         return; /* things past this point could kill you */
@@ -573,7 +573,7 @@ nh_timeout()
 
     /* Give a small warning that spell-based reflection is running out. */
     if (HReflecting == 20 && !Blind) {
-	pline("The shimmering globe around you is starting to fade.");
+        pline("The shimmering globe around you is starting to fade.");
     }
 
     if (u.ugallop) {
@@ -644,32 +644,32 @@ nh_timeout()
                     You_feel("yourself slowing down%s.",
                              Fast ? " a bit" : "");
                 break;
-	    case SLOW:
-		You_feel("less sluggish.");
-		break;
-	    case REFLECTING:
+            case SLOW:
+                You_feel("less sluggish.");
+                break;
+            case REFLECTING:
                 if (!Blind)
-		    pline("The shimmering globe around you flickers and vanishes.");
+                    pline("The shimmering globe around you flickers and vanishes.");
                 else
                     pline("You don't feel very smooth anymore.");
-		break;
-	    /* all these need to make sure the external intrinsic isn't there too */
-            case VULN_FIRE:
-		if (!Vulnerable_fire)
-		    You("don't shy away from sparks anymore.");
-		break;
-	    case VULN_COLD:
-		if (!Vulnerable_cold)
-		    You("aren't nervous about open iceboxes now.");
                 break;
-	    case VULN_ELEC:
-		if (!Vulnerable_elec)
-	            You("seem to be a less ideal conductor again.");
-	        break;
-	    case VULN_ACID:
-		if (!Vulnerable_acid)
-		    You("don't seem to dissolve so easily anymore.");
-		break;
+            /* all these need to make sure the external intrinsic isn't there too */
+            case VULN_FIRE:
+                if (!Vulnerable_fire)
+                    You("don't shy away from sparks anymore.");
+                break;
+            case VULN_COLD:
+                if (!Vulnerable_cold)
+                    You("aren't nervous about open iceboxes now.");
+                break;
+            case VULN_ELEC:
+                if (!Vulnerable_elec)
+                    You("seem to be a less ideal conductor again.");
+                break;
+            case VULN_ACID:
+                if (!Vulnerable_acid)
+                    You("don't seem to dissolve so easily anymore.");
+                break;
             case CONFUSION:
                 /* So make_confused works properly */
                 set_itimeout(&HConfusion, 1L);

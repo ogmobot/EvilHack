@@ -249,7 +249,7 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
            quest artifact */
         fully_identify_obj(obj);
             obj->oeroded = obj->oeroded2 = 0;   /* undo any damage */
-	    obj->oerodeproof = 1;		/* Leader 'fixes' it for you */
+            obj->oerodeproof = 1;               /* Leader 'fixes' it for you */
         update_inventory();
     }
 }
@@ -294,11 +294,11 @@ register struct monst* mtmp;
             qt_pager(QT_FIRSTLEADER);
             Qstat(met_leader) = TRUE;
             Qstat(not_ready) = 0;
-	} else if (!Qstat(pissed_off)) {
-	    qt_pager(QT_NEXTLEADER);
-	} else {
-	    verbalize("Your bones shall serve to warn others.");
-	}
+        } else if (!Qstat(pissed_off)) {
+            qt_pager(QT_NEXTLEADER);
+        } else {
+            verbalize("Your bones shall serve to warn others.");
+        }
         /* the quest leader might have passed through the portal into
            the regular dungeon; none of the remaining make sense there */
         if (!on_level(&u.uz, &qstart_level))
@@ -309,16 +309,16 @@ register struct monst* mtmp;
             exercise(A_WIS, TRUE);
             expulsion(FALSE);
         } else if (is_pure(TRUE) < 0) {
-	    if (!Qstat(pissed_off)) {
-		com_pager(QT_BANISHED);
-		Qstat(pissed_off) = 1;
-		expulsion(FALSE);
-	    }
+            if (!Qstat(pissed_off)) {
+                com_pager(QT_BANISHED);
+                Qstat(pissed_off) = 1;
+                expulsion(FALSE);
+            }
         } else if (is_pure(TRUE) == 0) {
             qt_pager(QT_BADALIGN);
-	    Qstat(not_ready) = 1;
-	    exercise(A_WIS, TRUE);
-	    expulsion(FALSE);
+            Qstat(not_ready) = 1;
+            exercise(A_WIS, TRUE);
+            expulsion(FALSE);
         } else { /* You are worthy! */
             qt_pager(QT_ASSIGNQUEST);
             exercise(A_WIS, TRUE);
@@ -333,12 +333,14 @@ struct monst *mtmp;
 {
     /* maybe you attacked leader? */
     if (!mtmp->mpeaceful) {
-	if (!Qstat(pissed_off)) {
-	/* again, don't end it permanently if the leader gets angry
-	 * since you're going to have to kill him to go questing... :)
-	 * ...but do only show this crap once. */
-	    qt_pager(QT_LASTLEADER);
-	}
+        if (!Qstat(pissed_off)) {
+        /* again, don't end it permanently if the leader gets angry
+         * since you're going to have to kill him to go questing... :)
+         * ...but do only show this crap once. */
+            qt_pager(QT_LASTLEADER);
+    }
+
+
         Qstat(pissed_off) = 1;
         mtmp->mstrategy &= ~STRAT_WAITMASK; /* end the inaction */
     }
@@ -353,7 +355,7 @@ struct monst *mtmp;
     /* leader might have become pissed during the chat */
     if (Qstat(pissed_off)) {
         mtmp->mstrategy &= ~STRAT_WAITMASK;
-	mtmp->mpeaceful = 0;
+    mtmp->mpeaceful = 0;
     }
 }
 
@@ -426,11 +428,11 @@ register struct monst *mtmp;
 {
     if (mtmp->m_id == Qstat(leader_m_id)) {
         chat_with_leader(mtmp);
-	/* leader might have become pissed during the chat */
-	if (Qstat(pissed_off)) {
-	    mtmp->mstrategy &= ~STRAT_WAITMASK;
-	    mtmp->mpeaceful = 0;
-	}
+    /* leader might have become pissed during the chat */
+    if (Qstat(pissed_off)) {
+        mtmp->mstrategy &= ~STRAT_WAITMASK;
+        mtmp->mpeaceful = 0;
+    }
         return;
     }
     switch (mtmp->data->msound) {

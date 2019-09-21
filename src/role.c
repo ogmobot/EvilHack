@@ -2173,7 +2173,7 @@ role_init()
 
     /* kick it over to alternate-alignment role */
     if (alignmnt == A_CHAOTIC && Role_if(PM_KNIGHT)) {
-	urole = align_roles[0];
+        urole = align_roles[0];
     }
 
     /* Fix up the quest leader */

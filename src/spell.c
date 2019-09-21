@@ -847,12 +847,12 @@ cast_reflection()
 {
     if (HReflecting) {
         if (!Blind)
-	    pline("The shimmering globe around you becomes slightly brighter.");
+            pline("The shimmering globe around you becomes slightly brighter.");
         else
             You_feel("slightly more smooth");
     } else {
         if (!Blind)
-	    pline("A shimmering globe appears around you!");
+            pline("A shimmering globe appears around you!");
         else
             You_feel("smooth.");
     }
@@ -1228,28 +1228,28 @@ boolean atme;
             pline1(nothing_happens);
         break;
     case SPE_REPAIR_ARMOR:
-	/* removes one level of erosion (both types) for a random piece of armor */
-	otmp = some_armor(&youmonst);
-	if (otmp) {
-		if (greatest_erosion(otmp) > 0) {
-			if (!Blind) {
-				pline("Your %s glows faintly golden for a moment.",xname(otmp));
-			}
-			if (otmp->oeroded > 0) { otmp->oeroded--; }
-			if (otmp->oeroded2 > 0) { otmp->oeroded2--; }
-		} else {
-			if (!Blind) {
-				pline("Your %s glows briefly, but looks as new as ever.",xname(otmp));
-			}
-		}
-	} else {
-		/* the player can probably feel this, so no need for a !Blind check :) */
-		pline("Your embarrassing skin rash clears up slightly.");
-	}
-	break;
+    /* removes one level of erosion (both types) for a random piece of armor */
+        otmp = some_armor(&youmonst);
+        if (otmp) {
+            if (greatest_erosion(otmp) > 0) {
+                if (!Blind) {
+                    pline("Your %s glows faintly golden for a moment.",xname(otmp));
+                }
+                if (otmp->oeroded > 0) { otmp->oeroded--; }
+                if (otmp->oeroded2 > 0) { otmp->oeroded2--; }
+            } else {
+                if (!Blind) {
+                    pline("Your %s glows briefly, but looks as new as ever.",xname(otmp));
+                }
+            }
+        } else {
+            /* the player can probably feel this, so no need for a !Blind check :) */
+            pline("Your embarrassing skin rash clears up slightly.");
+        }
+        break;
     case SPE_REFLECTION:
         cast_reflection();
-	break;
+        break;
     default:
         impossible("Unknown spell %d attempted.", spell);
         obfree(pseudo, (struct obj *) 0);
@@ -1906,30 +1906,30 @@ int spell;
      */
     if (uwep && uwep->otyp >= STAFF_OF_DIVINATION && uwep->otyp <= STAFF_OF_WAR) {
 #define STAFFBONUS 50
-	if (spell_skilltype(spellid(spell)) == P_CLERIC_SPELL
+        if (spell_skilltype(spellid(spell)) == P_CLERIC_SPELL
             && uwep->otyp == STAFF_OF_HOLINESS) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_HEALING_SPELL
+            chance += STAFFBONUS;
+        }
+        if (spell_skilltype(spellid(spell)) == P_HEALING_SPELL
             && uwep->otyp == STAFF_OF_HEALING) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_DIVINATION_SPELL
+            chance += STAFFBONUS;
+        }
+        if (spell_skilltype(spellid(spell)) == P_DIVINATION_SPELL
             && uwep->otyp == STAFF_OF_DIVINATION) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_MATTER_SPELL
+            chance += STAFFBONUS;
+        }
+        if (spell_skilltype(spellid(spell)) == P_MATTER_SPELL
             && uwep->otyp == STAFF_OF_MATTER) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_ESCAPE_SPELL
+            chance += STAFFBONUS;
+        }
+        if (spell_skilltype(spellid(spell)) == P_ESCAPE_SPELL
             && uwep->otyp == STAFF_OF_ESCAPE) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_ATTACK_SPELL
+            chance += STAFFBONUS;
+        }
+        if (spell_skilltype(spellid(spell)) == P_ATTACK_SPELL
             && uwep->otyp == STAFF_OF_WAR) {
-	    chance += STAFFBONUS;
-	}
+            chance += STAFFBONUS;
+        }
 #undef STAFFBONUS
     }
 

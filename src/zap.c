@@ -2455,8 +2455,8 @@ boolean ordinary;
             You_feel("rather itchy under %s.", yname(uarmc));
             break;
         }
-	/* wand and potion now only do temporary invis,
-	 * to make the cloak and ring more useful */
+        /* wand and potion now only do temporary invis,
+         * to make the cloak and ring more useful */
         incr_itimeout(&HInvis, d(obj->spe, 250));
         if (msg) {
             learn_it = TRUE;
@@ -2808,7 +2808,7 @@ boolean youattack, allow_cancel_kill, self_cancel;
     struct obj *otmp;
 
     boolean resisted = (youdefend && Antimagic) ||
-	(!youdefend && resist(mdef, obj ? obj->oclass : 0, 0, NOTELL));
+        (!youdefend && resist(mdef, obj ? obj->oclass : 0, 0, NOTELL));
 
     if (obj && obj->otyp == WAN_CANCELLATION) {
         makeknown(obj->otyp);
@@ -2832,47 +2832,47 @@ boolean youattack, allow_cancel_kill, self_cancel;
             else if (mdef->mcan)
                 pline("%s appears to already be diminished.", Monnam(mdef));
         }
-	if (youdefend)
+        if (youdefend)
             You_feel("magical energies being absorbed from your vicinity.");
-	if (youdefend && Antimagic) {
+        if (youdefend && Antimagic) {
             shieldeff(u.ux, u.uy);
-	} else if (!youdefend && resisted) {
-	    shieldeff(mdef->mx, mdef->my);
-	}
-	for (otmp = (youdefend ? invent : mdef->minvent);
-	    otmp; otmp = otmp->nobj) {
-	    /* gold isn't subject to being cursed or blessed */
-	    if (otmp->oclass == COIN_CLASS)
+        } else if (!youdefend && resisted) {
+            shieldeff(mdef->mx, mdef->my);
+    }
+    for (otmp = (youdefend ? invent : mdef->minvent);
+        otmp; otmp = otmp->nobj) {
+        /* gold isn't subject to being cursed or blessed */
+        if (otmp->oclass == COIN_CLASS)
                 continue;
-	    nobj++;
+        nobj++;
         }
     if (nobj) {
         for (cnt = rnd(6 / ((!!Antimagic) + (!!Half_spell_damage) + 1));
             cnt > 0; cnt--) {
             onum = rnd(nobj);
-	    for (otmp = (youdefend ? invent : mdef->minvent);
-	        otmp; otmp = otmp->nobj) {
-		/* as above */
-		if (otmp->oclass == COIN_CLASS)
-                    continue;
-		if (--onum == 0)
-                    break;	/* found the target */
-	    }
-	    if (!otmp)
-                continue;	/* next target */
+            for (otmp = (youdefend ? invent : mdef->minvent);
+                otmp; otmp = otmp->nobj) {
+            /* as above */
+            if (otmp->oclass == COIN_CLASS)
+                        continue;
+            if (--onum == 0)
+                        break;  /* found the target */
+            }
+            if (!otmp)
+                    continue;   /* next target */
 
-	    if (otmp->oartifact && spec_ability(otmp, SPFX_INTEL)
-	        && rn2(10) < 8) {
-		pline("%s!", Tobjnam(otmp, "resist"));
-		continue;
-	    }
-	    cancel_item(otmp);
-    	}
-        if (youdefend) {
-	    context.botl = 1;	/* potential AC change */
-	    find_ac();
+            if (otmp->oartifact && spec_ability(otmp, SPFX_INTEL)
+                && rn2(10) < 8) {
+                pline("%s!", Tobjnam(otmp, "resist"));
+                continue;
+            }
+            cancel_item(otmp);
         }
-	update_inventory();
+        if (youdefend) {
+        context.botl = 1;   /* potential AC change */
+        find_ac();
+        }
+    update_inventory();
         }
     }
 
@@ -3239,7 +3239,7 @@ boolean is_wand;
     int dex = ACURR(A_DEX);
 
     if (is_wand) {
-	if (!uwep) { hit_bon = 3; }	/* easier to aim with hands free */
+        if (!uwep) { hit_bon = 3; } /* easier to aim with hands free */
     } else {
     switch (P_SKILL(spell_skilltype(skill))) {
     case P_ISRESTRICTED:
@@ -4003,10 +4003,10 @@ xchar sx, sy;
                 You("are not disintegrated.");
                 monstseesu(M_SEEN_DISINT);
                 break;
-	    } else if (Reflecting) {
-		You("aren't disintegrated, but that hurts!");
-		dam = resist_reduce(d(nd, 6), DISINT_RES);
-		break;
+            } else if (Reflecting) {
+                You("aren't disintegrated, but that hurts!");
+                dam = resist_reduce(d(nd, 6), DISINT_RES);
+                break;
             } else if (uarms) {
                 /* destroy shield; other possessions are safe */
                 (void) destroy_arm(uarms);
@@ -4035,12 +4035,12 @@ xchar sx, sy;
             You("aren't affected.");
             monstseesu(M_SEEN_MAGR);
             break;
-	} else if (Reflecting) {
+        } else if (Reflecting) {
             You("feel a little bit drained!");
-	    dam = d(2, 6);
-	    u.uhpmax -= dam; /* it'll cost you... */
-	    break;
-	}
+            dam = d(2, 6);
+            u.uhpmax -= dam; /* it'll cost you... */
+            break;
+        }
         killer.format = KILLED_BY_AN;
         Strcpy(killer.name, fltxt ? fltxt : "");
         /* when killed by disintegration breath, don't leave corpse */
@@ -4829,8 +4829,8 @@ boolean moncast;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
 
         rangemod = -1000;
-	if ((lev->doormask | D_TRAPPED) && In_sokoban(&u.uz))
-	    goto def_case;
+        if ((lev->doormask | D_TRAPPED) && In_sokoban(&u.uz))
+            goto def_case;
         switch (abstype) {
         case ZT_FIRE:
             new_doormask = D_NODOOR;
@@ -5596,7 +5596,7 @@ unsigned long udid;
     struct monst* mtmp;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-	if (!DEADMONSTER(mtmp) && m_canseeu(mtmp))
+        if (!DEADMONSTER(mtmp) && m_canseeu(mtmp))
             m_setseen(mtmp, udid);
     }
 }
@@ -5606,25 +5606,25 @@ blindingflash()
 {
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-	/* if it can't see the flash, don't bother */
-	if (DEADMONSTER(mtmp) || mtmp->msleeping
-			|| !haseyes(mtmp->data) || !mtmp->mcansee
-                        || mtmp->mblinded || !&youmonst.data) {
-			continue;
-	}
-	/* must be able to see our location... */
-	if (m_cansee(mtmp, u.ux, u.uy) && !rn2(5)) {
-	    if (!Blind && canseemon(mtmp)) {
-		pline("%s is blinded by the flash!", Monnam(mtmp));
-	    }
+        /* if it can't see the flash, don't bother */
+        if (DEADMONSTER(mtmp) || mtmp->msleeping
+            || !haseyes(mtmp->data) || !mtmp->mcansee
+            || mtmp->mblinded || !&youmonst.data) {
+            continue;
+        }
+        /* must be able to see our location... */
+        if (m_cansee(mtmp, u.ux, u.uy) && !rn2(5)) {
+            if (!Blind && canseemon(mtmp)) {
+                pline("%s is blinded by the flash!", Monnam(mtmp));
+            }
             if (mtmp->mtame && rn2(2)) {
                 abuse_dog(mtmp);
             } else if (mtmp->mpeaceful) {
                 setmangry(mtmp, TRUE);
             }
-	    mtmp->mblinded = rnd(20);
-	    mtmp->mcansee = 0;
-	}
+            mtmp->mblinded = rnd(20);
+            mtmp->mcansee = 0;
+        }
     }
 }
 

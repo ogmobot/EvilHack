@@ -1526,28 +1526,28 @@ dosacrifice()
             else
                 useupf(otmp, 1L);
 
-	    /* create Dirge from player's longsword here if possible */
-	    if (u.ualign.type == A_CHAOTIC && Role_if(PM_KNIGHT) &&
+            /* create Dirge from player's longsword here if possible */
+            if (u.ualign.type == A_CHAOTIC && Role_if(PM_KNIGHT) &&
                 !u.ugangr && u.ualign.record > 0
-		&& uwep && (uwep->otyp == LONG_SWORD || uwep->otyp == ELVEN_LONG_SWORD)
+                && uwep && (uwep->otyp == LONG_SWORD || uwep->otyp == ELVEN_LONG_SWORD)
                 && !uwep->oartifact && uarmh && uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT
                 && !exist_artifact(LONG_SWORD, artiname(ART_DIRGE))) {
                 pline("Your sword melts in your hand and transforms into something new!");
                 uwep->oprops = uwep->oprops_known = 0L;
                 uwep->otyp = LONG_SWORD;
- 	        uwep = oname(uwep, artiname(ART_DIRGE));
+                uwep = oname(uwep, artiname(ART_DIRGE));
                 discover_artifact(ART_DIRGE);
-		bless(uwep);
+                bless(uwep);
                 if (uwep->spe < 0)
                     uwep->spe = 0;
-		uwep->oeroded = uwep->oeroded2 = 0;
-		uwep->oerodeproof = TRUE;
-		exercise(A_WIS, TRUE);
+                uwep->oeroded = uwep->oeroded2 = 0;
+                uwep->oerodeproof = TRUE;
+                exercise(A_WIS, TRUE);
                 livelog_printf(LL_DIVINEGIFT | LL_ARTIFACT,
                                "had Dirge gifted to %s by the grace of %s",
                                uhim(), align_gname(u.ualign.type));
                 update_inventory();
-	    }
+            }
             return 1;
         } else if (has_omonst(otmp)
                    && (mtmp = get_mtraits(otmp, FALSE)) != 0
@@ -1771,8 +1771,8 @@ dosacrifice()
                     if (u.ualign.record > 0 && rnd(u.ualign.record)
                         > (3 * ALIGNLIM) / (temple_occupied(u.urooms)
                         ? 12 : u.ulevel)) {
-			    summon_minion(altaralign, TRUE);
-		    }
+                        summon_minion(altaralign, TRUE);
+                    }
                     /* anger priest; test handles bones files */
                     if ((pri = findpriest(temple_occupied(u.urooms)))
                         && !p_coaligned(pri))
@@ -1849,7 +1849,7 @@ dosacrifice()
             }
         } else {
             int nartifacts = nartifact_exist();
-	    int nchance = u.ulevel + 6;
+            int nchance = u.ulevel + 6;
             boolean primary_casters, primary_casters_priest, secondary_casters, non_casters;
 
             /* Primary casting roles */
@@ -1866,33 +1866,33 @@ dosacrifice()
 
             /* you were already in pretty good standing
              *
-	     * The player can gain an artifact;
-	     * The chance goes down as the number of artifacts goes up.
+             * The player can gain an artifact;
+             * The chance goes down as the number of artifacts goes up.
              *
              * From SporkHack (heavily modified):
-	     * The player can also get handed just a plain old hunk of weaponry
-	     * or piece of armor, but it will be blessed, +3 to +5, fire/rustproof, and
-	     * if it's a weapon, it'll be in one of the player's available skill
-	     * slots. The lower level you are, the more likely it is that you'll
-	     * get a hunk of ordinary junk rather than an artifact.
+             * The player can also get handed just a plain old hunk of weaponry
+             * or piece of armor, but it will be blessed, +3 to +5, fire/rustproof, and
+             * if it's a weapon, it'll be in one of the player's available skill
+             * slots. The lower level you are, the more likely it is that you'll
+             * get a hunk of ordinary junk rather than an artifact.
              *
-	     * Note that no artifact is guaranteed; it's still subject to the
+             * Note that no artifact is guaranteed; it's still subject to the
              * chances of generating one of those in the first place. These are
-	     * just the chances that an artifact will even be considered as a gift.
-	     *
-	     * level  4: 10% chance  level  9: 20% chance  level 12: 30% chance
-	     * level 14: 40% chance  level 17: 50% chance  level 19: 60% chance
-	     * level 21: 70% chance  level 23: 80% chance  level 24: 90% chance
-	     * level 26: 100% chance
-	     */
+             * just the chances that an artifact will even be considered as a gift.
+             *
+             * level  4: 10% chance  level  9: 20% chance  level 12: 30% chance
+             * level 14: 40% chance  level 17: 50% chance  level 19: 60% chance
+             * level 21: 70% chance  level 23: 80% chance  level 24: 90% chance
+             * level 26: 100% chance
+             */
 
             if (rn2(10) >= (nchance * nchance) / 100) {
-		if (u.uluck >= 0 && !rn2(6 + (2 * u.ugifts))) {
-		    int typ, ncount = 0;
-		    if (rn2(2)) {
-		    /* Don't give unicorn horns or anything the player's restricted in
+                if (u.uluck >= 0 && !rn2(6 + (2 * u.ugifts))) {
+                    int typ, ncount = 0;
+                    if (rn2(2)) {
+                    /* Don't give unicorn horns or anything the player's restricted in
                      * Lets also try to dish out suitable gear based on the player's role */
-		        do {
+                        do {
                             if (primary_casters) {
                                 typ = rn2(2) ? rnd_class(DAGGER, ATHAME)
                                              : rnd_class(MACE, FLAIL);
@@ -1903,94 +1903,94 @@ dosacrifice()
                             } else {
                                 typ = rnd_class(SPEAR, KATANA);
                             }
-		        } while (ncount++ < 500 && typ && P_RESTRICTED(objects[typ].oc_skill));
-		            if (ncount > 499) {
+                        } while (ncount++ < 500 && typ && P_RESTRICTED(objects[typ].oc_skill));
+                        if (ncount > 499) {
                                 return 1;
-                            }
-		        } else if (primary_casters || primary_casters_priest) {
-                            if (rn2(3)) {
-		                typ = rn2(2) ? rnd_class(ELVEN_HELM, HELM_OF_TELEPATHY)
-                                             : rnd_class(GLOVES, LEVITATION_BOOTS);
-                            } else {
-                                int sp_no, trycnt = u.ulevel + 1;
-
-                                otmp = mkobj(SPBOOK_CLASS, TRUE);
-                                while (--trycnt > 0) {
-                                    if (otmp->otyp != SPE_BLANK_PAPER) {
-                                        for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
-                                            if (spl_book[sp_no].sp_id == otmp->otyp)
-                                                break;
-                                        if (sp_no == MAXSPELL
-                                            && !P_RESTRICTED(spell_skilltype(otmp->otyp)))
-                                            break; /* usable, but not yet known */
-                                    } else {
-                                        if (!objects[SPE_BLANK_PAPER].oc_name_known
-                                            || carrying(MAGIC_MARKER))
-                                            break;
-                                    }
-                                    otmp->otyp = rnd_class(bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
-                                }
-                                bless(otmp);
-                                at_your_feet("An object");
-                                dropy(otmp);
-                                godvoice(u.ualign.type, "Use this gift skillfully!");
-                                u.ugifts++;
-                                u.ublesscnt = rnz(300 + (50 * u.ugifts));
-                                exercise(A_WIS, TRUE);
-                                livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
-                                                "had %s given to %s by %s", an(xname(otmp)),
-                                                uhim(), u_gname());
-                                if (!Hallucination && !Blind) {
-                                    otmp->dknown = 1;
-                                    makeknown(otmp->otyp);
-                                }
-                                return 1;
-                            }
-                        } else if (Role_if(PM_MONK)
-                                   && (!Race_if(PM_GIANT) || !Race_if(PM_CENTAUR))) {
+                        }
+                    } else if (primary_casters || primary_casters_priest) {
+                        if (rn2(3)) {
                             typ = rn2(2) ? rnd_class(ELVEN_HELM, HELM_OF_TELEPATHY)
                                          : rnd_class(GLOVES, LEVITATION_BOOTS);
-                        } else if (Race_if(PM_GIANT)) {
-                            typ = rn2(2) ? rnd_class(ELVEN_HELM, HELM_OF_TELEPATHY)
-                                         : rnd_class(SMALL_SHIELD, LEVITATION_BOOTS);
-                        } else if (Race_if(PM_CENTAUR)) {
-                            typ = rnd_class(ELVEN_HELM, GAUNTLETS_OF_DEXTERITY);
                         } else {
+                            int sp_no, trycnt = u.ulevel + 1;
+
+                        otmp = mkobj(SPBOOK_CLASS, TRUE);
+                        while (--trycnt > 0) {
+                            if (otmp->otyp != SPE_BLANK_PAPER) {
+                                for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
+                                    if (spl_book[sp_no].sp_id == otmp->otyp)
+                                        break;
+                                if (sp_no == MAXSPELL
+                                    && !P_RESTRICTED(spell_skilltype(otmp->otyp)))
+                                    break; /* usable, but not yet known */
+                                } else {
+                                    if (!objects[SPE_BLANK_PAPER].oc_name_known
+                                        || carrying(MAGIC_MARKER))
+                                        break;
+                                }
+                                otmp->otyp = rnd_class(bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
+                            }
+                            bless(otmp);
+                            at_your_feet("An object");
+                            dropy(otmp);
+                            godvoice(u.ualign.type, "Use this gift skillfully!");
+                            u.ugifts++;
+                            u.ublesscnt = rnz(300 + (50 * u.ugifts));
+                            exercise(A_WIS, TRUE);
+                            livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
+                                            "had %s given to %s by %s", an(xname(otmp)),
+                                            uhim(), u_gname());
+                            if (!Hallucination && !Blind) {
+                                otmp->dknown = 1;
+                                makeknown(otmp->otyp);
+                            }
+                            return 1;
+                        }
+                    } else if (Role_if(PM_MONK)
+                               && (!Race_if(PM_GIANT) || !Race_if(PM_CENTAUR))) {
+                        typ = rn2(2) ? rnd_class(ELVEN_HELM, HELM_OF_TELEPATHY)
+                                     : rnd_class(GLOVES, LEVITATION_BOOTS);
+                    } else if (Race_if(PM_GIANT)) {
+                        typ = rn2(2) ? rnd_class(ELVEN_HELM, HELM_OF_TELEPATHY)
+                                     : rnd_class(SMALL_SHIELD, LEVITATION_BOOTS);
+                    } else if (Race_if(PM_CENTAUR)) {
+                            typ = rnd_class(ELVEN_HELM, GAUNTLETS_OF_DEXTERITY);
+                    } else {
                             typ = rnd_class(ELVEN_HELM, LEVITATION_BOOTS);
-		    }
-		    if (typ) {
-			otmp = mksobj(typ, FALSE, FALSE);
-			if (otmp) {
+                    }
+                    if (typ) {
+                        otmp = mksobj(typ, FALSE, FALSE);
+                        if (otmp) {
                             if (!rn2(30)) {
                                 if (u.uluck >= 5)
                                     otmp = create_oprop(otmp, FALSE);
                                 else
                                     otmp = create_oprop(otmp, TRUE);
                             }
-			    bless(otmp);
-			    otmp->spe = rn2(3) + 3; /* +3 to +5 */
-			    otmp->oerodeproof = TRUE;
+                            bless(otmp);
+                            otmp->spe = rn2(3) + 3; /* +3 to +5 */
+                            otmp->oerodeproof = TRUE;
                             at_your_feet("An object");
-			    dropy(otmp);
-			    godvoice(u.ualign.type, "Use this gift valorously!");
-			    u.ugifts++;
-			    u.ublesscnt = rnz(300 + (50 * u.ugifts));
-			    exercise(A_WIS, TRUE);
+                            dropy(otmp);
+                            godvoice(u.ualign.type, "Use this gift valorously!");
+                            u.ugifts++;
+                            u.ublesscnt = rnz(300 + (50 * u.ugifts));
+                            exercise(A_WIS, TRUE);
                             livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
                                             "had %s entrusted to %s by %s", an(xname(otmp)),
                                             uhim(), u_gname());
                             if (!Hallucination && !Blind) {
                                 otmp->dknown = 1;
-			        makeknown(otmp->otyp);
+                                makeknown(otmp->otyp);
                             }
-			    return 1;
-			}
-	            }
-		}
+                            return 1;
+                        }
+                    }
+                }
             } else if (u.uluck >= 0 && !rn2(10 + (2 * nartifacts))) {
-	        otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
-		if (otmp) {
-		    if (otmp->spe < 0)
+                otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
+                if (otmp) {
+                    if (otmp->spe < 0)
                         otmp->spe = 0;
                     bless(otmp);
                     otmp->oerodeproof = TRUE;
@@ -2003,15 +2003,15 @@ dosacrifice()
                     livelog_printf (LL_DIVINEGIFT | LL_ARTIFACT,
                                     "had %s bestowed upon %s by %s", artiname(otmp->oartifact),
                                     uhim(), align_gname(u.ualign.type));
-		    /* make sure we can use this weapon */
-		    unrestrict_weapon_skill(weapon_type(otmp));
+                    /* make sure we can use this weapon */
+                    unrestrict_weapon_skill(weapon_type(otmp));
                     if (!Hallucination && !Blind) {
                         otmp->dknown = 1;
                         makeknown(otmp->otyp);
                         discover_artifact(otmp->oartifact);
                     }
-	            return 1;
-		}
+                    return 1;
+                }
             }
             change_luck((value * LUCKMAX) / (MAXVALUE * 2));
             if ((int) u.uluck < 0)
@@ -2270,8 +2270,8 @@ doturn()
                     pline("Unfortunately, your voice falters.");
                 mtmp->mflee = 0;
                 mtmp->mfrozen = 0;
-		if (!mtmp->mstone || mtmp->mstone > 2)
-		    mtmp->mcanmove = 1;
+                if (!mtmp->mstone || mtmp->mstone > 2)
+                    mtmp->mcanmove = 1;
             } else if (!resist(mtmp, '\0', 0, TELL)) {
                 xlev = 6;
                 switch (mtmp->data->mlet) {

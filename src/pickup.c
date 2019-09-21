@@ -1549,9 +1549,9 @@ boolean telekinesis; /* not picking it up directly by hand */
     mrg_to_wielded = FALSE;
 
     if (is_soko_prize_flag(obj)) {
-	makeknown(obj->otyp);    /* obj is already known */
-	obj->sokoprize = FALSE;  /* reset sokoprize flag */
-	del_soko_prizes();	 /* delete other sokoprizes */
+        makeknown(obj->otyp);    /* obj is already known */
+        obj->sokoprize = FALSE;  /* reset sokoprize flag */
+        del_soko_prizes();       /* delete other sokoprizes */
         return -1;
     }
     return 1;
@@ -2249,9 +2249,9 @@ register struct obj *obj;
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
-	if (obj->otyp == WAN_CANCELLATION) {
-	    makeknown(obj->otyp);
-	}
+        if (obj->otyp == WAN_CANCELLATION) {
+            makeknown(obj->otyp);
+        }
         obfree(obj, (struct obj *) 0);
         livelog_printf(LL_ACHIEVE, "just blew up %s bag of holding", uhis());
         /* if carried, shop goods will be flagged 'unpaid' and obfree() will
@@ -2268,11 +2268,11 @@ register struct obj *obj;
             current_container->no_charge = save_no_charge.no_charge;
         }
 
-	/* dump it out onto the floor so the scatterage can take effect */
-	if (dump_container(current_container, TRUE)) {
-	    pline("Its contents fly everywhere!");
+        /* dump it out onto the floor so the scatterage can take effect */
+        if (dump_container(current_container, TRUE)) {
+            pline("Its contents fly everywhere!");
         }
-	scatter(u.ux, u.uy, rn2(10), VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, 0);
+        scatter(u.ux, u.uy, rn2(10), VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, 0);
 
         losehp(Maybe_Half_Phys(d(8, 10)), "exploding magical bag", KILLED_BY_AN);
         current_container = 0; /* baggone = TRUE; */
@@ -3142,104 +3142,103 @@ boolean creation;
     register struct obj *obj, *nobj, *bag = (struct obj *)0;
     struct obj *wep = bag, *hwep = bag, *rwep = bag, *proj = bag;
     for (obj = mon->minvent; obj; obj = obj->nobj) {
-	if (!Is_container(obj) ||
-	    obj->otyp == BAG_OF_TRICKS) continue;
-	if (obj->otyp == BAG_OF_HOLDING) {
-		bag = obj;
-		break;
-	} else if (!bag ||
-	            (obj->otyp == OILSKIN_SACK &&
-		    (bag->otyp != OILSKIN_SACK)) ||
-		    (obj->otyp == SACK &&
-		    ((bag->otyp != OILSKIN_SACK &&
-		      bag->otyp != SACK)))) {
-		bag = obj;
-	}
+        if (!Is_container(obj) ||
+            obj->otyp == BAG_OF_TRICKS) continue;
+        if (obj->otyp == BAG_OF_HOLDING) {
+                bag = obj;
+                break;
+        } else if (!bag ||
+                    (obj->otyp == OILSKIN_SACK &&
+                    (bag->otyp != OILSKIN_SACK)) ||
+                    (obj->otyp == SACK &&
+                    ((bag->otyp != OILSKIN_SACK &&
+                      bag->otyp != SACK)))) {
+                bag = obj;
+        }
     }
     if (!bag && !creation) return 0;
 
     if (bag)
-	Strcpy(buf, the(xname(bag)));
+        Strcpy(buf, the(xname(bag)));
 
     if (attacktype(mon->data, AT_WEAP)) {
-	wep  = MON_WEP(mon);
+        wep  = MON_WEP(mon);
         hwep = attacktype(mon->data, AT_WEAP)
-		   ? select_hwep(mon) : (struct obj *)0,
-	proj = attacktype(mon->data, AT_WEAP)
-		   ? select_rwep(mon) : (struct obj *)0,
-	rwep = attacktype(mon->data, AT_WEAP)
-		   ? propellor : (struct obj *) &zeroobj;
+                ? select_hwep(mon) : (struct obj *)0,
+        proj = attacktype(mon->data, AT_WEAP)
+                ? select_rwep(mon) : (struct obj *)0,
+        rwep = attacktype(mon->data, AT_WEAP)
+                ? propellor : (struct obj *) &zeroobj;
     }
 
     for (obj = mon->minvent; obj; obj = nobj) {
-	nobj = obj->nobj;
-	if (obj == bag ||
-	    obj->owornmask ||
-	    obj == wep || obj == hwep || obj == rwep || obj == proj ||
-	    (!mon->mtame && searches_for_item(mon, obj)) ||
-	    (mon->mtame && could_use_item(mon, obj, TRUE)) ||
-	    (bag && Is_mbag(bag) && mbag_explodes(obj, 0)) ||
-	    (obj->otyp == LOADSTONE && obj->cursed) ||
-	    (obj->otyp == AMULET_OF_YENDOR ||
-	     obj->otyp == FAKE_AMULET_OF_YENDOR ||
-	     obj->otyp == BELL_OF_OPENING ||
-	     obj->otyp == CANDELABRUM_OF_INVOCATION ||
-	     obj->otyp == SPE_BOOK_OF_THE_DEAD ||
+        nobj = obj->nobj;
+        if (obj == bag ||
+            obj->owornmask ||
+            obj == wep || obj == hwep || obj == rwep || obj == proj ||
+            (!mon->mtame && searches_for_item(mon, obj)) ||
+            (mon->mtame && could_use_item(mon, obj, TRUE)) ||
+            (bag && Is_mbag(bag) && mbag_explodes(obj, 0)) ||
+            (obj->otyp == LOADSTONE && obj->cursed) ||
+            (obj->otyp == AMULET_OF_YENDOR ||
+             obj->otyp == FAKE_AMULET_OF_YENDOR ||
+             obj->otyp == BELL_OF_OPENING ||
+             obj->otyp == CANDELABRUM_OF_INVOCATION ||
+             obj->otyp == SPE_BOOK_OF_THE_DEAD ||
              obj->otyp == ICE_BOX || Is_box(obj) ||
-	     obj->otyp == BOULDER ||
-	    (obj->otyp == STATUE && bigmonst(&mons[obj->corpsenm]))))
-		continue;
+             obj->otyp == BOULDER ||
+            (obj->otyp == STATUE && bigmonst(&mons[obj->corpsenm]))))
+                continue;
 
         if (nohands(mon->data)) return 0;
-	if (!bag && !creation) continue;
+        if (!bag && !creation) continue;
 
-	if (creation) {
-		/* exception: balrogs are generated with two weapons */
-		if (mon->data == &mons[PM_BALROG] &&
-		    obj->otyp == BULLWHIP)
-		    continue;
+        if (creation) {
+            /* exception: balrogs are generated with two weapons */
+            if (mon->data == &mons[PM_BALROG] &&
+                obj->otyp == BULLWHIP)
+                continue;
 
-		/* at creation time, this is a junk item we don't need,
-		 * so presumably they got rid of it */
-		if (obj->oclass == WEAPON_CLASS ||
-		    obj->oclass == ARMOR_CLASS)
-		{
-			obj_extract_self(obj);
-			obfree(obj, (struct obj *)0);
-			continue;
-		}
-		else if (!bag) continue;
-	}
+            /* at creation time, this is a junk item we don't need,
+             * so presumably they got rid of it */
+            if (obj->oclass == WEAPON_CLASS
+                || obj->oclass == ARMOR_CLASS) {
+                obj_extract_self(obj);
+                obfree(obj, (struct obj *)0);
+                continue;
+            }
+            else if (!bag) continue;
+        }
 
-	obj_extract_self(obj);
+        obj_extract_self(obj);
 
-	if (obj->otyp == LOADSTONE) {
-		curse(obj);
-	} else if (obj->otyp == FIGURINE && obj->timed) {
-		(void) stop_timer(FIG_TRANSFORM, (genericptr_t) obj);
-	}
+        if (obj->otyp == LOADSTONE) {
+            curse(obj);
+        } else if (obj->otyp == FIGURINE && obj->timed) {
+            (void) stop_timer(FIG_TRANSFORM, (genericptr_t) obj);
+        }
 
-	if (obj_is_burning(obj))
-		(void) snuff_lit(obj);
+        if (obj_is_burning(obj))
+            (void) snuff_lit(obj);
 
-	if (bag->otyp == ICE_BOX && !age_is_relative(obj)) {
-		obj->age = monstermoves - obj->age;
-		if (obj->otyp == CORPSE && obj->timed) {
-			long rot_alarm =
-				stop_timer(ROT_CORPSE, (genericptr_t)obj);
-			(void) stop_timer(REVIVE_MON, (genericptr_t)obj);
-			if (rot_alarm) obj->norevive = 1;
-		}
-	}
+        if (bag->otyp == ICE_BOX && !age_is_relative(obj)) {
+            obj->age = monstermoves - obj->age;
+            if (obj->otyp == CORPSE && obj->timed) {
+                long rot_alarm =
+                    stop_timer(ROT_CORPSE, (genericptr_t)obj);
+                (void) stop_timer(REVIVE_MON, (genericptr_t)obj);
+                if (rot_alarm) obj->norevive = 1;
+            }
+        }
 
-	putitems = TRUE;
+        putitems = TRUE;
 
-   	if (!creation && canseemon(mon))
-		pline("%s puts %s into %s.",
-			Monnam(mon), distant_name(obj,doname), buf);
+        if (!creation && canseemon(mon))
+            pline("%s puts %s into %s.",
+                  Monnam(mon), distant_name(obj,doname), buf);
 
-    	(void) add_to_container(bag, obj);
-    	bag->owt = weight(bag);
+        (void) add_to_container(bag, obj);
+        bag->owt = weight(bag);
     }
     return (putitems && !creation);
 }
@@ -3423,30 +3422,30 @@ BOOLEAN_P destroy_after;
 
     for (otmp = container->cobj; otmp; otmp = otmp2) {
         ret = 1;
-	otmp2 = otmp->nobj;
-	obj_extract_self(otmp);
-	container->owt = weight(container);
+        otmp2 = otmp->nobj;
+        obj_extract_self(otmp);
+        container->owt = weight(container);
 
-	/* we do need to start the timer on these */
-	if (container->otyp == ICE_BOX && !age_is_relative(otmp)) {
+        /* we do need to start the timer on these */
+        if (container->otyp == ICE_BOX && !age_is_relative(otmp)) {
             otmp->age = monstermoves - otmp->age;
-	    if (otmp->otyp == CORPSE) {
-		start_corpse_timeout(otmp);
-	    }
-	}
-	place_object(otmp, u.ux, u.uy);
+            if (otmp->otyp == CORPSE) {
+                start_corpse_timeout(otmp);
+            }
+        }
+        place_object(otmp, u.ux, u.uy);
 
-	if (otmp->otyp == GOLD_PIECE) {
-            bot();	/* update character's gold piece count immediately */
-	}
+        if (otmp->otyp == GOLD_PIECE) {
+            bot();  /* update character's gold piece count immediately */
+        }
     }
 
     if (destroy_after) {
-	if (container->where == OBJ_INVENT) {
-	    useup(container);
-	} else if (obj_here(container, u.ux, u.uy)) {
+        if (container->where == OBJ_INVENT) {
+            useup(container);
+        } else if (obj_here(container, u.ux, u.uy)) {
             useupf(container, container->quan);
-	}
+        }
     }
     return ret;
 }
@@ -3458,19 +3457,19 @@ del_soko_prizes()
     struct obj *otmp, *onext;
     /* check objs on floor */
     for (otmp = fobj; otmp; otmp = onext) {
-	onext = otmp->nobj; /* otmp may be destroyed */
-	if (is_soko_prize_flag(otmp)) {
-	    x = otmp->ox;
-	    y = otmp->oy;
-	    obj_extract_self(otmp);
-	    if (cansee(x, y)) {
-		You("see %s %s.", an(xname(otmp)),
+        onext = otmp->nobj; /* otmp may be destroyed */
+        if (is_soko_prize_flag(otmp)) {
+            x = otmp->ox;
+            y = otmp->oy;
+            obj_extract_self(otmp);
+            if (cansee(x, y)) {
+                You("see %s %s.", an(xname(otmp)),
                     rn2(2) ? "dissolve into nothingness"
                            : "wink out of existience");
-		newsym(x, y);
-	    } else cnt++;
-	        obfree(otmp, (struct obj *) 0);
-	}
+                newsym(x, y);
+            } else cnt++;
+                obfree(otmp, (struct obj *) 0);
+        }
     }
     if (cnt && !Deaf)
         You_hear("%s.",
@@ -3478,11 +3477,11 @@ del_soko_prizes()
                         : "a noise like a hundred thousand people saying 'foop'");
     /* check buried objs... do we need this? */
     for (otmp = level.buriedobjlist; otmp; otmp = onext) {
-	onext = otmp->nobj; /* otmp may be destroyed */
-	if (is_soko_prize_flag(otmp)) {
-	    obj_extract_self(otmp);
-	    obfree(otmp, (struct obj *) 0);
-	}
+        onext = otmp->nobj; /* otmp may be destroyed */
+        if (is_soko_prize_flag(otmp)) {
+            obj_extract_self(otmp);
+            obfree(otmp, (struct obj *) 0);
+        }
     }
 }
 
