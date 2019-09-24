@@ -784,7 +784,7 @@ int spellnum;
         }
         if (aligntype == A_NONE) {
             pline("A vassal of %s appears!", Moloch);
-                  summon_minion(aligntype, TRUE);
+            summon_minion(aligntype, TRUE);
         } else {
             pline("A servant of %s appears!", aligns[1 - aligntype].noun);
             summon_minion(aligntype, TRUE);
@@ -1122,14 +1122,14 @@ int spellnum;
             && mtmp->mpeaceful) {
             return TRUE;
         }
-     } else if (adtyp == AD_CLRC) {
+    } else if (adtyp == AD_CLRC) {
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == CLC_CURE_SELF)
             return TRUE;
         /* blindness spell on blinded player */
         if ((!haseyes(mdef->data) || mdef->mblinded) && spellnum == CLC_BLIND_YOU)
             return TRUE;
-        }
+    }
     return FALSE;
 }
 
@@ -1301,18 +1301,18 @@ register struct attack *mattk;
     int spellnum = 0;
 
     if ((mattk->adtyp == AD_SPEL || mattk->adtyp == AD_CLRC) && ml) {
-    int cnt = 40;
+        int cnt = 40;
 
-    do {
-        spellnum = rn2(ml);
-        if (mattk->adtyp == AD_SPEL)
-            spellnum = choose_magic_spell(mtmp, spellnum);
-        else
-            spellnum = choose_clerical_spell(mtmp, spellnum);
-    /* not trying to attack?  don't allow directed spells */
-    } while (--cnt > 0 &&
-        mspell_would_be_useless(mtmp, mdef,
-                                 mattk->adtyp, spellnum));
+        do {
+            spellnum = rn2(ml);
+            if (mattk->adtyp == AD_SPEL)
+                spellnum = choose_magic_spell(mtmp, spellnum);
+            else
+                spellnum = choose_clerical_spell(mtmp, spellnum);
+        /* not trying to attack?  don't allow directed spells */
+        } while (--cnt > 0
+                 && mspell_would_be_useless(mtmp, mdef,
+                                            mattk->adtyp, spellnum));
         if (cnt == 0)
             return 0;
     }
@@ -1320,14 +1320,14 @@ register struct attack *mattk;
     /* monster unable to cast spells? */
     if (mtmp->mcan || mtmp->mspec_used || !ml) {
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)) {
-                char buf[BUFSZ];
-        Sprintf(buf, "%s", Monnam(mtmp));
+            char buf[BUFSZ];
+            Sprintf(buf, "%s", Monnam(mtmp));
 
-        if (is_undirected_spell(mattk->adtyp, spellnum))
-            pline("%s points all around, then curses.", buf);
-        else
-            pline("%s points at %s, then curses.",
-                  buf, mon_nam(mdef));
+            if (is_undirected_spell(mattk->adtyp, spellnum))
+                pline("%s points all around, then curses.", buf);
+            else
+                pline("%s points at %s, then curses.",
+                      buf, mon_nam(mdef));
 
         } else if ((!(moves % 4) || !rn2(4))) {
             if (!Deaf) Norep("You hear a mumbled curse.");
@@ -1356,7 +1356,7 @@ register struct attack *mattk;
     }
     if (cansee(mtmp->mx, mtmp->my) || canseemon(mtmp)
         || (!is_undirected_spell(mattk->adtyp, spellnum)
-        && (cansee(mdef->mx, mdef->my) || canseemon(mdef)))) {
+            && (cansee(mdef->mx, mdef->my) || canseemon(mdef)))) {
             char buf[BUFSZ];
         Sprintf(buf, " at ");
         Strcat(buf, mon_nam(mdef));
@@ -1431,13 +1431,13 @@ register struct attack *mattk;
              * it's undirected but should still target the
              * victim so as to aggravate you */
             if (is_undirected_spell(mattk->adtyp, spellnum)
-                    && (mattk->adtyp != AD_SPEL
-                    || (spellnum != MGC_AGGRAVATION
-                    && spellnum != MGC_SUMMON_MONS))) {
-                    if (mattk->adtyp == AD_SPEL)
-                        cast_wizard_spell(mtmp, dmg, spellnum);
-                    else
-                        cast_cleric_spell(mtmp, dmg, spellnum);
+                && (mattk->adtyp != AD_SPEL
+                || (spellnum != MGC_AGGRAVATION
+                && spellnum != MGC_SUMMON_MONS))) {
+                if (mattk->adtyp == AD_SPEL)
+                    cast_wizard_spell(mtmp, dmg, spellnum);
+                else
+                    cast_cleric_spell(mtmp, dmg, spellnum);
             } else if (mattk->adtyp == AD_SPEL)
                 ucast_wizard_spell(mtmp, mdef, dmg, spellnum);
             else
@@ -1452,7 +1452,7 @@ register struct attack *mattk;
     }
     if (mdef && mdef->mhp < 1)
         return 2;
-        return (ret);
+    return (ret);
 }
 
 /* return values:
@@ -1489,10 +1489,10 @@ register struct attack *mattk;
 
     } while (--cnt > 0
              && ((!mtmp && !is_undirected_spell(mattk->adtyp, spellnum))
-             || uspell_would_be_useless(mattk->adtyp, spellnum)));
+                 || uspell_would_be_useless(mattk->adtyp, spellnum)));
         if (cnt == 0) {
             You("have no spells to cast right now!");
-        return 0;
+            return 0;
         }
     }
 
@@ -1573,7 +1573,7 @@ register struct attack *mattk;
         if (resists_magm(mtmp)) {
             shieldeff(mtmp->mx, mtmp->my);
             pline("Some missiles bounce off!");
-        dmg = (dmg + 1) / 2;
+            dmg = (dmg + 1) / 2;
         }
         if (Half_spell_damage) {
             dmg = (dmg + 1) / 2;
@@ -2193,23 +2193,23 @@ int spellnum;
             switch (dmg) {
             case 1:
                 if (vulnerable_to(mtmp, AD_FIRE)) return;
-                    incr_itimeout(&HVulnerable_fire, rnd(100)+150);
-                    pline("%s is more inflammable.", Monnam(mtmp));
+                incr_itimeout(&HVulnerable_fire, rnd(100)+150);
+                pline("%s is more inflammable.", Monnam(mtmp));
                 break;
             case 2:
                 if (vulnerable_to(mtmp, AD_COLD)) return;
-                    incr_itimeout(&HVulnerable_cold, rnd(100)+150);
-                    pline("%s is extremely chilly.", Monnam(mtmp));
+                incr_itimeout(&HVulnerable_cold, rnd(100)+150);
+                pline("%s is extremely chilly.", Monnam(mtmp));
                 break;
             case 3:
                 if (vulnerable_to(mtmp, AD_ELEC)) return;
-                    incr_itimeout(&HVulnerable_elec, rnd(100)+150);
-                    pline("%s is overly conductive.", Monnam(mtmp));
+                incr_itimeout(&HVulnerable_elec, rnd(100)+150);
+                pline("%s is overly conductive.", Monnam(mtmp));
                 break;
             case 4:
                 if (vulnerable_to(mtmp, AD_ACID)) return;
-                    incr_itimeout(&HVulnerable_acid, rnd(100)+150);
-                    pline("%s is easily corrodable.", Monnam(mtmp));
+                incr_itimeout(&HVulnerable_acid, rnd(100)+150);
+                pline("%s is easily corrodable.", Monnam(mtmp));
                 break;
             default:
                 break;

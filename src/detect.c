@@ -910,8 +910,8 @@ struct obj *detector;   /* object doing the detecting */
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         if (!DEADMONSTER(mtmp)
-        /* TODO: other magical types of creature? */
-        && attacktype(mtmp->data, AT_MAGC)) {
+            /* TODO: other magical types of creature? */
+            && attacktype(mtmp->data, AT_MAGC)) {
             ct++;
             break;
         }
@@ -928,8 +928,8 @@ struct obj *detector;   /* object doing the detecting */
     for (obj = invent; obj; obj = obj->nobj)
         if (is_magic(obj)) {
             obj->oprops_known |= ITEM_MAGICAL;
-        if (do_pknown)
-            do_dknown_of(obj, TRUE);
+            if (do_pknown)
+                do_dknown_of(obj, TRUE);
     }
 
     for (obj = fobj; obj; obj = obj->nobj) {
@@ -947,18 +947,18 @@ struct obj *detector;   /* object doing the detecting */
     for (obj = level.buriedobjlist; obj; obj = obj->nobj) {
         if (!is_magic(obj))
             continue;
-    if (obj->ox == u.ux && obj->oy == u.uy)
+        if (obj->ox == u.ux && obj->oy == u.uy)
             ctu++;
-    else
+        else
             ct++;
-    obj->oprops_known |= ITEM_MAGICAL;
-    if (do_pknown)
+        obj->oprops_known |= ITEM_MAGICAL;
+        if (do_pknown)
             do_dknown_of(obj, TRUE);
     }
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
-                continue;
+            continue;
         for (obj = mtmp->minvent; obj; obj = obj->nobj) {
             if (!is_magic(obj))
                 continue;
@@ -978,7 +978,7 @@ struct obj *detector;   /* object doing the detecting */
         if (!ctu) {
             if (detector)
                 strange_feeling(detector, "You feel mundane.");
-        return 1;
+            return 1;
         }
 
         You("sense %s nearby.", stuff);

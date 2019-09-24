@@ -1281,7 +1281,7 @@ int how;
         Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
     if (uamul->cursed) {
         Your("medallion %s!", !Blind ? "glows white-hot" : "sears your neck");
-            You("hear manic laughter in the distance...");
+        You("hear manic laughter in the distance...");
         Your("medallion turns to ash!");
         pline("It appears your luck has run out...");
         killer.format = KILLED_BY;
