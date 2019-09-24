@@ -69,7 +69,7 @@ int distance;
             continue;
         if ((distm = distu(mtmp->mx, mtmp->my)) < distance) {
             mtmp->msleeping = 0;
-        if (!mtmp->mstone || mtmp->mstone > 2)
+            if (!mtmp->mstone || mtmp->mstone > 2)
                 mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
             /* may scare some monsters -- waiting monsters excluded */

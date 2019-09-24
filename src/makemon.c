@@ -308,9 +308,9 @@ unsigned short chance;
                 * one will immediately read it and use the iron ball as a
                 * weapon.)
                 */
-               obj = mkobj(trop->trclass, FALSE);
-                       otyp = obj->otyp;
-               while (otyp == WAN_WISHING
+                obj = mkobj(trop->trclass, FALSE);
+                otyp = obj->otyp;
+                while (otyp == WAN_WISHING
                     || otyp == nocreate
                     || otyp == nocreate2
                     || otyp == nocreate3
@@ -360,7 +360,7 @@ unsigned short chance;
                 /* Don't have 2 of the same ring or spellbook */
                 if (obj->oclass == RING_CLASS
                     || obj->oclass == SPBOOK_CLASS)
-                nocreate4 = otyp;
+                    nocreate4 = otyp;
             }
 
             if (trop->trclass == COIN_CLASS) {
@@ -390,7 +390,7 @@ unsigned short chance;
                 if ((obj->oclass == WEAPON_CLASS
                     || obj->oclass == ARMOR_CLASS)
                     && chance > 1) {
-                        obj->spe = (obj->spe * rn2(chance)) / chance;
+                    obj->spe = (obj->spe * rn2(chance)) / chance;
                 }
             }
             /* defined after setting otyp+quan + blessedness */
@@ -431,10 +431,10 @@ register struct monst *mtmp;
             if (mtmp->m_lev > 10 || !rn2(10))
                 if (rn2(2)) {
                     ini_mon_inv(mtmp, !rn2(2) ? Level20Kit1 : Level20Kit2,
-                        (mtmp->m_lev >= 20) ? 1 : isqrt(23 - mtmp->m_lev));
+                                (mtmp->m_lev >= 20) ? 1 : isqrt(23 - mtmp->m_lev));
                 } else {
                     ini_mon_inv(mtmp, !rn2(2) ? Level20Kit3 : Level20Kit4,
-                        (mtmp->m_lev >= 20) ? 1 : isqrt(23 - mtmp->m_lev));
+                                (mtmp->m_lev >= 20) ? 1 : isqrt(23 - mtmp->m_lev));
                 }
             ini_mon_inv(mtmp, !rn2(2) ? Level10Kit1 : Level10Kit2,
                 (mtmp->m_lev >= 10) ? 1 : isqrt(13 - mtmp->m_lev));
@@ -715,28 +715,28 @@ register struct monst *mtmp;
                         randwand = rn2(7);
                     } while (randwand > 5 && rn2(14));
                     switch (randwand) {
-                        case 1:
-                            randwand = WAN_MAGIC_MISSILE;
-                            break;
-                        case 2:
-                            randwand = WAN_SLEEP;
-                            break;
-                        case 3:
-                            randwand = WAN_FIRE;
-                            break;
-                        case 4:
-                            randwand = WAN_COLD;
-                            break;
-                        case 5:
-                            randwand = WAN_LIGHTNING;
-                            break;
-                        case 6:
-                            randwand = WAN_DEATH;
-                            break;
-                        case 0:
-                        default:
-                            randwand = WAN_STRIKING;
-                            break;
+                    case 1:
+                        randwand = WAN_MAGIC_MISSILE;
+                        break;
+                    case 2:
+                        randwand = WAN_SLEEP;
+                        break;
+                    case 3:
+                        randwand = WAN_FIRE;
+                        break;
+                    case 4:
+                        randwand = WAN_COLD;
+                        break;
+                    case 5:
+                        randwand = WAN_LIGHTNING;
+                        break;
+                    case 6:
+                        randwand = WAN_DEATH;
+                        break;
+                    case 0:
+                    default:
+                        randwand = WAN_STRIKING;
+                        break;
                     }
                     (void) mongets(mtmp, randwand);
                 }

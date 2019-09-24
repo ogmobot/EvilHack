@@ -363,8 +363,8 @@ struct obj *otmp, *mwep;
 
         for (dir = 0; dir < 8; dir++)
             if (dirx[dir] == sgn(gx-mtmp->mx)
-            && diry[dir] == sgn(gy-mtmp->my))
-            break;
+                && diry[dir] == sgn(gy-mtmp->my))
+                break;
 
         if (dir == 8) {
             tbx = tby = 0;
@@ -410,7 +410,7 @@ struct obj *otmp, *mwep;
                 && acceptable_pet_target(mtmp, mat, TRUE) && i > 0) {
                 if ((!oldmret)
                     || (mons[monsndx(mat->data)].difficulty >
-                mons[monsndx(oldmret->data)].difficulty))
+                        mons[monsndx(oldmret->data)].difficulty))
                     mret = mat;
             }
             else if ((mm_aggression(mtmp, mat) & ALLOW_M)
@@ -428,8 +428,8 @@ struct obj *otmp, *mwep;
                     && i > 0) {
                         if ((!oldmret)
                             || (mons[monsndx(mat->data)].difficulty >
-                            mons[monsndx(oldmret->data)].difficulty))
-                        mret = mat;
+                                mons[monsndx(oldmret->data)].difficulty))
+                            mret = mat;
                 }
             }
 

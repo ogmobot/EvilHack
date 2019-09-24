@@ -2851,7 +2851,7 @@ struct attack *mattk;
             int dmg = d(4, 4);
 
             You("meet %s strange gaze.",
-                  s_suffix(mon_nam(mtmp)));
+                s_suffix(mon_nam(mtmp)));
             (void) cancel_monst(&youmonst, (struct obj *) 0, FALSE, TRUE, FALSE);
             if (dmg)
                 mdamageu(mtmp, dmg);
