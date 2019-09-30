@@ -926,17 +926,36 @@ register struct monst *mtmp;
             (void) mongets(mtmp, item);
             received = m_carrying(mtmp, item);
             if (received)
+<<<<<<< HEAD
                 set_material(received, GOLD);
+=======
+                received->material = GOLD;
+>>>>>>> New artifact: Midas Touch
             item = rn2(2) ? HELMET : DWARVISH_HELM;
             (void) mongets(mtmp, item);
             received = m_carrying(mtmp, item);
             if (received)
+<<<<<<< HEAD
                 set_material(received, GOLD);
+=======
+                received->material = GOLD;
+>>>>>>> New artifact: Midas Touch
             item = rn2(2) ? KICKING_BOOTS : DWARVISH_BOOTS;
             (void) mongets(mtmp, item);
             received = m_carrying(mtmp, item);
             if (received)
+<<<<<<< HEAD
                 set_material(received, GOLD);
+=======
+                received->material = GOLD;
+            otmp = mksobj(GAUNTLETS, FALSE, FALSE);
+            otmp->material = GOLD;
+            if (!rn2(2)) {
+                otmp = oname(otmp, artiname(ART_MIDAS_TOUCH));
+                curse(otmp);
+            }
+            (void) mpickobj(mtmp, otmp);
+>>>>>>> New artifact: Midas Touch
         }
         break;
 

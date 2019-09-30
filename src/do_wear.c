@@ -610,6 +610,15 @@ Gloves_on(VOID_ARGS)
     if (uarmg->greased)
         Glib |= FROMOUTSIDE;
     uarmg->known = 1; /* gloves' +/- evident because of status line AC */
+
+    if (uarmg->oartifact == ART_MIDAS_TOUCH) {
+        if (uwep) {
+            turn_to_gold(uwep, 0);
+        }
+        if (uswapwep && u.twoweap) {
+            turn_to_gold(uswapwep, 0);
+        }
+    }
     return 0;
 }
 

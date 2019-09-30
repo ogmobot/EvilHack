@@ -1397,6 +1397,23 @@ int dieroll;
         }
     }
 
+    if ((mdat == &mons[PM_IRON_GOLEM] || mdat == &mons[PM_STONE_GOLEM])
+        && !uwep && !thrown && uarmg && uarmg->oartifact == ART_MIDAS_TOUCH) {
+        char *name = Monnam(mon);
+
+        if (newcham(mon, &mons[PM_GOLD_GOLEM], FALSE, FALSE)) {
+            if (canseemon(mon)) {
+                pline("%s turns to gold as you hit it!", name);
+                hittxt = TRUE;
+            }
+        } else {
+            if (canseemon(mon)) {
+                pline("%s seems to sparkle with gold as you hit it.", name);
+                hittxt = TRUE;
+            }
+        }
+    }
+
     if (!hittxt /*( thrown => obj exists )*/
         && (!destroyed
             || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {

@@ -106,6 +106,10 @@ register struct obj *obj;
         && ((uwep && uwep->oartifact == ART_GIANTSLAYER)
             || (olduwep && olduwep->oartifact == ART_GIANTSLAYER)))
         context.botl = 1;
+
+    if (uwep == obj && (uarmg && uarmg->oartifact == ART_MIDAS_TOUCH))
+        turn_to_gold(obj, 0);
+
     /* Note: Explicitly wielding a pick-axe will not give a "bashing"
      * message.  Wielding one via 'a'pplying it will.
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.
@@ -697,6 +701,8 @@ dotwoweapon()
         /* Success! */
         You("begin two-weapon combat.");
         u.twoweap = 1;
+        if (uarmg && uarmg->oartifact == ART_MIDAS_TOUCH)
+            turn_to_gold(uswapwep, 0);
         update_inventory();
         return (rnd(20) > ACURR(A_DEX));
     }

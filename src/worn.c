@@ -799,6 +799,9 @@ outer_break:
         } /* else if (!mon->minvis) pline("%s suddenly appears!",
              Amonnam(mon)); */
     }
+    if (flag == W_ARMG && best->oartifact == ART_MIDAS_TOUCH) {
+        turn_to_gold(MON_WEP(mon), mon);
+    }
 }
 #undef RACE_EXCEPTION
 

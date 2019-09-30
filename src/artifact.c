@@ -15,6 +15,8 @@
  */
 
 extern boolean notonhead; /* for long worms */
+extern const int matprices[];
+extern const int matdensities[];
 
 #define get_artifact(o) \
     (((o) && (o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
@@ -2810,6 +2812,29 @@ struct monst *mon; /* if null, hero assumed */
             return o;
     }
     return (struct obj *) 0;
+}
+
+boolean
+turn_to_gold(obj, mon)
+struct obj *obj;
+struct monst *mon; /* if null, hero assumed */
+{
+    if (obj && (obj->material != GOLD) && valid_obj_material(obj, GOLD)
+        && !obj->oartifact) {
+        if ((mon && canseemon(mon)) || (!mon && !Blind))
+            pline("%s to gold!", Tobjnam(obj, "turn"));
+        else if ((obj == uwep || obj == uswapwep)
+                 && (matdensities[obj->material] != matdensities[GOLD]))
+            pline("%s %s.", Tobjnam(obj, "feel"),
+                  matdensities[obj->material] > matdensities[GOLD]
+                  ? "lighter" : "heavier");
+        if (!mon && matprices[obj->material] > matprices[GOLD])
+            costly_alteration(obj, COST_DEGRD);
+        set_material(obj, GOLD);
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 /*artifact.c*/
