@@ -223,8 +223,9 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NO_COLOR),
     /* Golden gauntlets that turn wielded items into gold. These belong to Croesus.
      */
-    A("Midas Touch", GAUNTLETS, (SPFX_NOGEN | SPFX_RESTR), 0, 0, NO_ATTK, NO_DFNS,
-      NO_CARY, CHANGE_MATERIAL, A_NEUTRAL, NON_PM, NON_PM, 5000L, NO_COLOR),
+    A("Midas Touch", GAUNTLETS, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN), 0, 0, 
+      NO_ATTK, DFNS(AD_DISE), NO_CARY, CHANGE_MATERIAL, A_NEUTRAL, NON_PM, NON_PM,
+      5000L, NO_COLOR),
 
     /*
      *      The artifacts for the quest dungeon, all self-willed.
