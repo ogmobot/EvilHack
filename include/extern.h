@@ -104,7 +104,7 @@ E void FDECL(retouch_equipment, (int));
 E void NDECL(mkot_trap_warn);
 E boolean FDECL(is_magic_key, (struct monst *, struct obj *));
 E struct obj *FDECL(has_magic_key, (struct monst *));
-E boolean FDECL(turn_to_gold, (struct obj *, struct monst *));
+E boolean FDECL(change_material, (struct obj *, int mat));
 
 /* ### attrib.c ### */
 

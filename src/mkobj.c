@@ -3092,11 +3092,6 @@ static const struct icp metal_materials[] = {
 
 /* for objects which are normally wooden */
 static const struct icp wood_materials[] = {
-    { 0, GOLD},
-    /* Gold items of this nature can't be generated normally, but can be
-     * wished for. The gold entry must be placed before the last normal
-     * material to be considered valid.
-     */
     {80, WOOD},
     {10, MINERAL},
     { 4, IRON},
@@ -3142,7 +3137,6 @@ static const struct icp elven_materials[] = {
 
 /* for objects of orcish make - no mithril! */
 static const struct icp orcish_materials[] = {
-    { 0, GOLD},
     {65, IRON},
     {25, BONE},
     {10, MINERAL}
@@ -3185,7 +3179,6 @@ static const struct icp horn_materials[] = {
 /* hacks for specific objects... not great because it's a lot of data, but it's
  * a relatively clean solution */
 static const struct icp elven_helm_boots_materials[] = {
-    { 0, GOLD},
     {70, LEATHER},
     {15, MITHRIL},
     {10, COPPER},
@@ -3194,7 +3187,6 @@ static const struct icp elven_helm_boots_materials[] = {
 };
 
 static const struct icp dwarvish_weapon_materials[] = {
-    { 0, GOLD},
     {70, IRON},
     {25, MITHRIL},
     { 5, GEMSTONE} /* gemstone is very hard and very sharp */

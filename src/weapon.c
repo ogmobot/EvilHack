@@ -1016,9 +1016,6 @@ register struct monst *mon;
                           ? "nearby"
                           : "in the distance");
         }
-        if (which_armor(mon, W_ARMG)
-            && which_armor(mon, W_ARMG)->oartifact == ART_MIDAS_TOUCH)
-            turn_to_gold(obj, mon);
         obj->owornmask = W_WEP;
         return 1;
     }
