@@ -2105,6 +2105,10 @@ struct obj *obj;
             break;
         }
         case ENLIGHTENING:
+            /* Funny that the only item that can see into the cue ball
+             * already provides enlightenment... */
+            if (obj->oartifact == ART_MAGIC_CUE_BALL && u.xray_range < 0)
+                goto nothing_special;
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             break;
         case CREATE_AMMO: {

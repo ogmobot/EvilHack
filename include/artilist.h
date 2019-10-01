@@ -215,6 +215,9 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       (SPFX_NOGEN | SPFX_RESTR | SPFX_INTEL | SPFX_SPEAK), (SPFX_WARN | SPFX_EXCLUDE),
       0, NO_ATTK, NO_DFNS, NO_CARY, 0, A_NONE, NON_PM, NON_PM, 5000L,
       NO_COLOR),
+    A("Magic Cue Ball", EIGHT_BALL,
+      (SPFX_NOGEN | SPFX_RESTR ), (SPFX_WARN | SPFX_EXCLUDE), 0, NO_ATTK, NO_DFNS,
+      NO_CARY, ENLIGHTENING, A_NONE, NON_PM, NON_PM, 5000L, CLR_WHITE),
     /* Convict role first artifact weapon should they altar sacrifice for one.
      * Acts like a luckstone.
      */
@@ -223,7 +226,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NO_COLOR),
     /* Golden gauntlets that turn wielded items into gold. These belong to Croesus.
      */
-    A("Midas Touch", GAUNTLETS, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN), 0, 0, 
+    A("Midas Touch", GAUNTLETS, (SPFX_NOGEN | SPFX_RESTR | SPFX_DEFN), 0, 0,
       NO_ATTK, DFNS(AD_DISE), NO_CARY, CHANGE_MATERIAL, A_NEUTRAL, NON_PM, NON_PM,
       5000L, NO_COLOR),
 
