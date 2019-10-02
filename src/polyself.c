@@ -1872,6 +1872,9 @@ int atyp;
     case GOLD_DRAGON_SCALE_MAIL:
     case GOLD_DRAGON_SCALES:
         return PM_GOLD_DRAGON;
+    case SEA_DRAGON_SCALE_MAIL:
+    case SEA_DRAGON_SCALES:
+        return PM_SEA_DRAGON;
     case YELLOW_DRAGON_SCALE_MAIL:
     case YELLOW_DRAGON_SCALES:
         return PM_YELLOW_DRAGON;
@@ -1897,6 +1900,9 @@ polysense()
         break;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_LADY:
+    case PM_VAMPIRE_KING:
+    case PM_VAMPIRE_QUEEN:
     case PM_VAMPIRE_MAGE:
         context.warntype.polyd = MH_HUMAN | MH_ELF;
         HWarn_of_mon |= FROMRACE;

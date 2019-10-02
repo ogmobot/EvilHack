@@ -138,6 +138,8 @@
 #define is_bird(ptr) ((ptr)->mlet == S_BAT && !is_bat(ptr))
 #define has_beak(ptr) (is_bird(ptr) || (ptr) == &mons[PM_TENGU] \
                        || (ptr) == &mons[PM_VROCK]              \
+                       || (ptr) == &mons[PM_BABY_OWLBEAR]       \
+                       || (ptr) == &mons[PM_OWLBEAR]            \
                        || (ptr) == &mons[PM_FELL_BEAST])
 # define is_rat(ptr) ((ptr) == &mons[PM_SEWER_RAT]       \
                       || (ptr) == &mons[PM_GIANT_RAT]    \
@@ -253,8 +255,9 @@
          ? 1                                                      \
          : ((ptr) == &mons[PM_FIRE_ELEMENTAL]) ? 1 : 0)
 /*	[note: the light ranges above were reduced to 1 for performance...] */
-#define likes_lava(ptr) \
-    (ptr == &mons[PM_FIRE_ELEMENTAL] || ptr == &mons[PM_SALAMANDER])
+#define likes_lava(ptr)                                             \
+    (ptr == &mons[PM_FIRE_ELEMENTAL]                                \
+     || ptr == &mons[PM_SALAMANDER] || ptr == &mons[PM_LAVA_DEMON])
 #define pm_invisible(ptr) \
     ((ptr) == &mons[PM_STALKER] || (ptr) == &mons[PM_BLACK_LIGHT])
 

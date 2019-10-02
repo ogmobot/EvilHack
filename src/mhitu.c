@@ -1273,7 +1273,9 @@ register struct attack *mattk;
                 hitmsg(mtmp, mattk);
                 }
             }
-	    if (mtmp->data == &mons[PM_WATER_ELEMENTAL]) {
+	    if (mtmp->data == &mons[PM_WATER_ELEMENTAL]
+                || mtmp->data == &mons[PM_BABY_SEA_DRAGON]
+                || mtmp->data == &mons[PM_SEA_DRAGON]) {
 		goto do_rust;
 	}
         break;
@@ -1391,7 +1393,7 @@ register struct attack *mattk;
             break;
         }
 
-        if (is_illithid(mtmp->data)) {
+        if (Race_if(PM_ILLITHID)) {
             Your("psionic abilities shield your brain.");
             break;
         }
@@ -1427,11 +1429,9 @@ register struct attack *mattk;
                 break;
         }
         /* adjattrib gives dunce cap message when appropriate */
-        if (!Race_if(PM_ILLITHID)) {
-            (void) adjattrib(A_INT, -rnd(2), FALSE);
-            forget_levels(25);  /* lose memory of 25% of levels */
-            forget_objects(25); /* lose memory of 25% of objects */
-        }
+        (void) adjattrib(A_INT, -rnd(2), FALSE);
+        forget_levels(25);  /* lose memory of 25% of levels */
+        forget_objects(25); /* lose memory of 25% of objects */
         break;
     case AD_PLYS:
         hitmsg(mtmp, mattk);
@@ -1714,8 +1714,8 @@ register struct attack *mattk;
         }
         break;
     case AD_RUST:
-do_rust:
         hitmsg(mtmp, mattk);
+do_rust:
         if (mtmp->mcan)
             break;
         if (u.umonnum == PM_IRON_GOLEM) {
@@ -2299,7 +2299,8 @@ struct attack *mattk;
             tmp = 0;
             /* Immediate timeout message: "You find it hard to breathe." */
         }
-        if (mtmp->data == &mons[PM_WATER_ELEMENTAL])
+        if (mtmp->data == &mons[PM_WATER_ELEMENTAL]
+            || mtmp->data == &mons[PM_SEA_DRAGON])
             water_damage_chain(invent, FALSE, rnd(3), FALSE);
         break;
     case AD_ACID:

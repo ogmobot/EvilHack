@@ -1106,6 +1106,8 @@ static const short grownups[][2] = {
     { PM_DEMILICH, PM_MASTER_LICH },
     { PM_MASTER_LICH, PM_ARCH_LICH },
     { PM_VAMPIRE, PM_VAMPIRE_LORD },
+    { PM_VAMPIRE_LORD, PM_VAMPIRE_KING },
+    { PM_VAMPIRE_LADY, PM_VAMPIRE_QUEEN },
     { PM_BAT, PM_GIANT_BAT },
     { PM_BABY_GRAY_DRAGON, PM_GRAY_DRAGON },
     { PM_BABY_SILVER_DRAGON, PM_SILVER_DRAGON },
@@ -1117,6 +1119,7 @@ static const short grownups[][2] = {
     { PM_BABY_BLUE_DRAGON, PM_BLUE_DRAGON },
     { PM_BABY_GREEN_DRAGON, PM_GREEN_DRAGON },
     { PM_BABY_GOLD_DRAGON, PM_GOLD_DRAGON },
+    { PM_BABY_SEA_DRAGON, PM_SEA_DRAGON },
     { PM_BABY_YELLOW_DRAGON, PM_YELLOW_DRAGON },
     { PM_PSEUDODRAGON, PM_ELDER_PSEUDODRAGON },
     { PM_ELDER_PSEUDODRAGON, PM_ANCIENT_PSEUDODRAGON },
@@ -1159,6 +1162,7 @@ static const short grownups[][2] = {
     { PM_KEYSTONE_KOP, PM_KOP_SERGEANT },
     { PM_KOP_SERGEANT, PM_KOP_LIEUTENANT },
     { PM_KOP_LIEUTENANT, PM_KOP_KAPTAIN },
+    { PM_BABY_OWLBEAR, PM_OWLBEAR },
     { NON_PM, NON_PM }
 };
 
@@ -1291,6 +1295,9 @@ struct attack *mattk;
     case PM_WATER_ELEMENTAL:
     case PM_FOG_CLOUD:
     case PM_STEAM_VORTEX:
+    case PM_WATER_TROLL:
+    case PM_BABY_SEA_DRAGON:
+    case PM_SEA_DRAGON:
         what = "boiling";
         break;
     case PM_ICE_VORTEX:

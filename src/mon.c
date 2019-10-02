@@ -263,6 +263,9 @@ int mndx;
         break;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_LADY:
+    case PM_VAMPIRE_KING:
+    case PM_VAMPIRE_QUEEN:
     case PM_VAMPIRE_MAGE:
     case PM_HUMAN_ZOMBIE:
     case PM_HUMAN_MUMMY:
@@ -412,6 +415,7 @@ unsigned corpseflags;
     case PM_BLUE_DRAGON:
     case PM_GREEN_DRAGON:
     case PM_GOLD_DRAGON:
+    case PM_SEA_DRAGON:
     case PM_YELLOW_DRAGON:
         /* Make dragon scales.  This assumes that the order of the
            dragons is the same as the order of the scales. */
@@ -440,6 +444,9 @@ unsigned corpseflags;
         goto default_1;
     case PM_VAMPIRE:
     case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_LADY:
+    case PM_VAMPIRE_KING:
+    case PM_VAMPIRE_QUEEN:
     case PM_VAMPIRE_MAGE:
         /* include mtmp in the mkcorpstat() call */
         num = undead_to_corpse(mndx);
@@ -1671,7 +1678,8 @@ long flag;
     nowtyp = levl[x][y].typ;
 
     nodiag = NODIAG(mdat - mons);
-    wantpool = (mdat->mlet == S_EEL);
+    wantpool = (mdat->mlet == S_EEL || mdat == &mons[PM_BABY_SEA_DRAGON]
+                || mdat == &mons[PM_SEA_DRAGON]);
     poolok = ((!Is_waterlevel(&u.uz)
                && (is_flyer(mdat) || is_floater(mdat) || is_clinger(mdat)))
               || (is_swimmer(mdat) && !wantpool));
@@ -2475,9 +2483,10 @@ register struct monst *mtmp;
     }
 
     /* extinguish monster's armor */
-    if ( (otmp = which_armor(mtmp, W_ARM)) &&
-	(otmp->otyp==GOLD_DRAGON_SCALE_MAIL || otmp->otyp == GOLD_DRAGON_SCALES) )
-	end_burn(otmp,FALSE);
+    if ((otmp = which_armor(mtmp, W_ARM))
+        && (otmp->otyp==GOLD_DRAGON_SCALE_MAIL
+            || otmp->otyp == GOLD_DRAGON_SCALES))
+        end_burn(otmp,FALSE);
 
     mptr = mtmp->data; /* save this for m_detach() */
     /* restore chameleon, lycanthropes to true form at death */
@@ -3965,13 +3974,16 @@ struct monst *mon;
             break; /* leave mndx as is */
         wolfchance = 3;
     /*FALLTHRU*/
-    case PM_VAMPIRE_LORD: /* vampire lord or Vlad can become wolf */
+    case PM_VAMPIRE_LORD:
+    case PM_VAMPIRE_LADY: /* vampire lords/ladies or Vlad can become wolf */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WOLF;
             break;
         }
     /*FALLTHRU*/
-    case PM_VAMPIRE_MAGE: /* vampire mage can become a warg */
+    case PM_VAMPIRE_KING:
+    case PM_VAMPIRE_QUEEN:
+    case PM_VAMPIRE_MAGE: /* vampire kings/queens and mages can become a warg */
         if (!rn2(wolfchance) && !uppercase_only) {
             mndx = PM_WARG;
             break;
@@ -4109,6 +4121,9 @@ struct monst *mon;
         break;
     case PM_VLAD_THE_IMPALER:
     case PM_VAMPIRE_MAGE:
+    case PM_VAMPIRE_QUEEN:
+    case PM_VAMPIRE_KING:
+    case PM_VAMPIRE_LADY:
     case PM_VAMPIRE_LORD:
     case PM_VAMPIRE:
         mndx = pickvampshape(mon);
