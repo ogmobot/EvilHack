@@ -591,14 +591,20 @@ register struct monst *mtmp;
             register boolean m_sen = sensemon(mtmp);
 
             if (m_sen || (Blind_telepat && rn2(2)) || !rn2(10)) {
-                int dmg;
-                pline("It locks on to your %s!",
-                      m_sen ? "telepathy" : Blind_telepat ? "latent telepathy"
-                                                          : "mind");
-                dmg = rnd(15);
-                if (Half_spell_damage)
-                    dmg = (dmg + 1) / 2;
-                losehp(dmg, "psychic blast", KILLED_BY_AN);
+                if (Psychic_resistance) {
+                    pline("But it is unable to lock onto your %s.",
+                          m_sen ? "telepathy" : Blind_telepat ? "latent telepathy"
+                                                              : "mind");
+                } else {
+                    int dmg;
+                    pline("It locks on to your %s!",
+                          m_sen ? "telepathy" : Blind_telepat ? "latent telepathy"
+                                                              : "mind");
+                    dmg = rnd(15);
+                    if (Half_spell_damage)
+                        dmg = (dmg + 1) / 2;
+                    losehp(dmg, "psychic blast", KILLED_BY_AN);
+                }
             }
         }
         for (m2 = fmon; m2; m2 = nmon) {
