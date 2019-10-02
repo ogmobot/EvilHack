@@ -327,6 +327,20 @@ struct obj *otmp;
             }
         }
         break;
+    case WAN_ALTERATION:
+        /* Hitting a golem causes it to polymorph into a random golem */
+        if (is_golem(mtmp->data)) {
+            /* Assume all golems lie between STRAW and IRON */
+            int newmontype = PM_STRAW_GOLEM
+                                + rn2(PM_IRON_GOLEM - PM_STRAW_GOLEM);
+            if (newmontype != monsndx(mtmp->data)) {
+                learn_it = TRUE;
+                newcham(mtmp, &mons[newmontype], TRUE, TRUE);
+            }
+        } else {
+            wake = FALSE;
+        }
+        break;
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
         if (disguised_mimic)
@@ -1977,6 +1991,37 @@ struct obj *obj, *otmp;
             obj = poly_obj(obj, STRANGE_OBJECT);
             newsym(obj->ox, obj->oy);
             break;
+        case WAN_ALTERATION: {
+            if (obj_resists(obj, 5, 95)) {
+                res = 0;
+                break;
+            }
+            /* Altering the material of an object is less likely to destroy 
+             * it, but it could still happen */
+            if (obj_shudders(obj) && !rn2(2)) {
+                boolean cover = ((obj == level.objects[u.ux][u.uy])
+                                 && u.uundetected
+                                 && hides_under(youmonst.data));
+                if (cansee(obj->ox, obj->oy))
+                    learn_it = TRUE;
+                do_osshock(obj);
+                if (cover)
+                    (void) hideunder(&youmonst);
+                break;
+            }
+            /* Try a few times to change the object's material, but let's
+             * not go overboard. */
+            int tryct = 0;
+            int omat = obj->material;
+            while (obj->material == omat
+                   /* 1 in 3 chance to reject object's original material */
+                   && (obj->material == objects[obj->otyp].oc_material || !rn2(3))
+                   && tryct++ < 10) {
+                init_obj_material(obj);
+            }
+            newsym(obj->ox, obj->oy);
+            break;
+        }
         case WAN_PROBING:
             res = !obj->dknown;
             /* target object has now been "seen (up close)" */
@@ -2494,6 +2539,12 @@ boolean ordinary;
         }
         break;
 
+    case WAN_ALTERATION:
+        You_feel(Hallucination
+                    ? "radical."
+                    : "different.");
+        break;
+
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
         (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE);
@@ -2829,6 +2880,7 @@ struct obj *obj; /* wand or spell */
     case SPE_CANCELLATION:
     case WAN_POLYMORPH:
     case SPE_POLYMORPH:
+    case WAN_ALTERATION:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
     case SPE_PSIONIC_WAVE:
@@ -3148,6 +3200,10 @@ struct obj *obj; /* wand or spell */
             case SPE_POLYMORPH:
                 del_engr(e);
                 make_engr_at(x, y, random_engraving(buf), moves, (xchar) 0);
+                break;
+            case WAN_ALTERATION:
+                /* Change the type of engraving, but not to "headstone" */
+                e->engr_type = rnd(N_ENGRAVE - 1);
                 break;
             case WAN_CANCELLATION:
             case SPE_CANCELLATION:

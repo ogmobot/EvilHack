@@ -2849,7 +2849,7 @@ int mat;
         && valid_obj_material(obj, mat)) {
         if (!Blind)
             pline("%s %s!", Tobjnam(obj, "become"), materialnm[mat]);
-        else if ((obj == uwep || obj == uswapwep)
+        else if ((obj == uwep || (obj == uswapwep && u.twoweap))
                  && (matdensities[obj->material] != matdensities[mat]))
             pline("%s %s.", Tobjnam(obj, "feel"),
                   matdensities[obj->material] > matdensities[mat]

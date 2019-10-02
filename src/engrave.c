@@ -743,6 +743,7 @@ doengrave()
                     dengr = TRUE;
                 }
                 break;
+            case WAN_ALTERATION:
             case WAN_NOTHING:
             case WAN_UNDEAD_TURNING:
             case WAN_OPENING:
