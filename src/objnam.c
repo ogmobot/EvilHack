@@ -1343,6 +1343,11 @@ unsigned doname_flags;
         if (obj->owornmask & W_BALL)
             Strcat(bp, " (chained to you)");
         break;
+    case COIN_CLASS:
+        if (obj->quan == 1L && obj->where == OBJ_FLOOR
+            && obj->ox == u.ux && obj->oy == u.uy)
+            Sprintf(eos(bp), " (facing %s)", (obj->o_id)%2 ? "heads" : "tails");
+        break;
     }
 
     if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
