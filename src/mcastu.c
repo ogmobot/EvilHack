@@ -725,7 +725,10 @@ int spellnum;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
-        if (Antimagic) {
+        if (Psychic_resistance) {
+            monstseesu(M_SEEN_PSYCHIC);
+            dmg = 0;
+        } else if (Antimagic) {
             shieldeff(u.ux, u.uy);
             monstseesu(M_SEEN_MAGR);
             dmg = (dmg + 1) / 2;
@@ -1086,19 +1089,19 @@ int spellnum;
             && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
-      	/* haste self when already fast */
-      	if (mtmp->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
-      	    return TRUE;
-      	/* invisibility when already invisible */
-      	if ((mtmp->minvis || mtmp->invis_blkd) && spellnum == MGC_DISAPPEAR)
-      	    return TRUE;
-      	/* healing when already healed */
-      	if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
-      	    return TRUE;
-      	/* don't summon monsters if it doesn't think you're around */
-      	if ((!mtmp->iswiz || context.no_of_wizards > 1)
-      	    && spellnum == MGC_CLONE_WIZ)
-      	    return TRUE;
+        /* haste self when already fast */
+        if (mtmp->permspeed == MFAST && spellnum == MGC_HASTE_SELF)
+            return TRUE;
+        /* invisibility when already invisible */
+        if ((mtmp->minvis || mtmp->invis_blkd) && spellnum == MGC_DISAPPEAR)
+            return TRUE;
+        /* healing when already healed */
+        if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
+            return TRUE;
+        /* don't summon monsters if it doesn't think you're around */
+        if ((!mtmp->iswiz || context.no_of_wizards > 1)
+            && spellnum == MGC_CLONE_WIZ)
+            return TRUE;
         /* Don't try to destroy armor if none is being worn */
         if (!wearing_armor() && spellnum == MGC_DESTRY_ARMR) {
             return TRUE;
@@ -1111,6 +1114,10 @@ int spellnum;
         }
         if ((m_seenres(mtmp, M_SEEN_COLD) || distu(mtmp->mx, mtmp->my) < 2)
             && spellnum == MGC_ICE_BOLT) {
+            return TRUE;
+        }
+        if (m_seenres(mtmp, M_SEEN_PSYCHIC)
+            && spellnum == MGC_PSI_BOLT) {
             return TRUE;
         }
         if ((m_seenres(mtmp, M_SEEN_ACID) || distu(mtmp->mx, mtmp->my) < 2)
