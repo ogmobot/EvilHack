@@ -1220,13 +1220,6 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                 alter_cost(otmp, 0L); /* shop bill */
             break;
         }
-        pline("%s %s%s%s%s for a %s.", Yname2(otmp),
-              s == 0 ? "violently " : "",
-              otense(otmp, Blind ? "vibrate" : "glow"),
-              (!Blind && !same_color) ? " " : "",
-              (Blind || same_color)
-                 ? "" : hcolor(scursed ? NH_BLACK : NH_SILVER),
-              (s * s > 1) ? "while" : "moment");
         /* [this cost handling will need updating if shop pricing is
            ever changed to care about curse/bless status of armor] */
         if (s < 0)
@@ -1238,7 +1231,25 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         else if (!scursed && otmp->cursed)
             uncurse(otmp);
         if (s) {
-            otmp->spe += s;
+            /* Blessed scrolls have a chance of granting special properties */
+            if (s > 0 && sblessed && !rn2(100)
+                && !otmp->oprops && !otmp->oartifact) {
+                if (!Blind)
+                    pline("%s %s.",
+                          Yobjnam2(otmp, "sparkle"),
+                          Hallucination ? "scintillatingly"
+                                        : "strangely");
+                create_oprop(otmp, FALSE);
+            } else {
+                pline("%s %s%s%s%s for a %s.", Yname2(otmp),
+                      s == 0 ? "violently " : "",
+                      otense(otmp, Blind ? "vibrate" : "glow"),
+                      (!Blind && !same_color) ? " " : "",
+                      (Blind || same_color)
+                        ? "" : hcolor(scursed ? NH_BLACK : NH_SILVER),
+                      (s * s > 1) ? "while" : "moment");
+                otmp->spe += s;
+            }
             adj_abon(otmp, s);
             known = otmp->known;
             /* update shop bill to reflect new higher price */
@@ -1489,7 +1500,15 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             uwep->oerodeproof = new_erodeproof ? 1 : 0;
             break;
         }
-        if (!chwepon(sobj, scursed ? -1
+        /* Blessed scrolls have a chance of granting special properties */
+        if (sblessed && !rn2(100) && !uwep->oprops && !uwep->oartifact) {
+            if (!Blind)
+                pline("%s %s.",
+                      Yobjnam2(uwep, "sparkle"),
+                      Hallucination ? "scintillatingly"
+                                    : "strangely");
+            create_oprop(uwep, FALSE);
+        } else if (!chwepon(sobj, scursed ? -1
                              : !uwep ? 1
                                : (uwep->spe >= 9) ? !rn2(uwep->spe)
                                  : sblessed ? rnd(3 - uwep->spe / 3)
