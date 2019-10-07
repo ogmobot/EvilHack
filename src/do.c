@@ -588,6 +588,9 @@ register struct obj *obj;
     case RIN_SHOCK_RESISTANCE:
         pline("Static electricity surrounds the sink.");
         break;
+    case RIN_MIND_SHIELDING:
+        You_hear("a phrenic hum coming from the drain.");
+        break;
     case RIN_CONFLICT:
         You_hear("loud noises coming from the drain.");
         break;

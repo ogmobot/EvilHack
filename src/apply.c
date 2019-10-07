@@ -3436,6 +3436,7 @@ struct obj *obj;
         /*FALLTHRU*/
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
+    case WAN_ALTERATION:
     case WAN_TELEPORTATION:
     case WAN_UNDEAD_TURNING:
         affects_objects = TRUE;

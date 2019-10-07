@@ -1215,6 +1215,7 @@ register struct obj *obj;
     case RIN_FIRE_RESISTANCE:
     case RIN_COLD_RESISTANCE:
     case RIN_SHOCK_RESISTANCE:
+    case RIN_MIND_SHIELDING:
     case RIN_CONFLICT:
     case RIN_TELEPORT_CONTROL:
     case RIN_POLYMORPH:
@@ -1327,6 +1328,7 @@ boolean gone;
     case RIN_FIRE_RESISTANCE:
     case RIN_COLD_RESISTANCE:
     case RIN_SHOCK_RESISTANCE:
+    case RIN_MIND_SHIELDING:
     case RIN_CONFLICT:
     case RIN_TELEPORT_CONTROL:
     case RIN_POLYMORPH:

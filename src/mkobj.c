@@ -1459,7 +1459,6 @@ unsigned onoff; /* 1 or 0 */
  * counterpart, and things such as wooden plate mails were incredibly
  * overpowered by weighing about one-tenth as much as the iron counterpart.
  * Instead, use arbitrary units. */
-STATIC_DCL
 const int matdensities[] = {
     0,   // will cause div/0 errors if anything is this material
     10,  // LIQUID

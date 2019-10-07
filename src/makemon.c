@@ -937,6 +937,13 @@ register struct monst *mtmp;
             received = m_carrying(mtmp, item);
             if (received)
                 set_material(received, GOLD);
+            otmp = mksobj(GAUNTLETS, TRUE, FALSE);
+            set_material(otmp, GOLD);
+            if (!rn2(2)) {
+                otmp = oname(otmp, artiname(ART_MIDAS_TOUCH));
+                curse(otmp);
+            }
+            (void) mpickobj(mtmp, otmp);
         }
         break;
 

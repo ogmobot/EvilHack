@@ -15,6 +15,8 @@
  */
 
 extern boolean notonhead; /* for long worms */
+extern const int matprices[];
+extern const int matdensities[];
 
 #define get_artifact(o) \
     (((o) && (o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
@@ -2103,6 +2105,10 @@ struct obj *obj;
             break;
         }
         case ENLIGHTENING:
+            /* Funny that the only item that can see into the cue ball
+             * already provides enlightenment... */
+            if (obj->oartifact == ART_MAGIC_CUE_BALL && u.xray_range < 0)
+                goto nothing_special;
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             break;
         case CREATE_AMMO: {
@@ -2156,6 +2162,24 @@ struct obj *obj;
             incr_itimeout(&HPasses_walls, (50 + rnd(100)));
             obj->age += HPasses_walls; /* Time begins after phasing ends */
             break;
+        case CHANGE_MATERIAL: {
+            int mat, tryct = 0;
+            if (oart == &artilist[ART_MIDAS_TOUCH])
+                /* Transform wielded item into gold, if possible */
+                mat = GOLD;
+            else if (uwep) {
+                /* Transform wielded item into something different */
+                mat = uwep->material;
+                while ((mat == uwep->material
+                       || (mat == objects[uwep->otyp].oc_material && rn2(3))
+                       || !valid_obj_material(uwep, mat)) && tryct++ < 100)
+                    mat = rnd(NUM_MATERIAL_TYPES - 1);
+            } else
+                mat = 0; /* Should always be invalid */
+            if (!change_material(uwep, mat))
+                goto nothing_special;
+            break;
+        }
         }
     } else {
         long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTI),
@@ -2810,6 +2834,32 @@ struct monst *mon; /* if null, hero assumed */
             return o;
     }
     return (struct obj *) 0;
+}
+
+/* Changes an object into the given material, if possible.
+ * TODO: allow some objects to change to a material that's not
+ *       usually allowed for it; e.g. gold orcish items.
+ */
+boolean
+change_material(obj, mat)
+struct obj *obj;
+int mat;
+{
+    if (obj && obj->material != mat && !obj->oartifact
+        && valid_obj_material(obj, mat)) {
+        if (!Blind)
+            pline("%s %s!", Tobjnam(obj, "become"), materialnm[mat]);
+        else if ((obj == uwep || (obj == uswapwep && u.twoweap))
+                 && (matdensities[obj->material] != matdensities[mat]))
+            pline("%s %s.", Tobjnam(obj, "feel"),
+                  matdensities[obj->material] > matdensities[mat]
+                  ? "lighter" : "heavier");
+        if (carried(obj) && matprices[obj->material] > matprices[mat])
+            costly_alteration(obj, COST_DEGRD);
+        set_material(obj, mat);
+        return TRUE;
+    } else
+        return FALSE;
 }
 
 /*artifact.c*/
