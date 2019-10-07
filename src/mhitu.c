@@ -73,7 +73,8 @@ struct attack *mattk;
             pfmt = "%s stings!";
             break;
         case AT_BUTT:
-            pfmt = "%s butts!";
+            pline("%s %ss!", Monnam(mtmp), has_trunk(mtmp->data) ?
+                  "gores you with its tusk" : "butt");
             break;
         case AT_TUCH:
             pfmt = "%s touches you!";
@@ -1196,7 +1197,10 @@ register struct attack *mattk;
                     dmg = 0;
                 } else {
                     u.ustuck = mtmp;
-                    pline("%s grabs you!", Monnam(mtmp));
+                    if (has_trunk(mtmp->data))
+                        pline("%s grasps you with its trunk!", Monnam(mtmp));
+                    else
+                        pline("%s grabs you!", Monnam(mtmp));
                 }
             } else if (u.ustuck == mtmp) {
                 exercise(A_STR, FALSE);
@@ -1393,24 +1397,35 @@ register struct attack *mattk;
             break;
         }
 
-        if (Race_if(PM_ILLITHID)) {
+        if (u_slip_free(mtmp, mattk))
+            break;
+
+        /* The material of the helmet on your head determines how effective
+         * it will be when deflecting tentacle/bite attacks. Harder material
+         * will do a better job than a soft cap. */
+        if (uarmh && is_hard(uarmh) && rn2(5)) {
+            /* not body_part(HEAD) */
+            Your("%s blocks the %s to your head.",
+                 helm_simple_name(uarmh), is_zombie(mdat) ? "bite" : "attack");
+            break;
+        }
+
+        if (uarmh && !is_hard(uarmh) && rn2(2)) {
+            Your("%s repels the %s to your head.",
+                 helm_simple_name(uarmh), is_zombie(mdat) ? "bite" : "attack");
+            break;
+        }
+
+        if (Race_if(PM_ILLITHID) && !is_zombie(mdat)) {
             Your("psionic abilities shield your brain.");
             break;
         }
 
-        if (u_slip_free(mtmp, mattk))
-            break;
-
-        if (is_zombie(mtmp->data) && rn2(5)) {
-            if (uncancelled)
+        if (is_zombie(mdat) && rn2(5)) {
+            if (uncancelled) {
+                pline("%s eats your brains!", Monnam(mtmp));
                 diseasemu(mdat);
-            break;
-        }
-
-        if (uarmh && rn2(8)) {
-            /* not body_part(HEAD) */
-            Your("%s blocks the attack to your head.",
-                 helm_simple_name(uarmh));
+            }
             break;
         }
         /* negative armor class doesn't reduce this damage */
@@ -1435,6 +1450,36 @@ register struct attack *mattk;
         break;
     case AD_PLYS:
         hitmsg(mtmp, mattk);
+        /* From xNetHack:
+         * Ghosts don't have a "paralyzing touch"; this is simply the most
+         * convenient place to put this code. What they actually do is try to
+         * pop up out of nowhere right next to you, frightening you to death
+         * (which of course paralyzes you). */
+        if (mtmp->data == &mons[PM_GHOST]) {
+            boolean couldspot = canspotmon(mtmp);
+            if (mtmp->minvis) {
+                mtmp->minvis = 0;
+                newsym(mtmp->mx, mtmp->my);
+                mtmp->mspec_used = d(2, 8);
+                if (canspotmon(mtmp) && !Unaware) {
+                    if (!couldspot) {
+                        /* only works if you didn't know it was there before it
+                        * turned visible */
+                        if (Hallucination)
+                            verbalize("Boo!");
+                        else
+                            pline("A ghost appears out of %s!",
+                                  rn2(2) ? "the shadows" : "nowhere");
+                        scary_ghost(mtmp);
+                    } else {
+                        pline("%s becomes visible!", Monnam(mtmp));
+                        if (!rn2(3))
+                            You("aren't %s.", rn2(2) ? "afraid" : "scared");
+                    }
+                }
+            }
+            break;
+        }
         if (uncancelled && multi >= 0 && !rn2(3)) {
             if (Free_action) {
                 You("momentarily stiffen.");

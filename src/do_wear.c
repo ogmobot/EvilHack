@@ -504,6 +504,7 @@ Helmet_on(VOID_ARGS)
         }
         break;
     case HELM_OF_OPPOSITE_ALIGNMENT:
+        uarmh->known = 1; /* do this here because uarmh could get cleared */
         /* changing alignment can toggle off active artifact
            properties, including levitation; uarmh could get
            dropped or destroyed here */
@@ -539,7 +540,9 @@ Helmet_on(VOID_ARGS)
     default:
         impossible(unknown_type, c_helmet, uarmh->otyp);
     }
-    uarmh->known = 1; /* helmet's +/- evident because of status line AC */
+    /* uarmh could be zero due to uchangealign() */
+    if (uarmh)
+        uarmh->known = 1; /* helmet's +/- evident because of status line AC */
     return 0;
 }
 
@@ -858,6 +861,8 @@ Armor_on(VOID_ARGS)
      */
     oprops_on(uarm, W_ARM);
     uarm->known = 1; /* suit's +/- evident because of status line AC */
+    if (Role_if(PM_MONK))
+        You_feel("extremely uncomfortable wearing such armor.");
     return 0;
 }
 
@@ -922,6 +927,8 @@ Armor_off(VOID_ARGS)
     context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     context.takeoff.cancelled_don = FALSE;
+    if (Role_if(PM_MONK))
+        You_feel("much more comfortable and free now.");
     return 0;
 }
 
@@ -989,6 +996,8 @@ Armor_gone()
     context.takeoff.mask &= ~W_ARM;
     setnotworn(uarm);
     context.takeoff.cancelled_don = FALSE;
+    if (Role_if(PM_MONK))
+        You_feel("much more comfortable and free now.");
     return 0;
 }
 

@@ -639,7 +639,8 @@ struct attack *mattk;
                 Sprintf(buf, "%s stings", magr_name);
                 break;
             case AT_BUTT:
-                Sprintf(buf, "%s butts", magr_name);
+                Sprintf(buf, "%s %ss", magr_name, has_trunk(magr->data) ?
+                        "gore" : "butt");
                 break;
             case AT_TUCH:
                 Sprintf(buf, "%s touches", magr_name);

@@ -1,4 +1,4 @@
-/* NetHack 3.6	mon.c	$NHDT-Date: 1565833749 2019/08/15 01:49:09 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.296 $ */
+/* NetHack 3.6	mon.c	$NHDT-Date: 1569276991 2019/09/23 22:16:31 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.297 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -418,8 +418,9 @@ unsigned corpseflags;
     case PM_SEA_DRAGON:
     case PM_YELLOW_DRAGON:
         /* Make dragon scales.  This assumes that the order of the
-           dragons is the same as the order of the scales. */
-        if (!rn2(mtmp->mrevived ? 20 : 3)) {
+           dragons is the same as the order of the scales.
+           If the dragon is a pet, no scales generated. */
+        if (!mtmp->mtame && !rn2(mtmp->mrevived ? 20 : 3)) {
             num = GRAY_DRAGON_SCALES + monsndx(mdat) - PM_GRAY_DRAGON;
             obj = mksobj_at(num, x, y, FALSE, FALSE);
             obj->spe = 0;
@@ -2555,10 +2556,16 @@ register struct monst *mtmp;
     } else if (unique_corpstat(mtmp->data)) {
         switch(mvitals[tmp].died) {
             case 1:
-                livelog_printf(LL_UMONST, "%s %s",
-                    nonliving(mtmp->data) ? "destroyed" : "killed",
-                    noit_mon_nam(mtmp));
-                break;
+                /* don't livelog your unique pet being killed
+                 * by something else, it gives the impression you did it */
+                if (mtmp->data == &mons[PM_RED_HORSE] && mtmp->mtame) {
+                    break;
+                } else {
+                    livelog_printf(LL_UMONST, "%s %s",
+                        nonliving(mtmp->data) ? "destroyed" : "killed",
+                        noit_mon_nam(mtmp));
+                    break;
+                }
             case 5:
             case 10:
             case 50:
@@ -2928,7 +2935,9 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     if (mtmp->mtame && !mtmp->isminion)
         EDOG(mtmp)->killed_by_u = 1;
 
-    if (wasinside && thrownobj && thrownobj != uball) {
+    if (wasinside && thrownobj && thrownobj != uball
+        /* don't give to mon if missile is going to return to hero */
+        && thrownobj != (struct obj *) iflags.returning_missile) {
         /* thrown object has killed hero's engulfer; add it to mon's
            inventory now so that it will be placed with mon's other
            stuff prior to lookhere/autopickup when hero is expelled
@@ -3003,6 +3012,14 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         }
         /* corpse--none if hero was inside the monster */
         if (!wasinside && corpse_chance(mtmp, (struct monst *) 0, FALSE)) {
+            cadaver = make_corpse(mtmp, burycorpse ? CORPSTAT_BURIED
+                                                   : CORPSTAT_NONE);
+            if (burycorpse && cadaver && cansee(x, y) && !mtmp->minvis
+                && cadaver->where == OBJ_BURIED && !nomsg) {
+                pline("%s corpse ends up buried.", s_suffix(Monnam(mtmp)));
+            }
+        }
+        if (wasinside && is_dragon(mtmp->data) && corpse_chance(mtmp, (struct monst *) 0, FALSE)) {
             cadaver = make_corpse(mtmp, burycorpse ? CORPSTAT_BURIED
                                                    : CORPSTAT_NONE);
             if (burycorpse && cadaver && cansee(x, y) && !mtmp->minvis
