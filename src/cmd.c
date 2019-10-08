@@ -2690,6 +2690,8 @@ int final;
 
     if (Acid_resistance)
         you_are("acid resistant", from_what(ACID_RES));
+    if (Psychic_resistance)
+        you_are("psionic resistant", from_what(PSYCHIC_RES));
     if (Drain_resistance)
         you_are("level-drain resistant", from_what(DRAIN_RES));
     if (Psychic_resistance)
