@@ -73,7 +73,8 @@ struct attack *mattk;
             pfmt = "%s stings!";
             break;
         case AT_BUTT:
-            pfmt = "%s butts!";
+            pline("%s %ss!", Monnam(mtmp), has_trunk(mtmp->data) ?
+                  "gores you with its tusk" : "butt");
             break;
         case AT_TUCH:
             pfmt = "%s touches you!";
@@ -1196,7 +1197,10 @@ register struct attack *mattk;
                     dmg = 0;
                 } else {
                     u.ustuck = mtmp;
-                    pline("%s grabs you!", Monnam(mtmp));
+                    if (has_trunk(mtmp->data))
+                        pline("%s grasps you with its trunk!", Monnam(mtmp));
+                    else
+                        pline("%s grabs you!", Monnam(mtmp));
                 }
             } else if (u.ustuck == mtmp) {
                 exercise(A_STR, FALSE);
@@ -1393,24 +1397,35 @@ register struct attack *mattk;
             break;
         }
 
-        if (Race_if(PM_ILLITHID)) {
+        if (u_slip_free(mtmp, mattk))
+            break;
+
+        /* The material of the helmet on your head determines how effective
+         * it will be when deflecting tentacle/bite attacks. Harder material
+         * will do a better job than a soft cap. */
+        if (uarmh && is_hard(uarmh) && rn2(5)) {
+            /* not body_part(HEAD) */
+            Your("%s blocks the %s to your head.",
+                 helm_simple_name(uarmh), is_zombie(mdat) ? "bite" : "attack");
+            break;
+        }
+
+        if (uarmh && !is_hard(uarmh) && rn2(2)) {
+            Your("%s repels the %s to your head.",
+                 helm_simple_name(uarmh), is_zombie(mdat) ? "bite" : "attack");
+            break;
+        }
+
+        if (Race_if(PM_ILLITHID) && !is_zombie(mdat)) {
             Your("psionic abilities shield your brain.");
             break;
         }
 
-        if (u_slip_free(mtmp, mattk))
-            break;
-
-        if (is_zombie(mtmp->data) && rn2(5)) {
-            if (uncancelled)
+        if (is_zombie(mdat) && rn2(5)) {
+            if (uncancelled) {
+                pline("%s eats your brains!", Monnam(mtmp));
                 diseasemu(mdat);
-            break;
-        }
-
-        if (uarmh && rn2(8)) {
-            /* not body_part(HEAD) */
-            Your("%s blocks the attack to your head.",
-                 helm_simple_name(uarmh));
+            }
             break;
         }
         /* negative armor class doesn't reduce this damage */
@@ -1435,6 +1450,36 @@ register struct attack *mattk;
         break;
     case AD_PLYS:
         hitmsg(mtmp, mattk);
+        /* From xNetHack:
+         * Ghosts don't have a "paralyzing touch"; this is simply the most
+         * convenient place to put this code. What they actually do is try to
+         * pop up out of nowhere right next to you, frightening you to death
+         * (which of course paralyzes you). */
+        if (mtmp->data == &mons[PM_GHOST]) {
+            boolean couldspot = canspotmon(mtmp);
+            if (mtmp->minvis) {
+                mtmp->minvis = 0;
+                newsym(mtmp->mx, mtmp->my);
+                mtmp->mspec_used = d(2, 8);
+                if (canspotmon(mtmp) && !Unaware) {
+                    if (!couldspot) {
+                        /* only works if you didn't know it was there before it
+                        * turned visible */
+                        if (Hallucination)
+                            verbalize("Boo!");
+                        else
+                            pline("A ghost appears out of %s!",
+                                  rn2(2) ? "the shadows" : "nowhere");
+                        scary_ghost(mtmp);
+                    } else {
+                        pline("%s becomes visible!", Monnam(mtmp));
+                        if (!rn2(3))
+                            You("aren't %s.", rn2(2) ? "afraid" : "scared");
+                    }
+                }
+            }
+            break;
+        }
         if (uncancelled && multi >= 0 && !rn2(3)) {
             if (Free_action) {
                 You("momentarily stiffen.");
@@ -2607,7 +2652,16 @@ struct attack *mattk;
             You("meet %s petrifying gaze!", s_suffix(mon_nam(mtmp)));
             stop_occupation();
             if (mtmp->data == &mons[PM_BEHOLDER]) {
-                if (!Stoned && !Stone_resistance
+                /* The EotO can afford the player some protection when worn */
+                int dmg;
+                if (ublindf
+                    && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                    pline("%s partially protect you from %s petrifying gaze.  That hurts!",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                    dmg = d(4, 6);
+                    if (dmg)
+                        mdamageu(mtmp, dmg);
+                } else if (!Stoned && !Stone_resistance
                     && !(poly_when_stoned(youmonst.data)
                     && polymon(PM_STONE_GOLEM))) {
                     int kformat = KILLED_BY_AN;
@@ -2624,6 +2678,10 @@ struct attack *mattk;
             } else if (mtmp->data == &mons[PM_MEDUSA]) {
                 if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                     break;
+                if (ublindf
+                       && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD)
+                    pline("%s gaze is too powerful for %s to resist!",
+                          s_suffix(Monnam(mtmp)), bare_artifactname(ublindf));
                 You("turn to stone...");
                 killer.format = KILLED_BY;
                 Strcpy(killer.name, mtmp->data->mname);
@@ -2637,6 +2695,12 @@ struct attack *mattk;
             if (cancelled) {
                 react = 0; /* "confused" */
                 already = (mtmp->mconf != 0);
+            } else if (ublindf
+                       && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                if (!rn2(4))
+                    pline("%s protect you from %s confusing gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
             } else {
                 int conf = d(3, 4);
 
@@ -2656,6 +2720,12 @@ struct attack *mattk;
             if (cancelled) {
                 react = 1; /* "stunned" */
                 already = (mtmp->mstun != 0);
+            } else if (ublindf
+                       && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                if (!rn2(4))
+                    pline("%s protect you from %s stunning gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
             } else {
                 int stun = d(2, 6);
 
@@ -2773,6 +2843,12 @@ struct attack *mattk;
             if (cancelled) {
                 react = 6;                      /* "tired" */
                 already = (mtmp->mfrozen != 0); /* can't happen... */
+            } else if (ublindf
+                       && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                if (!rn2(4))
+                    pline("%s protect you from %s slumbering gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
             } else {
                 fall_asleep(-resist_reduce(rnd(10), SLEEP_RES), TRUE);
                 pline("%s gaze makes you very sleepy...",
@@ -2790,6 +2866,13 @@ struct attack *mattk;
             if (cancelled) {
                 react = 7; /* "dulled" */
                 already = (mtmp->mspeed == MSLOW);
+            /* The EotO can afford the player some protection when worn */
+            } else if (ublindf
+                       && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                if (!rn2(4))
+                    pline("%s protect you from %s lethargic gaze.",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                break;
             } else {
                 u_slow_down();
                 stop_occupation();
@@ -2812,51 +2895,73 @@ struct attack *mattk;
 	    } else {
 		pline("%s attacks you with a destructive gaze!",
 		      Monnam(mtmp));
-	    if (uarms) {
-		/* destroy shield; other possessions are safe */
-		(void) destroy_arm(uarms);
-	        break;
-	    } else if (uarm) {
-		/* destroy suit; if present, cloak goes too */
-		if (uarmc)
+	        if (uarms) {
+		    /* destroy shield; other possessions are safe */
+		    (void) destroy_arm(uarms);
+	            break;
+	        } else if (uarm) {
+		    /* destroy suit; if present, cloak goes too */
+		    if (uarmc)
+                        (void) destroy_arm(uarmc);
+                    (void) destroy_arm(uarm);
+	            break;
+	        }
+	        /* no shield or suit, you're dead; wipe out cloak
+	         * and/or shirt in case of life-saving or bones */
+	        if (uarmc)
                     (void) destroy_arm(uarmc);
-                (void) destroy_arm(uarm);
-	        break;
-	    }
-	    /* no shield or suit, you're dead; wipe out cloak
-	     and/or shirt in case of life-saving or bones */
-	    if (uarmc)
-                (void) destroy_arm(uarmc);
-	    if (uarmu)
-                (void) destroy_arm(uarmu);
+	        if (uarmu)
+                    (void) destroy_arm(uarmu);
 
-            /* If you want the beholders disintegration ray to behave similar
-             * to that of a wand of death, uncomment the below three lines.
-             * Otherwise the beholders disintegration ray will behave like a
-             * deities' wide-angle death beam - first your armor, then you.
-             */
-         /* if (nonliving(youmonst.data) || is_demon(youmonst.data)) {
-                You("seem unaffected.");
-                break;
-            } */
+                /* If you want the beholders disintegration ray to behave similar
+                 * to that of a wand of death, uncomment the below three lines.
+                 * Otherwise the beholders disintegration ray will behave like a
+                 * deities' wide-angle death beam - first your armor, then you.
+                 */
+                /* if (nonliving(youmonst.data) || is_demon(youmonst.data)) {
+                       You("seem unaffected.");
+                       break;
+                } */
 
-                /* when killed by a disintegration beam, don't leave a corpse */
-                u.ugrave_arise = -3;
-                done_in_by(mtmp, DIED);
+                /* The EotO can afford the player some protection when worn */
+                int dmg;
+                if (ublindf
+                    && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                    pline("%s partially protect you from %s destructive gaze.  That stings!",
+                          An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                    dmg = d(8, 8);
+                    if (dmg)
+                        mdamageu(mtmp, dmg);
+                } else {
+                    /* when killed by a disintegration beam, don't leave a corpse */
+                    u.ugrave_arise = -3;
+                    done_in_by(mtmp, DIED);
+                }
             }
         }
         break;
     case AD_CNCL:
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
             && mtmp->mcansee && !rn2(3)) {
-            int dmg = d(4, 4);
+            int dmg;
 
 	    You("meet %s strange gaze.",
                   s_suffix(mon_nam(mtmp)));
-	    (void) cancel_monst(&youmonst, (struct obj *) 0, FALSE, TRUE, FALSE);
-            if (dmg)
-                mdamageu(mtmp, dmg);
-	    }
+            /* The EotO can afford the player some protection when worn */
+            if (ublindf
+                && ublindf->oartifact == ART_EYES_OF_THE_OVERWORLD) {
+                pline("%s partially protect you from %s strange gaze.  Ouch!",
+                      An(bare_artifactname(ublindf)), s_suffix(mon_nam(mtmp)));
+                dmg = d(2, 4);
+                if (dmg)
+                    mdamageu(mtmp, dmg);
+            } else {
+	        (void) cancel_monst(&youmonst, (struct obj *) 0, FALSE, TRUE, FALSE);
+                dmg = d(4, 4);
+                if (dmg)
+                    mdamageu(mtmp, dmg);
+            }
+        }
 	break;
 /* #endif */ /* BEHOLDER */
     default:

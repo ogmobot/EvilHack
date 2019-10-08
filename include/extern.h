@@ -1205,6 +1205,7 @@ E void FDECL(dealloc_monst, (struct monst *));
 E boolean FDECL(is_home_elemental, (struct permonst *));
 E struct monst *FDECL(clone_mon, (struct monst *, XCHAR_P, XCHAR_P));
 E int FDECL(monhp_per_lvl, (struct monst *));
+E int FDECL(monmaxhp, (struct permonst *, int));
 E void FDECL(newmonhp, (struct monst *, int));
 E struct mextra *NDECL(newmextra);
 E void FDECL(copy_mextra, (struct monst *, struct monst *));
@@ -1951,7 +1952,7 @@ E boolean NDECL(u_handsy);
 E int FDECL(use_container, (struct obj **, int, BOOLEAN_P));
 E int FDECL(loot_mon, (struct monst *, int *, boolean *));
 E int NDECL(dotip);
-E boolean FDECL(is_autopickup_exception, (struct obj *, BOOLEAN_P));
+E struct autopickup_exception *FDECL(check_autopickup_exceptions, (struct obj *));
 E boolean FDECL(autopick_testobj, (struct obj *, BOOLEAN_P));
 E int FDECL(m_stash_items, (struct monst *, BOOLEAN_P));
 
@@ -2069,6 +2070,7 @@ E char *FDECL(priestname, (struct monst *, char *));
 E boolean FDECL(p_coaligned, (struct monst *));
 E struct monst *FDECL(findpriest, (CHAR_P));
 E void FDECL(intemple, (int));
+E void FDECL(scary_ghost, (struct monst *));
 E void FDECL(forget_temple_entry, (struct monst *));
 E void FDECL(priest_talk, (struct monst *));
 E struct monst *FDECL(mk_roamer, (struct permonst *, ALIGNTYP_P, XCHAR_P,

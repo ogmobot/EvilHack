@@ -1,4 +1,4 @@
-/* NetHack 3.6	polyself.c	$NHDT-Date: 1559664952 2019/06/04 16:15:52 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.133 $ */
+/* NetHack 3.6	polyself.c	$NHDT-Date: 1570230710 2019/10/04 23:11:50 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.134 $ */
 /*      Copyright (C) 1987, 1988, 1989 by Ken Arromdee */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -23,6 +23,7 @@
 
 STATIC_DCL void FDECL(check_strangling, (BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(polyman, (const char *, const char *));
+STATIC_DCL void FDECL(dropp, (struct obj *));
 STATIC_DCL void NDECL(break_armor);
 STATIC_DCL void FDECL(drop_weapon, (int));
 STATIC_DCL int FDECL(armor_to_dragon, (int));
@@ -748,19 +749,8 @@ int mntmp;
      * "experience level of you as a monster" for a polymorphed character.
      */
     mlvl = (int) mons[mntmp].mlevel;
-    if (youmonst.data->mlet == S_DRAGON && mntmp >= PM_GRAY_DRAGON) {
-        u.mhmax = In_endgame(&u.uz) ? (8 * mlvl) : (4 * mlvl + d(mlvl, 4));
-    } else if (is_golem(youmonst.data)) {
-        u.mhmax = golemhp(mntmp);
-    } else {
-        if (!mlvl)
-            u.mhmax = rnd(4);
-        else
-            u.mhmax = d(mlvl, 8);
-        if (is_home_elemental(&mons[mntmp]))
-            u.mhmax *= 3;
-    }
-    u.mh = u.mhmax;
+    u.mhmax = u.mh = monmaxhp(&mons[mntmp], mlvl);
+    pline("setting mlvl %d, hpmax %d", mlvl, u.mhmax);
 
     if (u.ulevel < mlvl) {
         /* Low level characters can't become high level monsters for long */
@@ -909,6 +899,33 @@ int mntmp;
     return 1;
 }
 
+/* dropx() jacket for break_armor() */
+STATIC_OVL void
+dropp(obj)
+struct obj *obj;
+{
+    struct obj *otmp;
+
+    /*
+     * Dropping worn armor while polymorphing might put hero into water
+     * (loss of levitation boots or water walking boots that the new
+     * form can't wear), where emergency_disrobe() could remove it from
+     * inventory.  Without this, dropx() could trigger an 'object lost'
+     * panic.  Right now, boots are the only armor which might encounter
+     * this situation, but handle it for all armor.
+     *
+     * Hypothetically, 'obj' could have merged with something (not
+     * applicable for armor) and no longer be a valid pointer, so scan
+     * inventory for it instead of trusting obj->where.
+     */
+    for (otmp = invent; otmp; otmp = otmp->nobj) {
+        if (otmp == obj) {
+            dropx(obj);
+            break;
+        }
+    }
+}
+
 STATIC_OVL void
 break_armor()
 {
@@ -927,7 +944,7 @@ break_armor()
             if (otmp->oartifact) {
                 Your("%s falls off!", cloak_simple_name(otmp));
                 (void) Cloak_off();
-                dropx(otmp);
+                dropp(otmp);
             } else {
                 Your("%s tears apart!", cloak_simple_name(otmp));
                 (void) Cloak_off();
@@ -944,7 +961,7 @@ break_armor()
                 cancel_don();
             Your("armor falls around you!");
             (void) Armor_gone();
-            dropx(otmp);
+            dropp(otmp);
         }
         if ((otmp = uarmc) != 0) {
             if (is_whirly(youmonst.data))
@@ -952,7 +969,7 @@ break_armor()
             else
                 You("shrink out of your %s!", cloak_simple_name(otmp));
             (void) Cloak_off();
-            dropx(otmp);
+            dropp(otmp);
         }
         if ((otmp = uarmu) != 0) {
             if (is_whirly(youmonst.data))
@@ -960,7 +977,7 @@ break_armor()
             else
                 You("become much too small for your shirt!");
             setworn((struct obj *) 0, otmp->owornmask & W_ARMU);
-            dropx(otmp);
+            dropp(otmp);
         }
     }
     if (has_horns(youmonst.data)) {
@@ -978,7 +995,7 @@ break_armor()
                 Your("%s falls to the %s!", helm_simple_name(otmp),
                      surface(u.ux, u.uy));
                 (void) Helmet_off();
-                dropx(otmp);
+                dropp(otmp);
             }
         }
     }
@@ -990,12 +1007,12 @@ break_armor()
             You("drop your gloves%s!", uwep ? " and weapon" : "");
             drop_weapon(0);
             (void) Gloves_off();
-            dropx(otmp);
+            dropp(otmp);
         }
         if ((otmp = uarms) != 0) {
             You("can no longer hold your shield!");
             (void) Shield_off();
-            dropx(otmp);
+            dropp(otmp);
         }
         if ((otmp = uarmh) != 0) {
             if (donning(otmp))
@@ -1003,7 +1020,7 @@ break_armor()
             Your("%s falls to the %s!", helm_simple_name(otmp),
                  surface(u.ux, u.uy));
             (void) Helmet_off();
-            dropx(otmp);
+            dropp(otmp);
         }
     }
     if (nohands(youmonst.data) || verysmall(youmonst.data)
@@ -1017,7 +1034,7 @@ break_armor()
                 Your("boots %s off your feet!",
                      verysmall(youmonst.data) ? "slide" : "are pushed");
             (void) Boots_off();
-            dropx(otmp);
+            dropp(otmp);
         }
     }
 }
@@ -1070,6 +1087,10 @@ int alone;
                 updateinv = FALSE;
             else if (candropwep)
                 dropx(otmp);
+            /* [note: dropp vs dropx -- if heart of ahriman is wielded, we
+               might be losing levitation by dropping it; but that won't
+               happen until the drop, unlike Boots_off() dumping hero into
+               water and triggering emergency_disrobe() before dropx()] */
 
             if (updateinv)
                 update_inventory();
