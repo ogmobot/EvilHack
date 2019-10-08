@@ -3553,8 +3553,8 @@ struct attack *mattk;     /* null means we find one internally */
             }
             /* nope */
             if (obj->otyp == BLACK_DRAGON_SCALES || obj->otyp == BLACK_DRAGON_SCALE_MAIL) {
-                pline_The("%s are disintegration-proof and remain intact.",
-                          Yname2(obj));
+                pline("%s %s disintegration-proof and %s intact.",
+                          Yname2(obj), otense(obj, "are"), otense(obj, "remain"));
                 break;
             }
             if (obj->oartifact && rn2(50)) {
