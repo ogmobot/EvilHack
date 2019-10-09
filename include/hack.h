@@ -261,8 +261,11 @@ typedef struct sortloot_item Loot;
 #define MM_NOGRP    0x04000 /* suppress creation of monster groups */
 #define MM_ERID     0x08000 /* add erid structure */
 #define MM_REVIVE   0x10000 /* no riding */
+#ifdef MINIGAME
+#define MM_EGAM     0x20000 /* add egam structure */
+#endif
 /* if more MM_ flag masks are added, skip or renumber the GP_ one(s) */
-#define GP_ALLOW_XY 0x20000 /* [actually used by enexto() to decide whether
+#define GP_ALLOW_XY 0x40000 /* [actually used by enexto() to decide whether
                              * to make an extra call to goodpos()]          */
 
 /* flags for make_corpse() and mkcorpstat() */

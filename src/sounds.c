@@ -1148,6 +1148,31 @@ dochat()
     return domonnoise(mtmp);
 }
 
+#ifdef MINIGAME
+void
+newegam(mtmp)
+struct monst *mtmp;
+{
+    if (!mtmp->mextra)
+        mtmp->mextra = newmextra();
+    if (!EGAM(mtmp)) {
+        EGAM(mtmp) = (struct egam *) alloc(sizeof (struct egam));
+        (void) memset((genericptr_t) EGAM(mtmp),
+                      0, sizeof (struct egam));
+    }
+}
+
+void
+free_egam(mtmp)
+struct monst *mtmp;
+{
+    if (mtmp->mextra && EGAM(mtmp)) {
+        free((genericptr_t) EGAM(mtmp));
+        EGAM(mtmp) = (struct egam *) 0;
+    }
+}
+#endif
+
 #ifdef USER_SOUNDS
 
 extern void FDECL(play_usersound, (const char *, int));

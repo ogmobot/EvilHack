@@ -405,6 +405,14 @@ struct monst *mtmp;
             newerid(mtmp);
             mread(fd, (genericptr_t) ERID(mtmp), sizeof(struct erid));
         }
+#ifdef MINIGAME
+        /* egam - minigame */
+        mread(fd, (genericptr_t) &buflen, sizeof(buflen));
+        if (buflen > 0) {
+            newegam(mtmp);
+            mread(fd, (genericptr_t) ERID(mtmp), sizeof(struct egam));
+        }
+#endif
         /* mcorpsenm - obj->corpsenm for mimic posing as corpse or
            statue (inline int rather than pointer to something) */
         mread(fd, (genericptr_t) &MCORPSENM(mtmp), sizeof MCORPSENM(mtmp));

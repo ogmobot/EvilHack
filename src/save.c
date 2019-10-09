@@ -1126,6 +1126,13 @@ struct monst *mtmp;
         if (buflen > 0)
             bwrite(fd, (genericptr_t) ERID(mtmp), buflen);
 
+#ifdef MINIGAME
+        buflen = EGAM(mtmp) ? (int) sizeof (struct egam) : 0;
+        bwrite(fd, (genericptr_t) &buflen, sizeof(int));
+        if (buflen > 0)
+            bwrite(fd, (genericptr_t) EGAM(mtmp), buflen);
+#endif
+
         /* mcorpsenm is inline int rather than pointer to something,
            so doesn't need to be preceded by a length field */
         bwrite(fd, (genericptr_t) &MCORPSENM(mtmp), sizeof MCORPSENM(mtmp));

@@ -4102,6 +4102,10 @@ boolean incl_wsegs;
             sz += (int) sizeof (struct edog);
         if (ERID(mtmp))
             sz += (int) sizeof (struct erid);
+#ifdef MINIGAME
+        if (EGAM(mtmp))
+            sz += (int) sizeof (struct egam);
+#endif
         /* mextra->mcorpsenm doesn't point to more memory */
     }
     return sz;

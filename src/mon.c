@@ -2250,6 +2250,13 @@ struct monst *mtmp2, *mtmp1;
             newerid(mtmp2);
         *ERID(mtmp2) = *ERID(mtmp1);
     }
+#ifdef MINIGAME
+    if (EGAM(mtmp1)) {
+        if (!EGAM(mtmp2))
+            newegam(mtmp2);
+        *EGAM(mtmp2) = *EGAM(mtmp1);
+    }
+#endif
     if (has_mcorpsenm(mtmp1))
         MCORPSENM(mtmp2) = MCORPSENM(mtmp1);
 }
@@ -2275,6 +2282,10 @@ struct monst *m;
             free((genericptr_t) x->edog);
         if (x->erid)
             free((genericptr_t) x->erid);
+#ifdef MINIGAME
+        if (x->egam)
+            free((genericptr_t) x->egam);
+#endif
         /* [no action needed for x->mcorpsenm] */
 
         free((genericptr_t) x);

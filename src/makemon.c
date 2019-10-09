@@ -1862,6 +1862,9 @@ newmextra()
     mextra->emin = 0;
     mextra->edog = 0;
     mextra->erid = 0;
+#ifdef MINIGAME
+    mextra->egam = 0;
+#endif
     mextra->mcorpsenm = NON_PM;
     return mextra;
 }
@@ -2038,6 +2041,10 @@ int mmflags;
         mtmp->msleeping = 1;
     if (mmflags & MM_ERID)
         newerid(mtmp);
+#ifdef MINIGAME
+    if (mmflags & MM_EGAM)
+        newegam(mtmp);
+#endif
     mtmp->nmon = fmon;
     fmon = mtmp;
     mtmp->m_id = context.ident++;

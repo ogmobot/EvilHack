@@ -175,6 +175,14 @@ struct erid {
     unsigned int mid;   /* pointer to attached monster id */
 };
 
+#ifdef MINIGAME
+struct egam {
+    int state[4];                       /* values to store game state */
+    struct obj *otmp;                   /* object used in game */
+    int (*game_fn)(struct monst *);     /* pointer to game function */
+};
+#endif
+
 /***
  **     mextra.h -- collection of all monster extensions
  */
@@ -186,6 +194,9 @@ struct mextra {
     struct emin *emin;
     struct edog *edog;
     struct erid *erid;
+#ifdef MINIGAME
+    struct egam *egam;
+#endif
     int mcorpsenm; /* obj->corpsenm for mimic posing as statue or corpse, or
                     * obj->spe (fruit index) for one posing as a slime mold */
 };
@@ -197,6 +208,9 @@ struct mextra {
 #define EMIN(mon) ((mon)->mextra->emin)
 #define EDOG(mon) ((mon)->mextra->edog)
 #define ERID(mon) ((mon)->mextra->erid)
+#ifdef MINIGAME
+#define EGAM(mon) ((mon)->mextra->egam)
+#endif
 #define MCORPSENM(mon) ((mon)->mextra->mcorpsenm)
 
 #define has_mname(mon) ((mon)->mextra && MNAME(mon))
@@ -206,6 +220,9 @@ struct mextra {
 #define has_emin(mon)  ((mon)->mextra && EMIN(mon))
 #define has_edog(mon)  ((mon)->mextra && EDOG(mon))
 #define has_erid(mon)  ((mon)->mextra && ERID(mon))
+#ifdef MINIGAME
+#define has_egam(mon)  ((mon)->mextra && EGAM(mon))
+#endif
 #define has_mcorpsenm(mon) ((mon)->mextra && MCORPSENM(mon) != NON_PM)
 
 #endif /* MEXTRA_H */
