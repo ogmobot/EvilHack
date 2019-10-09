@@ -33,6 +33,9 @@ STATIC_PTR void FDECL(display_polearm_positions, (int));
 STATIC_DCL int FDECL(use_pole, (struct obj *));
 STATIC_DCL int FDECL(use_cream_pie, (struct obj *));
 STATIC_DCL int FDECL(use_grapple, (struct obj *));
+#ifdef MINIGAME
+STATIC_DCL int FDECL(use_dice, (struct obj *));
+#endif
 STATIC_DCL int FDECL(do_break_wand, (struct obj *));
 STATIC_DCL boolean FDECL(figurine_location_checks, (struct obj *,
                                                     coord *, BOOLEAN_P));
@@ -3355,6 +3358,37 @@ struct obj *obj;
     return 1;
 }
 
+#ifdef MINIGAME
+STATIC_OVL int
+use_dice(obj)
+struct obj *obj;
+{
+    int result[] = {0, 0};
+    struct obj *otmp = obj;
+    if (obj->quan > 1L)
+        otmp = splitobj(obj, 1L);
+    pline("%s onto the %s.", Yobjnam2(otmp, "tumble"), surface(u.ux, u.uy));
+    dropx(otmp);
+    if (!Blind && !is_lava(u.ux, u.uy) && !is_pool(u.ux, u.uy)) {
+        if (obj->cursed && !rn2(7)) {
+            /* Ordinarily, chance of rolling snake eyes is 1 in 36.
+               This modifies the chance to 6 in 36.
+                (1/7) + (6/7)*(1/36) = 6/36 */
+            result[0] = 1;
+            result[1] = 1;
+        } else {
+            result[0] = rnd(6);
+            result[1] = rnd(6);
+        }
+        You("roll a %d and a %d (%d).",
+            result[0], result[1], result[0] + result[1]);
+        return result[0] + result[1];
+    } else {
+        return 0;
+    }
+}
+#endif
+
 #define BY_OBJECT ((struct monst *) 0)
 
 /* return 1 if the wand is broken, hence some time elapsed */
@@ -3800,6 +3834,11 @@ doapply()
     case UNICORN_HORN:
         use_unicorn_horn(obj);
         break;
+#ifdef MINIGAME
+    case CASINO_DICE:
+        use_dice(obj);
+        break;
+#endif
     case FLUTE:
     case MAGIC_FLUTE:
     case TOOLED_HORN:

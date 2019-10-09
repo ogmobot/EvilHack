@@ -604,6 +604,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case TOOL_CLASS:
         if (typ == LENSES)
             Strcpy(buf, "pair of ");
+#ifdef MINIGAME
+        else if (typ == CASINO_DICE)
+            Strcpy(buf, "pair of ");
+#endif
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->spe < 3) ? "moist " : "wet ");
 
