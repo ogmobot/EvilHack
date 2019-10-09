@@ -716,6 +716,9 @@ TOOL("can of grease",       None, 1, 0, 0, 1, 15, 15, 20, IRON, HI_METAL),
 TOOL("figurine",            None, 1, 0, 1, 0, 25, 50, 80, MINERAL, HI_MINERAL),
         /* monster type specified by obj->corpsenm */
 TOOL("magic marker",    "marker", 0, 0, 1, 1,  0,  2, 50, PLASTIC, CLR_RED),
+#ifdef MINIGAME
+TOOL("playing card",        None, 1, 0, 0, 0, 0, 1, 0, PAPER, HI_PAPER),
+#endif
 /* traps */
 TOOL("land mine",           None, 1, 0, 0, 0, 0, 300,180, IRON, CLR_RED),
 TOOL("beartrap",            None, 1, 0, 0, 0, 0, 200, 60, IRON, HI_METAL),

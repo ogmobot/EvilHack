@@ -462,6 +462,11 @@ struct obj {
 #define ITEM_PROP_MASK 0x000007FFL /* all current properties */
 #define MAX_ITEM_PROPS 11
 
+#ifdef MINIGAME
+#define NUM_CARD_SUITS 4
+#define NUM_CARD_VALUES 13
+#endif
+
 /*
  *  Notes for adding new oextra structures:
  *

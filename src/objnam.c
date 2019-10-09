@@ -28,6 +28,9 @@ STATIC_DCL char *FDECL(singplur_compound, (char *));
 STATIC_DCL char *FDECL(xname_flags, (struct obj *, unsigned));
 STATIC_DCL boolean FDECL(badman, (const char *, BOOLEAN_P));
 STATIC_DCL char *FDECL(globwt, (struct obj *, char *, boolean *));
+#ifdef MINIGAME
+STATIC_DCL char *FDECL(playing_card_name, (int idx));
+#endif
 
 struct Jitem {
     int item;
@@ -635,6 +638,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             if (wizard)
                 Sprintf(eos(buf), " (%d)", obj->spe);
         }
+#ifdef MINIGAME
+        if (typ == PLAYING_CARD) {
+            Sprintf(eos(buf), " (%s)", the(playing_card_name(obj->spe)));
+        }
+#endif
         break;
     case ARMOR_CLASS:
         /* depends on order of the dragon scales objects */
@@ -4861,5 +4869,42 @@ boolean *weightformatted_p;
     }
     return buf;
 }
+
+#ifdef MINIGAME
+
+static const char *const card_suits[NUM_CARD_SUITS] = {
+    "hearts",   "diamonds", "clubs",    "spades"
+};
+
+static const char *const card_values[NUM_CARD_VALUES] = {
+    "ace",      "two",      "three",    "four",     "five",
+    "six",      "seven",    "eight",    "nine",     "ten",
+    "jack",     "queen",    "king"
+};
+
+char *
+playing_card_name(idx)
+int idx;
+{
+    const char *suit, *value;
+    char *buf = nextobuf();
+    if (idx >= 0 && idx < (NUM_CARD_SUITS * NUM_CARD_VALUES)) {
+        value = card_values[idx % NUM_CARD_VALUES];
+        suit = card_suits[idx / NUM_CARD_VALUES];
+    } else if (idx == -1) {
+        value = "joker";
+        suit = 0;
+    } else {
+        value = "\"rules of play\" card";
+        suit = 0;
+    }
+    Strcpy(buf, value);
+    if (suit) {
+        Sprintf(eos(buf), " of %s", suit);
+    }
+    return buf;
+}
+
+#endif
 
 /*objnam.c*/
