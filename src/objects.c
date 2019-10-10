@@ -718,7 +718,8 @@ TOOL("figurine",            None, 1, 0, 1, 0, 25, 50, 80, MINERAL, HI_MINERAL),
 TOOL("magic marker",    "marker", 0, 0, 1, 1,  0,  2, 50, PLASTIC, CLR_RED),
 #ifdef MINIGAME
 TOOL("playing card",        None, 1, 0, 0, 0, 0, 1, 0, PAPER, HI_PAPER),
-TOOL("casino dice",         None, 1, 1, 0, 0, 0, 1, 5, BONE,  CLR_WHITE),
+TOOL("fair dice",         "dice", 0, 1, 0, 0, 0, 2, 5, BONE,  CLR_WHITE),
+TOOL("loaded dice",       "dice", 0, 1, 0, 0, 0, 2, 0, BONE,  CLR_WHITE),
 #endif
 /* traps */
 TOOL("land mine",           None, 1, 0, 0, 0, 0, 300,180, IRON, CLR_RED),

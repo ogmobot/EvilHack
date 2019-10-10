@@ -3801,7 +3801,8 @@ doapply()
         use_unicorn_horn(obj);
         break;
 #ifdef MINIGAME
-    case CASINO_DICE:
+    case FAIR_DICE:
+    case LOADED_DICE:
         use_dice(obj);
         break;
 #endif

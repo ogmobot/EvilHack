@@ -36,10 +36,14 @@ struct obj *obj;
     struct obj *otmp = obj;
     if (obj->quan > 1L)
         otmp = splitobj(obj, 1L);
-    pline("%s onto the %s.", Yobjnam2(otmp, "tumble"), surface(u.ux, u.uy));
+    You("roll %s.", yname(otmp));
     dropx(otmp);
-    if (!Blind && !is_lava(u.ux, u.uy) && !is_pool(u.ux, u.uy)) {
-        if (obj->cursed && !rn2(7)) {
+    if (!is_lava(u.ux, u.uy) && !is_pool(u.ux, u.uy)) {
+        if (otmp->otyp == LOADED_DICE && !(u.uluck > 0 && rn2(u.uluck) >= 7)) {
+            /* A very lucky player can roll loaded dice as if they were fair */
+            result[0] = rn2(2) ? 1 : 2 + rn2(5);
+            result[1] = rn2(2) ? 1 : 2 + rn2(5);
+        } else if ((otmp->cursed || u.uluck <= -7) && !rn2(7)) {
             /* Ordinarily, chance of rolling snake eyes is 1 in 36.
                This modifies the chance to 6 in 36.
                 (1/7) + (6/7)*(1/36) = 6/36
@@ -50,8 +54,11 @@ struct obj *obj;
             result[0] = rnd(6);
             result[1] = rnd(6);
         }
-        You("roll a %d and a %d (%d).",
-            result[0], result[1], result[0] + result[1]);
+        if (!Blind)
+            You("roll a %d and a %d (%d).",
+                result[0], result[1], result[0] + result[1]);
+        else
+            pline("But you don't see the result.");
         return result[0] + result[1];
     } else {
         return 0;
