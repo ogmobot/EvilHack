@@ -37,7 +37,8 @@ struct obj *obj;
     if (obj->quan > 1L)
         otmp = splitobj(obj, 1L);
     You("roll %s.", yname(otmp));
-    dropx(otmp);
+    if (otmp->where == OBJ_INVENT)
+        dropx(otmp);
     if (!is_lava(u.ux, u.uy) && !is_pool(u.ux, u.uy)) {
         if (otmp->otyp == LOADED_DICE && !(u.uluck > 0 && rn2(u.uluck) >= 7)) {
             /* A very lucky player can roll loaded dice as if they were fair */
@@ -167,6 +168,129 @@ struct obj **osrc;
     odest->owt = weight(odest);
     useupf(*osrc, 1);
     *osrc = odest;
+}
+
+int
+play_highroll(mon)
+struct monst* mon;
+{
+#define game_stage      (EGAM(mon)->state[0])
+#define wager           (EGAM(mon)->state[1])
+#define player_roll     (EGAM(mon)->state[2])
+#define games_played    (EGAM(mon)->state[3])
+#define odice           (EGAM(mon)->otmp)
+    /*  Game stage:
+        -  0 = waiting to play
+        -  1 = waiting for player to roll
+        - -1 = refuse to play
+    */
+    if (!has_egam(mon)) {
+        impossible("Playing game with non-gaming monster?");
+        return 0;
+    }
+    switch (EGAM(mon)->state[0]) {
+    case -1:
+        pline("%s isn't interested.", Monnam(mon));
+    case 0: {
+        char buf[BUFSZ] = DUMMY;
+        long umoney = money_cnt(invent);
+        if (!(odice && odice->where == OBJ_MINVENT)) {
+            pline("\"Blast, my dice are missing!\"");
+            return 0;
+        }
+        switch(ynq("\"Willst thou play a game?\"")) {
+        case 'y':
+            if (!games_played++)
+                pline("\"%s we are playing high-roll.\"",
+                      night() ? "Tonight" : "Today");
+            getlin("\"How much willst thou wager?", buf);
+            if (sscanf(buf, "%d", &wager) != 1)
+                wager = 0;
+            if (wager > 0) {
+                game_stage = 1;
+                wager = wager < umoney ? wager : umoney;
+                if (wager == umoney)
+                    pline("You give %s all your gold.", Monnam(mon));
+                else
+                    pline("You give %s %d %s.",
+                          Monnam(mon), wager, currency(wager));
+                money2mon(mon, wager);
+                context.botl = 1;
+                pline("%s gives you %s.", Monnam(mon), yname(odice));
+                obj_extract_self(odice);
+                addinv(odice);
+                prinv("", odice, 1);
+            }
+            break;
+        default:
+            break;
+        }
+        break;
+    }
+    case 1: {
+        struct obj *otmp;
+        struct obj *mongold = findgold(mon->minvent, TRUE);
+        if (!(carrying(FAIR_DICE) || carrying(LOADED_DICE))) {
+            pline("\"Where art thy dice?\"");
+            return 0;
+        }
+        /* TODO: which dice will you use? */
+        otmp = odice;
+        switch(ynq("\"Art thou ready?\"")) {
+        case 'y':
+            player_roll = use_dice(otmp);
+            break;
+        default:
+            return 0;
+        }
+        if (player_roll == 0) { /* Dice are lost */
+            pline("\"My dice!\"");
+            pline("%s gets angry!", Monnam(mon));
+            odice = (struct obj *) 0;
+            mon->mpeaceful = 0;
+            set_malign(mon);
+            game_stage = -1;
+            break;
+        }
+        switch(yn("\"Thou mayest roll once more; willst thou do so?\"")) {
+        case 'y':
+            player_roll = use_dice(otmp);
+            break;
+        default:
+            break;
+        }
+        odice = otmp;
+        pline("%s snatches up %s.", Monnam(mon), yname(odice));
+        obj_extract_self(odice);
+        mpickobj(mon, odice);
+        /* Dice are only unfair for the player... */
+        int mresult[2];
+        mresult[0] = rnd(6);
+        mresult[1] = rnd(6);
+        pline("%s rolls a %d and a %d (%d).", Monnam(mon),
+              mresult[0], mresult[1], mresult[0] + mresult[1]);
+        if (mresult[0] + mresult[1] >= player_roll) {
+            pline("\"I win!\"");
+            game_stage = 2;
+            return -1;
+        } else {
+            pline("\"Blast! Thou hast won!\"");
+            if (wager >= mongold->quan) {
+                wager = mongold->quan;
+                pline("\"Thou hast taken everything from me...\"");
+                game_stage = -1;
+            } else {
+                game_stage = 2;
+            }
+            money2u(mon, wager);
+            return 1;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    return 0;
 }
 
 #endif /* MINIGAME */
