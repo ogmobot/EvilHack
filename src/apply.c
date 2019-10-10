@@ -3703,6 +3703,14 @@ doapply()
     case CRYSTAL_CHEST:
         res = use_container(&obj, 1, FALSE);
         break;
+#ifdef MINIGAME
+    case PLAYING_CARD:
+        (void) returncard(obj, 0);
+        break;
+    case DECK_OF_CARDS:
+        (void) drawcard(obj);
+        break;
+#endif
     case BAG_OF_TRICKS:
         (void) bagotricks(obj, FALSE, (int *) 0);
         break;

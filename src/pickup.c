@@ -1765,6 +1765,13 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
         abort_looting = TRUE;
         return 1;
     }
+#ifdef MINIGAME
+    if (cobj->otyp == DECK_OF_CARDS) {
+        drawcard(cobj);
+        abort_looting = TRUE;
+        return 1;
+    }
+#endif
 
     You("%sopen %s...", (!cobj->cknown || !cobj->lknown) ? "carefully " : "",
         the(xname(cobj)));
@@ -3144,8 +3151,11 @@ boolean creation;
     register struct obj *obj, *nobj, *bag = (struct obj *)0;
     struct obj *wep = bag, *hwep = bag, *rwep = bag, *proj = bag;
     for (obj = mon->minvent; obj; obj = obj->nobj) {
-	if (!Is_container(obj) ||
-	    obj->otyp == BAG_OF_TRICKS) continue;
+        if (!Is_container(obj)
+#ifdef MINIGAME
+            || obj->otyp == DECK_OF_CARDS
+#endif
+            || obj->otyp == BAG_OF_TRICKS) continue;
 	if (obj->otyp == BAG_OF_HOLDING) {
 		bag = obj;
 		break;
@@ -3329,6 +3339,12 @@ struct obj *box; /* or bag */
         else /* holds cat corpse */
             empty_it = TRUE;
         box->cknown = 1;
+#ifdef MINIGAME
+    } else if (box->otyp == DECK_OF_CARDS) {
+        You("scatter the cards everywhere!");
+        dump_container(box, TRUE);
+        scatter(u.ux, u.uy, !!rn2(3), 0, 0);
+#endif
     } else if (!Has_contents(box)) {
         box->cknown = 1;
         pline("It's empty.");

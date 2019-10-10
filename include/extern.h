@@ -1289,6 +1289,9 @@ E int FDECL(doseduce, (struct monst *));
 E int FDECL(use_dice, (struct obj *));
 E void FDECL(newegam, (struct monst *));
 E void FDECL(free_egam, (struct monst *));
+E void FDECL(builddeck, (struct obj *));
+E void FDECL(drawcard, (struct obj *));
+E void FDECL(returncard, (struct obj *, struct monst *));
 #endif
 
 /* ### minion.c ### */

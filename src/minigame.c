@@ -65,5 +65,88 @@ struct obj *obj;
     }
 }
 
+void
+builddeck(obj)
+struct obj *obj;
+{
+    struct obj *otmp;
+    for (int spe = 0; spe < (NUM_CARD_SUITS * NUM_CARD_VALUES); spe++) {
+        otmp = mksobj(PLAYING_CARD, FALSE, FALSE);
+        otmp->spe = spe;
+        otmp->cursed = obj->cursed;
+        otmp->blessed = obj->blessed;
+        (void) add_to_container(obj, otmp);
+    }
+}
+
+void
+drawcard(obj)
+struct obj *obj;
+{
+    int cidx, loadlev;
+    long itemcount = count_contents(obj, FALSE, FALSE, TRUE);
+    struct obj *otmp;
+    if (obj->otyp != DECK_OF_CARDS) {
+        impossible("Trying to draw a card from %s?", xname(obj));
+        return;
+    }
+
+    You("draw a card.");
+    cidx = rn2((int) itemcount);
+    for (otmp = obj->cobj; cidx > 0; cidx--) {
+        otmp = otmp->nobj;
+        if (!otmp) {
+            impossible("Trying to draw a card from an empty deck?");
+            return;
+        }
+    }
+    obj_extract_self(otmp);
+    obj->owt = weight(obj);
+    addinv(otmp);
+    loadlev = near_capacity();
+    prinv(loadlev ? ((loadlev < MOD_ENCUMBER)
+                        ? "You have a little trouble taking"
+                        : "You have much trouble taking")
+                  : (char *) 0,
+          otmp, 1);
+    if (itemcount == 1L)
+        useup(obj);
+}
+
+void
+returncard(obj, mon)
+struct obj *obj;
+struct monst *mon;
+{
+    if (obj->otyp != PLAYING_CARD) {
+        impossible("Trying to put non-card %s into the deck?", xname(obj));
+        return;
+    }
+    struct obj *otmp;
+    if (!mon)
+        otmp = carrying(DECK_OF_CARDS);
+    else
+        otmp = m_carrying(mon, DECK_OF_CARDS);
+    if (otmp) {
+        if (!mon)
+            You("shuffle %s into %s.",
+                the(xname(obj)), yname(otmp));
+    } else {
+        otmp = mksobj(DECK_OF_CARDS, FALSE, FALSE);
+        otmp->cknown = 1;
+        if (!mon) {
+            You("turn %s face-down.", yname(obj));
+            addinv(otmp);
+        } else {
+            mpickobj(mon, otmp);
+        }
+    }
+    obj_extract_self(obj);
+    (void) add_to_container(otmp, obj);
+    if (!mon)
+        prinv("", otmp, 1);
+}
+
+
 #endif /* MINIGAME */
 /* minigame.c */

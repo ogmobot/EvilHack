@@ -647,7 +647,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
 #ifdef MINIGAME
         if (typ == PLAYING_CARD) {
-            Sprintf(eos(buf), " (%s)", the(playing_card_name(obj->spe)));
+            Sprintf(buf, playing_card_name(obj->spe));
         }
 #endif
         break;
@@ -4878,7 +4878,6 @@ boolean *weightformatted_p;
 }
 
 #ifdef MINIGAME
-
 static const char *const card_suits[NUM_CARD_SUITS] = {
     "hearts",   "diamonds", "clubs",    "spades"
 };
@@ -4898,7 +4897,7 @@ int idx;
     if (idx >= 0 && idx < (NUM_CARD_SUITS * NUM_CARD_VALUES)) {
         value = card_values[idx % NUM_CARD_VALUES];
         suit = card_suits[idx / NUM_CARD_VALUES];
-    } else if (idx == -1) {
+    } else if (idx == 52) {
         value = "joker";
         suit = 0;
     } else {
@@ -4911,7 +4910,6 @@ int idx;
     }
     return buf;
 }
-
 #endif
 
 /*objnam.c*/

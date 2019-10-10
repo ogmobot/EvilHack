@@ -962,6 +962,15 @@ boolean artif;
             case BAG_OF_HOLDING:
                 mkbox_cnts(otmp);
                 break;
+#ifdef MINIGAME
+            case DECK_OF_CARDS:
+                builddeck(otmp);
+                otmp->cknown = 1;
+                break;
+            case PLAYING_CARD:
+                otmp->spe = rn2(53);
+                break;
+#endif
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
             case MAGIC_MARKER:
