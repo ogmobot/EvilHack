@@ -1283,6 +1283,14 @@ E void FDECL(mdamageu, (struct monst *, int));
 E int FDECL(could_seduce, (struct monst *, struct monst *, struct attack *));
 E int FDECL(doseduce, (struct monst *));
 
+/* ### minigame.c ### */
+
+#ifdef MINIGAME
+E int FDECL(use_dice, (struct obj *));
+E void FDECL(newegam, (struct monst *));
+E void FDECL(free_egam, (struct monst *));
+#endif
+
 /* ### minion.c ### */
 
 E void FDECL(newemin, (struct monst *));
@@ -2396,10 +2404,6 @@ E void FDECL(yelp, (struct monst *));
 E void FDECL(whimper, (struct monst *));
 E void FDECL(beg, (struct monst *));
 E int NDECL(dotalk);
-#ifdef MINIGAME
-E void FDECL(newegam, (struct monst *));
-E void FDECL(free_egam, (struct monst *));
-#endif
 #ifdef USER_SOUNDS
 E int FDECL(add_sound_mapping, (const char *));
 E void FDECL(play_sound_for_message, (const char *));

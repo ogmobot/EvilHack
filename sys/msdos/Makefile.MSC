@@ -1154,6 +1154,7 @@ mapglyph.o: mapglyph.c $(HACK_H)
 mcastu.o: mcastu.c $(HACK_H)
 mhitm.o: mhitm.c $(HACK_H) $(INCL)\artifact.h
 mhitu.o: mhitu.c $(HACK_H) $(INCL)\artifact.h
+minigame.o: minigame.c $(HACK_H) $(INCL)\minigame.h
 minion.o: minion.c $(HACK_H)
 mklev.o: mklev.c $(HACK_H)
 mkmap.o: mkmap.c $(HACK_H) $(INCL)\sp_lev.h

@@ -160,7 +160,7 @@ COMMOBJ = \
 	$(O)explode.o	$(O)extralev.o	$(O)files.o 	$(O)fountain.o	\
 	$(O)hack.o	$(O)hacklib.o	$(O)invent.o	$(O)light.o	\
 	$(O)lock.o	$(O)mail.o	$(O)makemon.o	$(O)mapglyph.o	\
-	$(O)mcastu.o	$(O)mhitm.o	$(O)mhitu.o	$(O)minion.o	\
+	$(O)mcastu.o	$(O)mhitm.o	$(O)mhitu.o	$(O)minigame.o	$(O)minion.o	\
 	$(O)mklev.o	$(O)mkmap.o	$(O)mkmaze.o	$(O)mkobj.o	\
 	$(O)mkroom.o	$(O)mon.o	$(O)mondata.o	$(O)monmove.o	\
 	$(O)monst.o	$(O)mplayer.o	$(O)mthrowu.o	$(O)muse.o	\
@@ -1101,6 +1101,8 @@ $(O)mhitm.o:  $(NHS)mhitm.c $(HDEP) $(I)artifact.h
 
 $(O)mhitu.o:  $(NHS)mhitu.c $(HDEP) $(I)artifact.h
 	$(CC) $(CFLAGS) $(CFLAGS2) $(OBJSPEC)$@ $(NHS)mhitu.c
+
+$(O)minigame.o:  $(NHS)minigame.c $(HDEP) $(I)minigame.h
 
 $(O)minion.o:  $(NHS)minion.c $(HDEP)
 

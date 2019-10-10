@@ -219,7 +219,7 @@ VOBJ07 = $(O)end.o      $(O)engrave.o  $(O)exper.o    $(O)explode.o
 VOBJ08 = $(O)extralev.o $(O)files.o    $(O)fountain.o $(O)hack.o    
 VOBJ09 = $(O)hacklib.o  $(O)invent.o   $(O)light.o    $(O)lock.o    
 VOBJ10 = $(O)mail.o     $(O)makemon.o  $(O)mapglyph.o $(O)mcastu.o  
-VOBJ11 = $(O)mhitm.o    $(O)mhitu.o    $(O)minion.o   $(O)mklev.o   
+VOBJ11 = $(O)mhitm.o    $(O)mhitu.o    $(O)minigame.o $(O)minion.o   $(O)mklev.o   
 VOBJ12 = $(O)mkmap.o    $(O)mkmaze.o   $(O)mkobj.o    $(O)mkroom.o  
 VOBJ13 = $(O)mon.o      $(O)mondata.o  $(O)monmove.o  $(O)monst.o   
 VOBJ14 = $(O)mplayer.o  $(O)mthrowu.o  $(O)muse.o     $(O)isaac64.o
@@ -1686,6 +1686,7 @@ $(O)mapglyph.o: mapglyph.c $(HACK_H)
 $(O)mcastu.o: mcastu.c $(HACK_H)
 $(O)mhitm.o: mhitm.c $(HACK_H) $(INCL)\artifact.h
 $(O)mhitu.o: mhitu.c $(HACK_H) $(INCL)\artifact.h
+$(O)minigame.o: minigame.c $(HACK_H) $(INCL)\minigame.h
 $(O)minion.o: minion.c $(HACK_H)
 $(O)mklev.o: mklev.c $(HACK_H)
 $(O)mkmap.o: mkmap.c $(HACK_H) $(INCL)\sp_lev.h

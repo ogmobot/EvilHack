@@ -883,6 +883,7 @@ LEV_H       = $(INCL)\lev.h
 LEV_COMP_H  = $(INCL)\lev_comp.h
 MAIL_H      = $(INCL)\mail.h
 MFNDPOS_H   = $(INCL)\mfndpos.h
+MINIGAME_H  = $(INCL)\minigame.h
 MONSYM_H    = $(INCL)\monsym.h
 OBJ_H       = $(INCL)\obj.h
 OBJCLASS_H  = $(INCL)\objclass.h
@@ -1823,6 +1824,7 @@ $(O)extralev.o:  $(PCHO) $(SRC)\extralev.c $(HACK_H)
 $(O)files.o:	 $(PCHO) $(SRC)\files.c    $(HACK_H) $(DLB_H)
 $(O)fountain.o:  $(PCHO) $(SRC)\fountain.c $(HACK_H)
 $(O)mapglyph.o:  $(PCHO) $(SRC)\mapglyph.c $(HACK_H)
+$(O)minigame.o:  $(PCHO) $(SRC)\minigame.c $(HACK_H) $(MINIGAME_H)
 $(O)minion.o:    $(PCHO) $(SRC)\minion.c   $(HACK_H)
 $(O)mklev.o:     $(PCHO) $(SRC)\mklev.c    $(HACK_H)
 $(O)mkmap.o:     $(PCHO) $(SRC)\mkmap.c    $(HACK_H) $(SP_LEV_H)

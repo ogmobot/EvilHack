@@ -4,6 +4,9 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#ifdef MINIGAME
+#include "minigame.h"
+#endif
 #include <ctype.h>
 #include <assert.h>
 

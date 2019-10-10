@@ -149,7 +149,7 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   dungeon.c eat.c end.c engrave.c exper.c explode.c extralev.c \
 	   files.c fountain.c hack.c hacklib.c invent.c light.c lock.c \
 	   mail.c makemon.c mapglyph.c mcastu.c mhitm.c mhitu.c minion.c \
-	   mklev.c mkmap.c \
+	   minigame.c mklev.c mkmap.c \
 	   mkmaze.c mkobj.c mkroom.c mon.c mondata.c monmove.c monst.c \
 	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
@@ -174,7 +174,7 @@ VERSOURCES = $(HACKCSRC) $(SYSSRC) $(WINSRC) $(RANDSRC) $(GENCSRC)
 HACKINCL = align.h amiconf.h artifact.h artilist.h attrib.h beconf.h color.h \
 	   config.h config1.h context.h coord.h decl.h def_os2.h display.h \
 	   dlb.h dungeon.h engrave.h extern.h flag.h func_tab.h global.h \
-	   hack.h lev.h macconf.h mextra.h mfndpos.h micro.h mkroom.h \
+	   hack.h lev.h macconf.h mextra.h mfndpos.h micro.h minigame.h mkroom.h \
 	   monattk.h mondata.h monflag.h monst.h monsym.h obj.h objclass.h \
 	   os2conf.h patchlevel.h pcconf.h permonst.h prop.h rect.h \
 	   region.h rm.h sp_lev.h spell.h sys.h system.h tcap.h timeout.h \
@@ -195,7 +195,7 @@ HOBJ2 = dog.obj,dogmove.obj,dokick.obj,dothrow.obj,drawing.obj, \
 	dungeon.obj,eat.obj,end.obj,engrave.obj,exper.obj,explode.obj, \
 	extralev.obj,files.obj,fountain.obj,hack.obj,hacklib.obj,invent.obj
 HOBJ3 = light.obj,lock.obj,mail.obj,makemon.obj,mapglyph.obj,mcastu.obj, \
-	mhitm.obj,mhitu.obj,minion.obj,mklev.obj,mkmap.obj,mkmaze.obj, \
+	mhitm.obj,mhitu.obj,minigame.obj,minion.obj,mklev.obj,mkmap.obj,mkmaze.obj, \
 	mkobj.obj,mkroom.obj,mon.obj,mondata.obj,monmove.obj
 HOBJ4 = mplayer.obj,mthrowu.obj,muse.obj,music.obj,o_init.obj,objnam.obj, \
 	options.obj,pager.obj,pickup.obj,pline.obj,polyself.obj, \
@@ -464,6 +464,7 @@ mapglyph.obj :	mapglyph.c $(HACK_H) $(INC)wintty.h $(INC)color.h
 mcastu.obj :	mcastu.c $(HACK_H)
 mhitm.obj :	mhitm.c $(HACK_H) $(INC)artifact.h
 mhitu.obj :	mhitu.c $(HACK_H) $(INC)artifact.h
+minigame.obj :	minigame.c $(HACK_H) $(INC)minigame.h
 minion.obj :	minion.c $(HACK_H)
 mklev.obj :	mklev.c $(HACK_H)
 mkmap.obj :	mkmap.c $(HACK_H) $(INC)sp_lev.h
