@@ -1292,6 +1292,7 @@ E void FDECL(free_egam, (struct monst *));
 E void FDECL(builddeck, (struct obj *));
 E void FDECL(drawcard, (struct obj *));
 E void FDECL(returncard, (struct obj *, struct monst *));
+E void FDECL(mergedecks, (struct obj *, struct obj **));
 #endif
 
 /* ### minion.c ### */

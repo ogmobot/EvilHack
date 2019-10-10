@@ -357,13 +357,22 @@ struct obj {
      || (otmp)->otyp == POT_OIL)
 
 /* things that can be read */
+#ifdef MINIGAME
 #define is_readable(otmp)                                                    \
     ((otmp)->otyp == FORTUNE_COOKIE || (otmp)->otyp == T_SHIRT               \
      || (otmp)->otyp == ALCHEMY_SMOCK || (otmp)->otyp == CREDIT_CARD         \
      || (otmp)->otyp == CAN_OF_GREASE || (otmp)->otyp == MAGIC_MARKER        \
      || (otmp)->oclass == COIN_CLASS || (otmp)->oartifact == ART_ORB_OF_FATE \
      || (otmp)->otyp == CANDY_BAR || (otmp)->oartifact == ART_MAGIC___BALL   \
-     || (otmp)->otyp == STRIPED_SHIRT)
+     || (otmp)->otyp == STRIPED_SHIRT || (otmp)->otyp == PLAYING_CARD)
+#else
+#define is_readable(otmp)                                                    \
+    ((otmp)->otyp == FORTUNE_COOKIE || (otmp)->otyp == T_SHIRT               \
+     || (otmp)->otyp == ALCHEMY_SMOCK || (otmp)->otyp == CREDIT_CARD         \
+     || (otmp)->otyp == CAN_OF_GREASE || (otmp)->otyp == MAGIC_MARKER        \
+     || (otmp)->oclass == COIN_CLASS || (otmp)->oartifact == ART_ORB_OF_FATE \
+     || (otmp)->otyp == CANDY_BAR || (otmp)->oartifact == ART_MAGIC___BALL)
+#endif
 
 /* special stones */
 #define is_graystone(obj)                                 \

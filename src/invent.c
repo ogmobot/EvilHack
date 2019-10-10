@@ -928,6 +928,17 @@ struct obj *obj;
             panic("addinv: null obj after quiver merge otyp=%d", saved_otyp);
         goto added;
     }
+#ifdef MINIGAME
+    /* merge decks of cards with existing decks, if possible */
+    if (obj->otyp == DECK_OF_CARDS) {
+        struct obj *otmp;
+        otmp = carrying(DECK_OF_CARDS);
+        if (otmp) {
+            mergedecks(otmp, &obj);
+            goto added;
+        }
+    }
+#endif
     /* merge if possible; find end of chain in the process */
     for (prev = 0, otmp = invent; otmp; prev = otmp, otmp = otmp->nobj)
         if (merged(&otmp, &obj)) {

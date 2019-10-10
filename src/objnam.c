@@ -618,6 +618,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcat(buf, materialnm[obj->material]);
             Strcat(buf, " ");
         }
+#ifdef MINIGAME
+        if (typ == PLAYING_CARD) {
+            Sprintf(eos(buf), playing_card_name(obj->spe));
+            break;
+        } else if (typ == DECK_OF_CARDS && obj->cobj && !obj->cobj->nobj) {
+            Sprintf(eos(buf), "face-down card");
+            break;
+        }
+#endif
 
         if (!dknown)
             Strcat(buf, dn);
@@ -645,11 +654,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             if (wizard)
                 Sprintf(eos(buf), " (%d)", obj->spe);
         }
-#ifdef MINIGAME
-        if (typ == PLAYING_CARD) {
-            Sprintf(buf, playing_card_name(obj->spe));
-        }
-#endif
         break;
     case ARMOR_CLASS:
         /* depends on order of the dragon scales objects */
@@ -1223,8 +1227,10 @@ unsigned doname_flags;
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
-        long itemcount = count_contents(obj, FALSE, FALSE, TRUE, FALSE);
-
+        long itemcount = count_contents(obj, FALSE, FALSE, TRUE);
+#ifdef MINIGAME
+        if (!(obj->otyp == DECK_OF_CARDS && itemcount == 1L))
+#endif
         Sprintf(eos(bp), " containing %ld item%s", itemcount,
                 plur(itemcount));
     }

@@ -449,6 +449,30 @@ doread()
             livelog_write_string(LL_CONDUCT,
                     "became literate by reading a candy bar wrapper");
         return 1;
+#ifdef MINIGAME
+    } else if (scroll->otyp == PLAYING_CARD
+               && (scroll->spe < 0 || scroll->spe > 52)) {
+        /* "What is this card? 'RULES FOR DRAW AND STUD POKER'?"
+           "What a pity, Mr. Bond!"
+        */
+        static const char *rules_msgs[] = {
+            "Draw and Stud Poker",  "Texas Hold'em Poker",  "Canasta",
+            "Eucre",                "Gin Rummy",            "Patience",
+            "Whist",                "Old Maid",             "Big Two",
+            "Blackjack"
+        };
+
+        if (Blind) {
+            You_cant("read it.");
+            return 0;
+        }
+        mesg = rules_msgs[scroll->o_id % SIZE(rules_msgs)];
+        pline("The card describes the rules of %s.", mesg);
+        if (!u.uconduct.literate++)
+            livelog_printf(LL_CONDUCT,
+                    "became literate by reading the rules of %s", mesg);
+        return 1;
+#endif
     } else if (scroll->oclass != SCROLL_CLASS
                && scroll->oclass != SPBOOK_CLASS) {
         pline(silly_thing_to, "read");

@@ -75,7 +75,7 @@ struct obj *obj;
         otmp->spe = spe;
         otmp->cursed = obj->cursed;
         otmp->blessed = obj->blessed;
-        (void) add_to_container(obj, otmp);
+        add_to_container(obj, otmp);
     }
 }
 
@@ -134,6 +134,9 @@ struct monst *mon;
     } else {
         otmp = mksobj(DECK_OF_CARDS, FALSE, FALSE);
         otmp->cknown = 1;
+        otmp->blessed = obj->blessed;
+        otmp->cursed = obj->cursed;
+        otmp->bknown = obj->bknown;
         if (!mon) {
             You("turn %s face-down.", yname(obj));
             addinv(otmp);
@@ -142,11 +145,29 @@ struct monst *mon;
         }
     }
     obj_extract_self(obj);
-    (void) add_to_container(otmp, obj);
+    add_to_container(otmp, obj);
     if (!mon)
         prinv("", otmp, 1);
 }
 
+void
+mergedecks(odest, osrc)
+struct obj *odest;
+struct obj **osrc;
+{
+    You("shuffle %s and %s together.", yname(*osrc), yname(odest));
+    struct obj *otmp, *otmp2;
+    for (otmp = (*osrc)->cobj; otmp; otmp = otmp2) {
+        otmp2 = otmp->nobj;
+        obj_extract_self(otmp);
+        add_to_container(odest, otmp);
+        otmp->blessed = odest->blessed;
+        otmp->cursed = odest->cursed;
+    }
+    odest->owt = weight(odest);
+    useupf(*osrc, 1);
+    *osrc = odest;
+}
 
 #endif /* MINIGAME */
 /* minigame.c */
