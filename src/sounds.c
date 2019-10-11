@@ -556,7 +556,11 @@ register struct monst *mtmp;
         break;
 #ifdef MINIGAME
     case MS_GAME:
-        (*(EGAM(mtmp)->game_fn))(mtmp);
+        if (has_egam(mtmp) && EGAM(mtmp)->game_fn) {
+            (*(EGAM(mtmp)->game_fn))(mtmp);
+        } else {
+            pline("%s mutters to %sself.", Monnam(mtmp), mhim(mtmp));
+        }
         break;
 #endif
     case MS_VAMPIRE: {
