@@ -1293,6 +1293,7 @@ E void FDECL(builddeck, (struct obj *));
 E void FDECL(drawcard, (struct obj *));
 E void FDECL(returncard, (struct obj *, struct monst *));
 E void FDECL(mergedecks, (struct obj *, struct obj **));
+E int FDECL(play_highroll, (struct monst *));
 #endif
 
 /* ### minion.c ### */

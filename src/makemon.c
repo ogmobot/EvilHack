@@ -844,10 +844,31 @@ register struct monst *mtmp;
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_PRIEST)) {
             otmp = mksobj(MACE, FALSE, FALSE);
-            otmp->spe = rnd(3);
-            if (!rn2(2))
-                curse(otmp);
-            (void) mpickobj(mtmp, otmp);
+            if (otmp) {
+                otmp->spe = rnd(3);
+                if (!rn2(2))
+                    curse(otmp);
+                (void) mpickobj(mtmp, otmp);
+            }
+#ifdef MINIGAME
+        } else if (mm == PM_GAMBLER) {
+            mkmonmoney(mtmp, (long) rn1(40, 20));
+            switch (rn2(4)) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            default:
+                /* High Roll */
+                otmp = mksobj(!rn2(2) ? FAIR_DICE : LOADED_DICE, FALSE, FALSE);
+                if (!rn2(2))
+                    curse(otmp);
+                mpickobj(mtmp, otmp);
+                EGAM(mtmp)->otmp = otmp;
+                EGAM(mtmp)->game_fn = &play_highroll;
+                break;
+            }
+#endif
         } else if (mm == PM_NINJA) { /* extra quest villains */
             (void) mongets(mtmp, rn2(4) ? SHURIKEN : DART);
             (void) mongets(mtmp, rn2(4) ? SHORT_SWORD : AXE);
@@ -2261,6 +2282,10 @@ int mmflags;
                               : eminp->renegade;
     }
     set_malign(mtmp); /* having finished peaceful changes */
+#ifdef MINIGAME
+    if (mndx == PM_GAMBLER && !(mmflags & MM_EGAM))
+        newegam(mtmp);
+#endif
     if (anymon && !(mmflags & MM_NOGRP)) {
         if ((ptr->geno & G_SGROUP) && rn2(2)) {
             m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);

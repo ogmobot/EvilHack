@@ -177,7 +177,7 @@ struct erid {
 
 #ifdef MINIGAME
 struct egam {
-    int state[4];                       /* values to store game state */
+    long state[4];                      /* values to store game state */
     struct obj *otmp;                   /* object used in game */
     int (*game_fn)(struct monst *);     /* pointer to game function */
 };

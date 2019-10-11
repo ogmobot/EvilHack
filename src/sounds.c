@@ -554,6 +554,11 @@ register struct monst *mtmp;
             verbl_msg = verbuf;
         }
         break;
+#ifdef MINIGAME
+    case MS_GAME:
+        (*(EGAM(mtmp)->game_fn))(mtmp);
+        break;
+#endif
     case MS_VAMPIRE: {
         /* vampire messages are varied by tameness, peacefulness, and time of
          * night */

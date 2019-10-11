@@ -191,6 +191,7 @@ struct monst* mon;
     switch (EGAM(mon)->state[0]) {
     case -1:
         pline("%s isn't interested.", Monnam(mon));
+        break;
     case 0: {
         char buf[BUFSZ] = DUMMY;
         long umoney = money_cnt(invent);
@@ -203,20 +204,20 @@ struct monst* mon;
             if (!games_played++)
                 pline("\"%s we are playing high-roll.\"",
                       night() ? "Tonight" : "Today");
-            getlin("\"How much willst thou wager?", buf);
-            if (sscanf(buf, "%d", &wager) != 1)
+            getlin("\"How much willst thou wager?\"", buf);
+            if (sscanf(buf, "%ld", &wager) != 1)
                 wager = 0;
             if (wager > 0) {
                 game_stage = 1;
                 wager = wager < umoney ? wager : umoney;
                 if (wager == umoney)
-                    pline("You give %s all your gold.", Monnam(mon));
+                    pline("You give %s all your gold.", mon_nam(mon));
                 else
-                    pline("You give %s %d %s.",
-                          Monnam(mon), wager, currency(wager));
+                    pline("You give %s %ld %s.",
+                          mon_nam(mon), wager, currency(wager));
                 money2mon(mon, wager);
                 context.botl = 1;
-                pline("%s gives you %s.", Monnam(mon), yname(odice));
+                pline("%s gives you %s %s.", Monnam(mon), mhis(mon), xname(odice));
                 obj_extract_self(odice);
                 addinv(odice);
                 prinv("", odice, 1);
@@ -260,7 +261,7 @@ struct monst* mon;
             break;
         }
         odice = otmp;
-        pline("%s snatches up %s.", Monnam(mon), yname(odice));
+        pline("%s snatches up %s.", Monnam(mon), ysimple_name(odice));
         obj_extract_self(odice);
         mpickobj(mon, odice);
         /* Dice are only unfair for the player... */
@@ -271,18 +272,20 @@ struct monst* mon;
               mresult[0], mresult[1], mresult[0] + mresult[1]);
         if (mresult[0] + mresult[1] >= player_roll) {
             pline("\"I win!\"");
-            game_stage = 2;
+            game_stage = 0;
             return -1;
         } else {
             pline("\"Blast! Thou hast won!\"");
+            wager *= 2;
             if (wager >= mongold->quan) {
                 wager = mongold->quan;
                 pline("\"Thou hast taken everything from me...\"");
                 game_stage = -1;
             } else {
-                game_stage = 2;
+                game_stage = 0;
             }
             money2u(mon, wager);
+            context.botl = TRUE;
             return 1;
         }
         break;
@@ -291,6 +294,11 @@ struct monst* mon;
         break;
     }
     return 0;
+#undef game_stage
+#undef wager
+#undef player_roll
+#undef games_played
+#undef odice
 }
 
 #endif /* MINIGAME */
