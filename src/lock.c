@@ -86,8 +86,8 @@ picklock(VOID_ARGS)
     if (xlock.box) {
         if (((xlock.box->where != OBJ_FLOOR
             || (xlock.box->ox != u.ux || (xlock.box->oy != u.uy))
-            && (xlock.box->otyp != IRON_SAFE || abs(xlock.box->oy - u.uy) > 1
-            || abs(xlock.box->ox - u.ux) > 1)))) {
+            && (xlock.box->otyp != IRON_SAFE || xlock.box->otyp != CRYSTAL_CHEST
+                || abs(xlock.box->oy - u.uy) > 1 || abs(xlock.box->ox - u.ux) > 1)))) {
            return ((xlock.usedtime = 0)); /* you or it moved */
         }
     } else { /* door */
@@ -432,13 +432,23 @@ int rx, ry;
 
 		if (otmp->otyp == IRON_SAFE && picktyp != STETHOSCOPE) {
 		    You("aren't sure how to go about opening the safe that way.");
-		    return 0;
+		    return PICKLOCK_LEARNED_SOMETHING;
 		}
 
 		if (!otmp->olocked && otmp->otyp == IRON_SAFE) {
 		    You_cant("change the combination.");
-		    return 0;
+		    return PICKLOCK_LEARNED_SOMETHING;
 		}
+
+                if (otmp->olocked && otmp->otyp == CRYSTAL_CHEST) {
+                    You_cant("unlock such a container via physical means.");
+                    return PICKLOCK_LEARNED_SOMETHING;
+                }
+
+                if (!otmp->olocked && otmp->otyp == CRYSTAL_CHEST) {
+                    You_cant("lock such a container via physical means.");
+                    return PICKLOCK_LEARNED_SOMETHING;
+                }
 
                 if (otmp->obroken) {
                     You_cant("fix its broken lock with %s.", doname(pick));
@@ -601,10 +611,14 @@ doforce()
     xlock.box = (struct obj *) 0;
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (Is_box(otmp)) {
-	    if (otmp->otyp == IRON_SAFE) {
-	        You("would need dynamite to force %s.", the(xname(otmp)));
-		continue;
+            if (otmp->otyp == IRON_SAFE) {
+                You("would need dynamite to force %s.", the(xname(otmp)));
+                continue;
 	    }
+            if (otmp->otyp == CRYSTAL_CHEST) {
+                You_cant("force the lock of such a container.");
+                continue;
+            }
             if (otmp->obroken || !otmp->olocked) {
                 /* force doname() to omit known "broken" or "unlocked"
                    prefix so that the message isn't worded redundantly;

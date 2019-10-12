@@ -772,11 +772,11 @@ int dieroll;
     unconventional[0] = '\0';
     saved_oname[0] = '\0';
 
-    /* Awaken nearby monsters. A stealthy hero causes less noise. */
+    /* Awaken nearby monsters. A stealthy hero makes much less noise */
     if (!(is_silent(youmonst.data) && helpless(mon))
-        && rn2(Stealth ? 10 : 5)) {
+        && rn2(Stealth ? 10 : 2)) {
         int base_combat_noise = combat_noise(&mons[urace.malenum]);
-        wake_nearto(mon->mx, mon->my, Stealth ? base_combat_noise/2
+        wake_nearto(mon->mx, mon->my, Stealth ? base_combat_noise / 2
                                               : base_combat_noise);
     }
 
@@ -1952,6 +1952,30 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             tmp = 0;
         }
         tmp += destroy_mitem(mdef, POTION_CLASS, AD_COLD);
+        break;
+    /* currently the only monster that uses AD_LOUD is
+     * the Nazgul, and they are M2_NOPOLY, but we'll put this
+     * here for completeness sake. we may add other creatures
+     * that can use this damage type at some point in the future */
+    case AD_LOUD:
+        if (negated) {
+            tmp = 0;
+            break;
+        }
+        if (!Deaf)
+            pline("%s reels from the noise!", Monnam(mdef));
+        if (!rn2(6))
+            erode_armor(mdef, ERODE_FRACTURE);
+        tmp += destroy_mitem(mdef, RING_CLASS, AD_LOUD);
+        tmp += destroy_mitem(mdef, TOOL_CLASS, AD_LOUD);
+        tmp += destroy_mitem(mdef, WAND_CLASS, AD_LOUD);
+        tmp += destroy_mitem(mdef, POTION_CLASS, AD_LOUD);
+        if (pd == &mons[PM_GLASS_GOLEM]) {
+            pline("%s shatters into a million pieces!", Monnam(mdef));
+            xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
+            tmp = 0;
+            break;
+        }
         break;
     case AD_ELEC:
         if (negated) {
@@ -3137,7 +3161,7 @@ boolean wep_was_destroyed;
             if (aatyp == AT_KICK) {
                 if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_BURN,
-                                     EF_GREASE | EF_VERBOSE);
+                                     EF_GREASE | EF_VERBOSE | EF_DESTROY);
             } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
                        || aatyp == AT_MAGC || aatyp == AT_TUCH)
                 passive_obj(mon, weapon, &(ptr->mattk[i]));
@@ -3512,7 +3536,7 @@ struct attack *mattk;     /* null means we find one internally */
         if (!rn2(6) && !mon->mcan
             /* steam vortex: fire resist applies, fire damage doesn't */
             && mon->data != &mons[PM_STEAM_VORTEX]) {
-            (void) erode_obj(obj, NULL, ERODE_BURN, EF_NONE);
+            (void) erode_obj(obj, NULL, ERODE_BURN, EF_GREASE | EF_DESTROY);
         }
         break;
     case AD_ACID:

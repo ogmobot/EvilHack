@@ -45,7 +45,7 @@
 #define AD_DRST 7   /* drains str (poison) */
 #define AD_WATR 8   /* water (physical) attack */
 #define AD_ACID 9   /* acid damage */
-#define AD_SPC1 10   /* for extension of buzz() */
+#define AD_SPC1 10  /* for extension of buzz() */
 #define AD_SPC2 11  /* for extension of buzz() */
 #define AD_BLND 12  /* blinds (yellow light) */
 #define AD_STUN 13  /* stuns */
@@ -83,6 +83,7 @@
 #define AD_BHED 45  /* beheading (vorpal jabberwock) */
 #define AD_LUCK 46  /* affects luck (magical eye) */
 #define AD_PSYC 47  /* psionic attack */
+#define AD_LOUD 48  /* sound damage */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */

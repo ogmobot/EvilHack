@@ -139,6 +139,7 @@ int shotlimit;
         switch (Role_switch) {
         case PM_CAVEMAN:
         case PM_CAVEWOMAN:
+        case PM_HUMAN_CAVEMAN:
         case PM_HUMAN_CAVEWOMAN:
             /* give bonus for low-tech gear */
             if (skill == -P_SLING || skill == P_SPEAR)
@@ -1344,7 +1345,7 @@ boolean twoweap; /* used to restore twoweapon mode if wielded weapon returns */
                 || !index(in_rooms(mon->mx, mon->my, SHOPBASE), *u.ushops)))
             hot_pursuit(mon);
 
-        if (obj_gone)
+        if (obj_gone || obj == uball)
             thrownobj = (struct obj *) 0;
     }
 

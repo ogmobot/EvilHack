@@ -1294,6 +1294,8 @@ int mat, minwt;
             continue;
         if (obj_resists(otmp, 0, 0))
             continue; /* preserve unique objects */
+        if (otmp->otyp == CRYSTAL_CHEST)
+            continue; /* special container that is immune to magic */
 #ifdef MAIL
         if (otmp->otyp == SCR_MAIL)
             continue;
@@ -1964,7 +1966,8 @@ struct obj *obj, *otmp;
         case WAN_POLYMORPH:
         case SPE_POLYMORPH:
             if (obj->otyp == WAN_POLYMORPH || obj->otyp == SPE_POLYMORPH
-                || obj->otyp == POT_POLYMORPH || obj_resists(obj, 5, 95)) {
+                || obj->otyp == POT_POLYMORPH || obj_resists(obj, 5, 95)
+                || obj->otyp == CRYSTAL_CHEST) {
                 res = 0;
                 break;
             }
@@ -2027,8 +2030,12 @@ struct obj *obj, *otmp;
             /* target object has now been "seen (up close)" */
             obj->dknown = 1;
             if (Is_container(obj) || obj->otyp == STATUE) {
-                obj->cknown = obj->lknown = 1;
-                if (!obj->cobj) {
+                if (!obj->otyp == CRYSTAL_CHEST)
+                    obj->cknown = obj->lknown = 1;
+                if (obj->otyp == CRYSTAL_CHEST) {
+                    pline_The("%s resists your magical probing.", xname(obj));
+                    res = 0;
+                } else if (!obj->cobj) {
                     pline("%s empty.", Tobjnam(obj, "are"));
                 } else if (SchroedingersBox(obj)) {
                     /* we don't want to force alive vs dead
@@ -3901,11 +3908,10 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (resists_magm(mon)) {
             sho_shieldeff = TRUE;
             tmp = (tmp + 1) / 2;
-            }
-        if (Half_spell_damage) {
+        }
+        if (Half_spell_damage)
             tmp = (tmp + 1) / 2;
-            }
-            break;
+        break;
     case ZT_FIRE:
         if (resists_fire(mon)) {
             sho_shieldeff = TRUE;
@@ -3946,6 +3952,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_DEATH:                              /* death/disintegration */
         if (abs(type) != ZT_BREATH(ZT_DEATH)) { /* death */
+            tmp = d(4, 6);
             if (mon->data == &mons[PM_DEATH]) {
                 mon->mhpmax += mon->mhpmax / 2;
                 if (mon->mhpmax >= MAGIC_COOKIE)
@@ -3955,10 +3962,20 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
                 break;
             }
             if (nonliving(mon->data) || is_demon(mon->data)
-                || is_vampshifter(mon) || resists_magm(mon)
-                || mon->data->msound == MS_LEADER) {
+                || is_vampshifter(mon) || mon->data->msound == MS_LEADER) {
+                sho_shieldeff = TRUE;
+                break;
+            }
+            if (resists_magm(mon)) {
                 /* similar to player */
                 sho_shieldeff = TRUE;
+                tmp = (tmp + 1) / 2;
+                pline("%s resists the death magic, but appears drained!",
+                      Monnam(mon));
+                if (spellcaster)
+                    tmp = spell_damage_bonus(tmp);
+                if (Half_spell_damage)
+                    tmp = (tmp + 1) / 2;
                 break;
             }
             type = -1; /* so they don't get saving throws */
@@ -4175,9 +4192,16 @@ xchar sx, sy;
             You("seem unaffected.");
             break;
         } else if (Antimagic) {
-            shieldeff(sx, sy);
-            You("aren't affected.");
-            monstseesu(M_SEEN_MAGR);
+            /* not as much damage as 'touch of death'
+             * but this will still leave a mark */
+            dam = d(4, 6);
+            if (Antimagic && Half_spell_damage) {
+                shieldeff(sx, sy);
+                monstseesu(M_SEEN_MAGR);
+                dam /= 2;
+            }
+            You("feel drained...");
+            u.uhpmax -= dam / 3 + rn2(5);
             break;
 	} else if (Reflecting) {
             You("feel a little bit drained!");
@@ -5190,6 +5214,9 @@ register struct obj *obj;
  *      [4] burning spellbook
  *      [5] shocked ring
  *      [6] shocked wand
+ *      [7] sound potion
+ *      [8] sound item
+ *      [9] sound wand
  * (books, rings, and wands don't stack so don't need plural form;
  *  crumbling ring doesn't do damage so doesn't need killer reason)
  */
@@ -5202,6 +5229,9 @@ const char *const destroy_strings[][3] = {
     { "catches fire and burns", "", "burning book" },
     { "turns to dust and vanishes", "", "" },
     { "breaks apart and explodes", "", "exploding wand" },
+    { "resonates and shatters", "resonate and shatter", "shattered potion"},
+    { "resonates and shatters", "", "shattered item"},
+    { "vibrates and shatters", "", "shattered wand"},
 };
 
 /* guts of destroy_item(), which ought to be called maybe_destroy_items();
@@ -5296,6 +5326,38 @@ int osym, dmgtyp;
             skip++;
             break;
         }
+        break;
+    case AD_LOUD:
+        if (objects[obj->otyp].oc_material == GLASS
+            && obj->oerodeproof) {
+            skip++;
+            if (!Blind)
+                Your("%s oscillates briefly, but remains intact.",
+                     xname(obj));
+        }
+        if (objects[obj->otyp].oc_material == GLASS
+            && !obj->oerodeproof) {
+            quan = obj->quan;
+            switch (osym) {
+            case POTION_CLASS:
+                dmg = rnd(4);
+                dindx = 7;
+                break;
+            case RING_CLASS:
+            case TOOL_CLASS:
+                dmg = 1;
+                dindx = 8;
+                break;
+            case WAND_CLASS:
+                dmg = rnd(6);
+                dindx = 9;
+                break;
+            default:
+                skip++;
+                break;
+            }
+        } else
+            skip++;
         break;
     default:
         skip++;
@@ -5530,6 +5592,35 @@ int osym, dmgtyp;
                 skip++;
                 break;
             }
+            break;
+        case AD_LOUD:
+            if (objects[obj->otyp].oc_material == GLASS
+                && obj->oerodeproof) {
+                skip++;
+                if (vis)
+                    pline("%s oscillates briefly, but remains intact.",
+                          The(distant_name(obj, xname)));
+            }
+            if (objects[obj->otyp].oc_material == GLASS
+                && !obj->oerodeproof) {
+                quan = obj->quan;
+                switch (osym) {
+                case POTION_CLASS:
+                    dindx = 7;
+                    break;
+                case RING_CLASS:
+                case TOOL_CLASS:
+                    dindx = 8;
+                    break;
+                case WAND_CLASS:
+                    dindx = 9;
+                    break;
+                default:
+                    skip++;
+                    break;
+                }
+            } else
+                skip++;
             break;
         default:
             skip++;

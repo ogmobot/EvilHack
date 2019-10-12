@@ -529,6 +529,9 @@ xchar x, y;
         return 1;
     }
 
+    if (kickedobj->oartifact)
+        u.uconduct.artitouch++;
+
     if (!uarmf && kickedobj->otyp == CORPSE
         && touch_petrifies(&mons[kickedobj->corpsenm]) && !Stone_resistance) {
         You("kick %s with your bare %s.",
@@ -633,7 +636,10 @@ xchar x, y;
 	    return 1;
 	}
         if (kickedobj->olocked) {
-            if (!rn2(5) || (martial() && !rn2(2))) {
+            if (kickedobj->otyp == CRYSTAL_CHEST) {
+                You("are unable to break open the lock of such a container.");
+                return 1;
+            } else if (!rn2(5) || (martial() && !rn2(2))) {
                 You("break open the lock!");
                 breakchestlock(kickedobj, FALSE);
                 if (otrp)

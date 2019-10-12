@@ -1,4 +1,4 @@
-/* NetHack 3.6	pickup.c	$NHDT-Date: 1570142736 2019/10/03 22:45:36 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.234 $ */
+/* NetHack 3.6	pickup.c	$NHDT-Date: 1570566381 2019/10/08 20:26:21 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.235 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -1212,7 +1212,8 @@ int qflags;
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
             if (curr->oclass == *pack) {
                 if ((qflags & WORN_TYPES)
-                    && !(curr->owornmask & (W_ARMOR | W_ACCESSORY | W_WEAPON)))
+                    && !(curr->owornmask & (W_ARMOR | W_ACCESSORY
+                                            | W_WEAPONS)))
                     continue;
                 if (!counted_category) {
                     ccount++;
@@ -1548,9 +1549,10 @@ boolean telekinesis; /* not picking it up directly by hand */
     mrg_to_wielded = FALSE;
 
     if (is_soko_prize_flag(obj)) {
-	makeknown(obj->otyp);    /* obj is already known */
-	obj->sokoprize = FALSE;  /* reset sokoprize flag */
-	del_soko_prizes();	 /* delete other sokoprizes */
+        makeknown(obj->otyp);    /* obj is already known */
+        obj->sokoprize = FALSE;  /* reset sokoprize flag */
+        livelog_printf(LL_ACHIEVE, "completed Sokoban, acquiring %s", an(xname(obj)));
+        del_soko_prizes();	 /* delete other sokoprizes */
         return -1;
     }
     return 1;
@@ -1988,7 +1990,8 @@ reverse_loot()
         /* find original coffers chest if present, otherwise use nearest one */
         otmp = 0;
         for (coffers = fobj; coffers; coffers = coffers->nobj)
-            if (coffers->otyp == CHEST || coffers->otyp == IRON_SAFE) {
+            if (coffers->otyp == CHEST || coffers->otyp == IRON_SAFE
+                || coffers->otyp == CRYSTAL_CHEST) {
                 if (coffers->spe == 2)
                     break; /* a throne room chest */
                 if (!otmp
@@ -3457,31 +3460,31 @@ del_soko_prizes()
     struct obj *otmp, *onext;
     /* check objs on floor */
     for (otmp = fobj; otmp; otmp = onext) {
-	onext = otmp->nobj; /* otmp may be destroyed */
-	if (is_soko_prize_flag(otmp)) {
-	    x = otmp->ox;
-	    y = otmp->oy;
-	    obj_extract_self(otmp);
-	    if (cansee(x, y)) {
-		You("see %s %s.", an(xname(otmp)),
+        onext = otmp->nobj; /* otmp may be destroyed */
+        if (is_soko_prize_flag(otmp)) {
+            x = otmp->ox;
+            y = otmp->oy;
+            obj_extract_self(otmp);
+            if (cansee(x, y)) {
+                You("see %s %s.", an(xname(otmp)),
                     rn2(2) ? "dissolve into nothingness"
                            : "wink out of existience");
-		newsym(x, y);
-	    } else cnt++;
-	        obfree(otmp, (struct obj *) 0);
-	}
+                newsym(x, y);
+            } else if (cnt && !Deaf) {
+                You_hear("%s.",
+                         rn2(2) ? "a distinct popping sound"
+                                : "a noise like a hundred thousand people saying 'foop'");
+            } else cnt++;
+                obfree(otmp, (struct obj *) 0);
+        }
     }
-    if (cnt && !Deaf)
-        You_hear("%s.",
-                 rn2(2) ? "a distinct popping sound"
-                        : "a noise like a hundred thousand people saying 'foop'");
     /* check buried objs... do we need this? */
     for (otmp = level.buriedobjlist; otmp; otmp = onext) {
 	onext = otmp->nobj; /* otmp may be destroyed */
-	if (is_soko_prize_flag(otmp)) {
-	    obj_extract_self(otmp);
-	    obfree(otmp, (struct obj *) 0);
-	}
+        if (is_soko_prize_flag(otmp)) {
+            obj_extract_self(otmp);
+            obfree(otmp, (struct obj *) 0);
+        }
     }
 }
 

@@ -77,7 +77,10 @@ struct attack *mattk;
                   "gores you with its tusk" : "butt");
             break;
         case AT_TUCH:
-            pfmt = "%s touches you!";
+            if (mtmp->data == &mons[PM_GIANT_CENTIPEDE])
+                pline("%s coils its body around you!", Monnam(mtmp));
+            else
+                pfmt = "%s touches you!";
             break;
         case AT_TENT:
             if (mtmp->data == &mons[PM_MEDUSA])
@@ -971,9 +974,8 @@ register struct monst *mtmp;
                 sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
             break;
 	case AT_SCRE:
-	    if (range2) {
+	    if (range2)
 		sum[i] = screamu(mtmp, mattk);
-	    }
 	    /* if you're nice and close, don't bother */
 	    break;
         default: /* no attack */
@@ -1330,6 +1332,36 @@ register struct attack *mattk;
         } else
             dmg = 0;
         break;
+    case AD_LOUD:
+        hitmsg(mtmp, mattk);
+        if (uncancelled) {
+            if (Deaf)
+                dmg = 1;
+            else
+                Your("mind reels from the noise!");
+
+            if (!rn2(6))
+                erode_armor(&youmonst, ERODE_FRACTURE);
+            if (!rn2(5))
+                erode_obj(uwep, (char *) 0, ERODE_FRACTURE, EF_DESTROY);
+            if (!rn2(6))
+                erode_obj(uswapwep, (char *) 0, ERODE_FRACTURE, EF_DESTROY);
+            if (rn2(2))
+                destroy_item(POTION_CLASS, AD_LOUD);
+            if (!rn2(4))
+                destroy_item(RING_CLASS, AD_LOUD);
+            if (!rn2(4))
+                destroy_item(TOOL_CLASS, AD_LOUD);
+            if (!rn2(3))
+                destroy_item(WAND_CLASS, AD_LOUD);
+        } else
+            dmg = 0;
+        if (dmg > 0 && u.umonnum == PM_GLASS_GOLEM) {
+            You("shatter into a million pieces!");
+            rehumanize();
+            break;
+        }
+        break;
     case AD_ELEC:
         hitmsg(mtmp, mattk);
         if (uncancelled) {
@@ -1583,7 +1615,9 @@ register struct attack *mattk;
                 if (u_slip_free(mtmp, mattk)) {
                     dmg = 0;
                 } else {
-                    pline("%s swings itself around you!", Monnam(mtmp));
+                    pline("%s %s around you!", Monnam(mtmp),
+                          mtmp->data == &mons[PM_GIANT_CENTIPEDE]
+                          ? "coils its body" : "swings itself");
                     u.ustuck = mtmp;
                 }
             } else if (u.ustuck == mtmp) {
@@ -1605,7 +1639,8 @@ register struct attack *mattk;
                 dmg = 0;
                 if (flags.verbose)
                     pline("%s brushes against your %s.", Monnam(mtmp),
-                          body_part(LEG));
+                          mtmp->data == &mons[PM_GIANT_CENTIPEDE]
+                          ? "body" : body_part(LEG));
             }
         } else
             dmg = 0;
@@ -2038,7 +2073,7 @@ do_rust:
         break;
     }
     /* handle silver gloves for touch attacks */
-    switch(mattk->aatyp) {
+    switch (mattk->aatyp) {
     case AT_WEAP:
         if (mon_currwep)
             break;
@@ -3419,7 +3454,7 @@ struct attack *mattk;
         cancelled = TRUE;
 
     switch (mattk->adtyp) {
-	case AD_STUN:
+    case AD_LOUD:
         if (m_canseeu(mtmp) && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
                 react = 1; /* "stunned" */
@@ -3430,11 +3465,12 @@ struct attack *mattk;
                 if (m_canseeu(mtmp) && (Blind) && (Deaf)) {
                     You("sense a disturbing vibration in the air.");
                 }
-	        if (m_canseeu(mtmp) && canseemon(mtmp) && (!Deaf)) {
-		    pline("%s croaks hoarsely.", Monnam(mtmp));
-	        } else {
-		    You_hear("a hoarse croak nearby.");
-	        }
+                if (m_canseeu(mtmp) && canseemon(mtmp) && (!Deaf)) {
+                    pline("%s croaks hoarsely.", Monnam(mtmp));
+                } else {
+                    You_hear("a hoarse croak nearby.");
+                }
+                break;
             } else {
                 int stun = d(4, 6);
 
@@ -3449,6 +3485,27 @@ struct attack *mattk;
                 mtmp->mspec_used = mtmp->mspec_used + rnd(8);
                 Your("mind reels from the noise!");
                 make_stunned((HStun & TIMEOUT) + (long) stun, TRUE);
+            }
+
+            if (!rn2(6))
+                erode_armor(&youmonst, ERODE_FRACTURE);
+            if (!rn2(5))
+                erode_obj(uwep, (char *) 0, ERODE_FRACTURE, EF_DESTROY);
+            if (!rn2(6))
+                erode_obj(uswapwep, (char *) 0, ERODE_FRACTURE, EF_DESTROY);
+            if (rn2(2))
+                destroy_item(POTION_CLASS, AD_LOUD);
+            if (!rn2(4))
+                destroy_item(RING_CLASS, AD_LOUD);
+            if (!rn2(4))
+                destroy_item(TOOL_CLASS, AD_LOUD);
+            if (!rn2(3))
+                destroy_item(WAND_CLASS, AD_LOUD);
+
+            if (u.umonnum == PM_GLASS_GOLEM) {
+                You("shatter into a million pieces!");
+                rehumanize();
+                break;
             }
         }
         break;

@@ -585,7 +585,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         else if (typ == AMULET_OF_YENDOR || typ == FAKE_AMULET_OF_YENDOR)
             /* each must be identified individually */
             Strcat(buf, known ? actualn : dn);
-        else if (nn)
+        else if (nn && !is_soko_prize_flag(obj))
             Strcat(buf, actualn);
         else if (un)
             Sprintf(eos(buf), "amulet called %s", un);
@@ -612,7 +612,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
         if (!dknown)
             Strcat(buf, dn);
-        else if (nn)
+        else if (nn && !is_soko_prize_flag(obj))
             Strcat(buf, actualn);
         else if (un) {
             Strcat(buf, dn);
@@ -675,7 +675,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-        if (nn) {
+        if (nn && !is_soko_prize_flag(obj)) {
             Strcat(buf, actualn);
             propnames(buf, obj->oprops, obj->oprops_known,
                       FALSE, !!strstri(actualn, " of "));
@@ -4189,6 +4189,7 @@ struct obj *no_wish;
     case CHEST:
     case LARGE_BOX:
     case IRON_SAFE:
+    case CRYSTAL_CHEST:
     case HEAVY_IRON_BALL:
     case IRON_CHAIN:
     case STATUE:
@@ -4430,7 +4431,7 @@ struct obj *no_wish;
         if (pm < 0) {
             switch(otmp->oartifact) {
                 case ART_LIFESTEALER:
-                    pm = PM_VAMPIRE_MAGE;
+                    pm = PM_VAMPIRE_KING;
                     voice = "The Envoy of Vlad the Impaler";
                     break;
                 case ART_XIUHCOATL:
@@ -4448,7 +4449,7 @@ struct obj *no_wish;
                 case ART_KEOLEWA:
                 case ART_DRAGONBANE:
                 case ART_SCEPTRE_OF_MIGHT:
-                    pm = PM_HUMAN_CAVEWOMAN;
+                    pm = PM_HUMAN_CAVEMAN;
                     break;
                 case ART_LUCK_BLADE:
                 case ART_IRON_BALL_OF_LIBERATION:
@@ -4467,7 +4468,7 @@ struct obj *no_wish;
                     break;
                 case ART_MITRE_OF_HOLINESS:
                 case ART_TROLLSBANE:
-                    pm = PM_HUMAN_PRIESTESS;
+                    pm = PM_HUMAN_PRIEST;
                     break;
                 case ART_LONGBOW_OF_DIANA:
                     otmp2 = mksobj(ARROW, TRUE, FALSE);
@@ -4518,18 +4519,22 @@ struct obj *no_wish;
                     if (u.ualign.type == A_NEUTRAL)
                         pm = PM_HUMAN_HEALER;
                     else
-                        pm = PM_HUMAN_PRIESTESS;
+                        pm = PM_HUMAN_PRIEST;
                     break;
                 case ART_WEREBANE:
                     if (u.ualign.type == A_CHAOTIC)
                         pm = PM_HUMAN_BARBARIAN;
                     else
-                        pm = PM_HUMAN_CAVEWOMAN;
+                        pm = PM_HUMAN_CAVEMAN;
                     break;
                 default:
                     impossible("Unknown artifact!");
                     break;
             }
+            if (pm == PM_HUMAN_CAVEMAN && rn2(2))
+                pm = PM_HUMAN_CAVEWOMAN;
+            if (pm == PM_HUMAN_PRIEST && rn2(2))
+                pm = PM_HUMAN_PRIESTESS;
         }
 
         mtmp = mk_mplayer(&mons[pm], u.ux, u.uy, TRUE, otmp);
