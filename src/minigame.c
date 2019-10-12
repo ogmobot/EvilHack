@@ -35,7 +35,7 @@ struct obj *obj;
 {
     int result[] = {0, 0};
     struct obj *otmp = obj;
-    You("roll %s.", yname(obj));
+    You("roll %s.", yname(otmp));
     if (is_lava(u.ux, u.uy) || is_pool(u.ux, u.uy)
         || !can_reach_floor(FALSE) || nohands(youmonst.data)) {
         if (otmp->where == OBJ_INVENT) {
@@ -538,6 +538,12 @@ struct monst *mon;
         break;
     }
     return 0;
+#undef game_stage
+#undef wager
+#undef cards_drawn
+#undef games_played
+#undef odeck
+#undef card_value
 }
 
 #endif /* MINIGAME */
