@@ -35,15 +35,17 @@ struct obj *obj;
 {
     int result[] = {0, 0};
     struct obj *otmp = obj;
-    if (obj->quan > 1L)
-        otmp = splitobj(obj, 1L);
-    You("roll %s.", yname(otmp));
+    You("roll %s.", yname(obj));
     if (is_lava(u.ux, u.uy) || is_pool(u.ux, u.uy)
         || !can_reach_floor(FALSE) || nohands(youmonst.data)) {
-        if (otmp->where == OBJ_INVENT)
-            dropx(otmp);
+        if (otmp->where == OBJ_INVENT) {
+            if (otmp->quan > 1L)
+                otmp = splitobj(obj, 1L);
+            obj_extract_self(otmp);
+            hitfloor(otmp, TRUE);
+        }
     }
-    if (!is_lava(u.ux, u.uy) && !is_pool(u.ux, u.uy)) {
+    if (otmp && !is_lava(u.ux, u.uy) && !is_pool(u.ux, u.uy)) {
         if (otmp->otyp == LOADED_DICE
             && !(u.uluck > 0 && rn2(u.uluck) >= 7)
             && !otmp->blessed) {
@@ -289,6 +291,7 @@ struct monst* mon;
             odice = getobj(valid_dice, "use");
             if (!odice || odice == &zeroobj
                 || (odice->otyp != LOADED_DICE && odice->otyp != FAIR_DICE))
+                pline("You can't roll that!");
                 return 0;
             player_roll = use_dice(odice);
             break;

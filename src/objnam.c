@@ -3130,6 +3130,9 @@ struct obj *no_wish;
 
     long objprops = 0;
     long objpropcount = 0;
+#ifdef MINIGAME
+    boolean pair;
+#endif
 
     cnt = spe = spesgn = typ = 0;
     very = rechrg = blessed = uncursed = iscursed = magical =
@@ -3146,6 +3149,9 @@ struct obj *no_wish;
     oclass = 0;
     actualn = dn = un = 0;
     wetness = 0;
+#ifdef MINIGAME
+    pair = FALSE;
+#endif
 
     if (!bp)
         goto any;
@@ -3426,9 +3432,15 @@ struct obj *no_wish;
      * ignored anyway.
      */
     if (!strncmpi(bp, "pair of ", 8)) {
+#ifdef MINIGAME
+        pair = TRUE;
+#endif
         bp += 8;
         cnt *= 2;
     } else if (!strncmpi(bp, "pairs of ", 9)) {
+#ifdef MINIGAME
+        pair = TRUE;
+#endif
         bp += 9;
         if (cnt > 1)
             cnt *= 2;
@@ -4154,6 +4166,10 @@ struct obj *no_wish;
     }
 
     /* if player specified a reasonable count, maybe honor it */
+#ifdef MINIGAME
+    if (pair && (typ == LOADED_DICE || typ == FAIR_DICE))
+        cnt /= 2;
+#endif
     if (cnt > 1 && objects[typ].oc_merge
         && (wizard || cnt < rnd(6) || (cnt <= 7 && Is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
