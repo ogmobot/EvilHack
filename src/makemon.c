@@ -853,12 +853,11 @@ register struct monst *mtmp;
 #ifdef MINIGAME
         } else if (mm == PM_GAMBLER) {
             mkmonmoney(mtmp, (long) rn1(40, 20));
+            if (!has_egam(mtmp))
+                impossible("Gaming monster without egam?");
             switch (rn2(4)) {
             case 0:
             case 1:
-            case 2:
-            case 3:
-            default:
                 /* High Roll */
                 otmp = mksobj(!rn2(2) ? FAIR_DICE : LOADED_DICE, FALSE, FALSE);
                 if (!rn2(2))
@@ -866,6 +865,14 @@ register struct monst *mtmp;
                 mpickobj(mtmp, otmp);
                 EGAM(mtmp)->otmp = otmp;
                 EGAM(mtmp)->game_fn = &play_highroll;
+                break;
+            case 2:
+            case 3:
+                /* Blackjack */
+                (void) mongets(mtmp, DECK_OF_CARDS);
+                EGAM(mtmp)->otmp = m_carrying(mtmp, DECK_OF_CARDS);
+                EGAM(mtmp)->game_fn = &play_blackjack;
+            default:
                 break;
             }
 #endif

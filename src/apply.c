@@ -3708,7 +3708,7 @@ doapply()
         (void) returncard(obj, 0);
         break;
     case DECK_OF_CARDS:
-        (void) drawcard(obj);
+        (void) drawcard(obj, 0);
         break;
 #endif
     case BAG_OF_TRICKS:

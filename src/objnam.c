@@ -622,7 +622,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         if (typ == PLAYING_CARD) {
             Sprintf(eos(buf), playing_card_name(obj->spe));
             break;
-        } else if (typ == DECK_OF_CARDS && obj->cobj && !obj->cobj->nobj) {
+        } else if (typ == DECK_OF_CARDS && obj->cobj
+                   && !obj->cobj->nobj && obj->cobj->quan == 1L) {
             Sprintf(eos(buf), "face-down card");
             break;
         }
@@ -4907,7 +4908,7 @@ int idx;
         value = "joker";
         suit = 0;
     } else {
-        value = "\"rules of play\" card";
+        value = "rules card";
         suit = 0;
     }
     Strcpy(buf, value);

@@ -1767,7 +1767,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     }
 #ifdef MINIGAME
     if (cobj->otyp == DECK_OF_CARDS) {
-        drawcard(cobj);
+        drawcard(cobj, 0);
         abort_looting = TRUE;
         return 1;
     }

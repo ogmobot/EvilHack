@@ -1290,10 +1290,11 @@ E int FDECL(use_dice, (struct obj *));
 E void FDECL(newegam, (struct monst *));
 E void FDECL(free_egam, (struct monst *));
 E void FDECL(builddeck, (struct obj *));
-E void FDECL(drawcard, (struct obj *));
+E struct obj *FDECL(drawcard, (struct obj *, struct monst *));
 E void FDECL(returncard, (struct obj *, struct monst *));
 E void FDECL(mergedecks, (struct obj *, struct obj **));
 E int FDECL(play_highroll, (struct monst *));
+E int FDECL(play_blackjack, (struct monst *));
 #endif
 
 /* ### minion.c ### */
