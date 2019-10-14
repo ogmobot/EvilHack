@@ -1257,6 +1257,10 @@ struct obj *obj;
 
     if (context.bypasses && obj->bypass)
         return FALSE;
+#ifdef MINIGAME
+    if (obj->otyp == PLAYING_CARD || obj->otyp == DECK_OF_CARDS)
+        return TRUE; /* cheap cardboard can't withstand the shock */
+#endif
 
     if (obj->oclass == WAND_CLASS)
         zap_odds = 3; /* half-life = 2 zaps */
@@ -1999,6 +2003,13 @@ struct obj *obj, *otmp;
                 res = 0;
                 break;
             }
+#ifdef MINIGAME
+            /* Playing cards just have their face altered. */
+            if (obj->otyp == PLAYING_CARD) {
+                obj->spe = rn2(53);
+                break;
+            }
+#endif
             /* Altering the material of an object is less likely to destroy 
              * it, but it could still happen */
             if (obj_shudders(obj) && !rn2(2)) {
