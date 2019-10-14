@@ -2030,7 +2030,7 @@ struct obj *obj, *otmp;
             /* target object has now been "seen (up close)" */
             obj->dknown = 1;
             if (Is_container(obj) || obj->otyp == STATUE) {
-                if (!obj->otyp == CRYSTAL_CHEST)
+                if (obj->otyp != CRYSTAL_CHEST)
                     obj->cknown = obj->lknown = 1;
                 if (obj->otyp == CRYSTAL_CHEST) {
                     pline_The("%s resists your magical probing.", xname(obj));
@@ -2938,8 +2938,6 @@ boolean youattack, allow_cancel_kill, self_cancel;
     }
 
     if (self_cancel) { /* 1st cancel inventory */
-        struct obj *otmp;
-
         for (otmp = (youdefend ? invent : mdef->minvent); otmp;
             otmp = otmp->nobj)
             cancel_item(otmp);
@@ -3398,8 +3396,8 @@ boolean is_wand;
         /* Even increment for dextrous heroes (see weapon.c abon) */
         hit_bon += dex - 14;
 
-        /* experience matters... */
-        hit_bon += (u.ulevel < 15) ? u.ulevel : 15;
+    /* experience matters... */
+    hit_bon += (u.ulevel < 15) ? u.ulevel : 15;
 
     return hit_bon;
 }
@@ -5880,25 +5878,24 @@ blindingflash()
 {
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-	/* if it can't see the flash, don't bother */
-	if (DEADMONSTER(mtmp) || mtmp->msleeping
-			|| !haseyes(mtmp->data) || !mtmp->mcansee
-                        || mtmp->mblinded || !&youmonst.data) {
-			continue;
-	}
-	/* must be able to see our location... */
-	if (m_cansee(mtmp, u.ux, u.uy) && !rn2(5)) {
-	    if (!Blind && canseemon(mtmp)) {
-		pline("%s is blinded by the flash!", Monnam(mtmp));
-	    }
-            if (mtmp->mtame && rn2(2)) {
+        /* if it can't see the flash, don't bother */
+        if (DEADMONSTER(mtmp) || mtmp->msleeping
+            || !haseyes(mtmp->data) || !mtmp->mcansee
+            || mtmp->mblinded || !&youmonst.data)
+            continue;
+
+        /* must be able to see our location... */
+        if (m_cansee(mtmp, u.ux, u.uy) && !rn2(5)) {
+            if (!Blind && canseemon(mtmp))
+                pline("%s is blinded by the flash!", Monnam(mtmp));
+            if (mtmp->mtame && !rn2(3)) {
                 abuse_dog(mtmp);
-            } else if (mtmp->mpeaceful) {
+            } else if (mtmp->mpeaceful && !rn2(5)) {
                 setmangry(mtmp, TRUE);
             }
-	    mtmp->mblinded = rnd(20);
-	    mtmp->mcansee = 0;
-	}
+            mtmp->mblinded = rnd(20);
+            mtmp->mcansee = 0;
+        }
     }
 }
 

@@ -828,7 +828,7 @@ boolean playing; /**< True if game is running.  */
 /** Signal handler to update whereis information. */
 void
 signal_whereis(sig_unused)
-int sig_unused;
+int sig_unused UNUSED;
 {
 	touch_whereis();
 }
@@ -2653,7 +2653,7 @@ char *origbuf;
         sysopt.tt_oname_maxrank = n;
     } else if (src == SET_IN_SYS && match_varname(buf, "LIVELOG", 7)) {
 #ifdef LIVELOGFILE
-        n = strtol(bufp,NULL,0); 
+        n = strtol(bufp,NULL,0);
         if (n < 0 || n > 0xFFFF) {
             raw_printf("Illegal value in LIVELOG (must be between 0 and 0xFFFF).");
             return 0;
@@ -4334,7 +4334,7 @@ int bufsz;
 void
 livelog_write_string(ll_type, buffer)
 unsigned int ll_type;
-char *buffer;
+const char *buffer;
 {
 #define LLOG_SEP '\t' /* livelog field separator */
     FILE* livelogfile;

@@ -143,7 +143,7 @@ struct obj *obj;
                     verbalize("Thank you for freeing me! In return, I will grant you a wish!");
                     if (vis)
                         pline("%s makes a wish!", Monnam(mon));
-                        mmake_wish(mon);
+                    mmake_wish(mon);
                     if (vis)
                         pline("%s vanishes.", Monnam(mtmp));
                     mongone(mtmp);
@@ -1284,18 +1284,10 @@ boolean
 find_offensive(mtmp)
 struct monst *mtmp;
 {
-    register struct obj *obj;
-    boolean reflection_skip = m_seenres(mtmp, M_SEEN_REFL)
-                              && monnear(mtmp, mtmp->mux, mtmp->muy);
-    boolean mr_skip = m_seenres(mtmp, M_SEEN_MAGR)
-                      && monnear(mtmp, mtmp->mux, mtmp->muy);
-    boolean ranged_stuff = FALSE;
-    struct obj *helmet = which_armor(mtmp, W_ARMH);
-    struct obj *charge_scroll = (struct obj *)0;
+    boolean reflection_skip = FALSE;
 
     struct monst *target = mfind_target(mtmp);
     if (target) {
-	ranged_stuff = TRUE;
 	if (target == &youmonst)
 	    reflection_skip = m_seenres(mtmp, M_SEEN_REFL)
                               && monnear(mtmp, mtmp->mux, mtmp->muy);
@@ -1304,6 +1296,7 @@ struct monst *mtmp;
     return FALSE; /*nothing to attack*/
 
     m.offensive = (struct obj *) 0;
+    m.tocharge = 0;
     m.has_offense = 0;
     if (mtmp->mpeaceful || is_animal(mtmp->data) || mindless(mtmp->data)
         || nohands(mtmp->data))
@@ -1320,170 +1313,8 @@ struct monst *mtmp;
     if (!lined_up(mtmp))
         return FALSE;
 
-#define nomore(x)       if (m.has_offense == x) continue;
-    /* this picks the last viable item rather than prioritizing choices */
-    for (obj = mtmp->minvent; obj; obj = obj->nobj) {
-        if (!reflection_skip) {
-            nomore(MUSE_WAN_DEATH);
-            if (obj->otyp == WAN_DEATH && obj->spe > 0
-                && !m_seenres(mtmp, M_SEEN_MAGR)
-                && (!m_seenres(mtmp, M_SEEN_REFL)
-                || nonliving(mtmp->data) || mtmp->data->msound == MS_LEADER)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_WAN_DEATH;
-            }
-            nomore(MUSE_WAN_SLEEP);
-            if (obj->otyp == WAN_SLEEP && obj->spe > 0 && multi >= 0
-                && !m_seenres(mtmp, M_SEEN_SLEEP)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_WAN_SLEEP;
-            }
-            nomore(MUSE_WAN_FIRE);
-            if (obj->otyp == WAN_FIRE && obj->spe > 0
-                && !m_seenres(mtmp, M_SEEN_FIRE)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_WAN_FIRE;
-            }
-            nomore(MUSE_FIRE_HORN);
-            if (obj->otyp == FIRE_HORN && obj->spe > 0 && can_blow(mtmp)
-                && !m_seenres(mtmp, M_SEEN_FIRE)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_FIRE_HORN;
-            }
-            nomore(MUSE_WAN_COLD);
-            if (obj->otyp == WAN_COLD && obj->spe > 0
-                && !m_seenres(mtmp, M_SEEN_COLD)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_WAN_COLD;
-            }
-            nomore(MUSE_FROST_HORN);
-            if (obj->otyp == FROST_HORN && obj->spe > 0 && can_blow(mtmp)
-                && !m_seenres(mtmp, M_SEEN_COLD)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_FROST_HORN;
-            }
-            nomore(MUSE_WAN_LIGHTNING);
-            if (obj->otyp == WAN_LIGHTNING && obj->spe > 0
-                && !m_seenres(mtmp, M_SEEN_ELEC)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_WAN_LIGHTNING;
-            }
-            nomore(MUSE_WAN_MAGIC_MISSILE);
-            if (obj->otyp == WAN_MAGIC_MISSILE && obj->spe > 0
-                && !m_seenres(mtmp, M_SEEN_MAGR)) {
-                m.offensive = obj;
-                m.has_offense = MUSE_WAN_MAGIC_MISSILE;
-            }
-        }
-        nomore(MUSE_WAN_CANCELLATION);
-        if (obj->otyp == WAN_CANCELLATION && obj->spe > 0) {
-            m.offensive = obj;
-            m.has_offense = MUSE_WAN_CANCELLATION;
-        }
-        nomore(MUSE_WAN_POLYMORPH);
-        if (obj->otyp == WAN_POLYMORPH && obj->spe > 0
-            && !m_seenres(mtmp, M_SEEN_MAGR)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_WAN_POLYMORPH;
-        }
-        nomore(MUSE_WAN_STRIKING);
-        if (obj->otyp == WAN_STRIKING && obj->spe > 0
-            && !m_seenres(mtmp, M_SEEN_MAGR)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_WAN_STRIKING;
-        }
-#if 0   /* use_offensive() has had some code to support wand of teleportation
-         * for a long time, but find_offensive() never selected one;
-         * so for the time being, this is still disabled */
-        nomore(MUSE_WAN_TELEPORTATION);
-        if (obj->otyp == WAN_TELEPORTATION && obj->spe > 0
-            /* don't give controlled hero a free teleport */
-            && !Teleport_control
-            /* do try to move hero to a more vulnerable spot */
-            && (onscary(u.ux, u.uy, mtmp)
-                || (u.ux == xupstair && u.uy == yupstair)
-                || (u.ux == xdnstair && u.uy == ydnstair)
-                || (u.ux == sstairs.sx && u.uy == sstairs.sy)
-                || (u.ux == xupladder && u.uy == yupladder)
-                || (u.ux == xdnladder && u.uy == ydnladder))) {
-            m.offensive = obj;
-            m.has_offense = MUSE_WAN_TELEPORTATION;
-        }
-#endif
-	nomore(MUSE_SCR_STINKING_CLOUD)
-	if (obj->otyp == SCR_STINKING_CLOUD && m_canseeu(mtmp)
-	    && distu(mtmp->mx, mtmp->my) < 32
-            && !m_seenres(mtmp, M_SEEN_POISON)) {
-		m.offensive = obj;
-		m.has_offense = MUSE_SCR_STINKING_CLOUD;
-	}
-        nomore(MUSE_POT_HALLUCINATION);
-        if (obj->otyp == POT_HALLUCINATION && multi >= 0) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_HALLUCINATION;
-        }
-        nomore(MUSE_POT_POLYMORPH_THROW);
-        if (obj->otyp == POT_POLYMORPH
-            && !m_seenres(mtmp, M_SEEN_MAGR)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_POLYMORPH_THROW;
-        }
-        nomore(MUSE_POT_PARALYSIS);
-        if (obj->otyp == POT_PARALYSIS && multi >= 0) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_PARALYSIS;
-        }
-        nomore(MUSE_POT_BLINDNESS);
-        if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_BLINDNESS;
-        }
-        nomore(MUSE_POT_CONFUSION);
-        if (obj->otyp == POT_CONFUSION) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_CONFUSION;
-        }
-        nomore(MUSE_POT_SLEEPING);
-        if (obj->otyp == POT_SLEEPING
-            && !m_seenres(mtmp, M_SEEN_SLEEP)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_SLEEPING;
-        }
-        nomore(MUSE_POT_ACID);
-        if (obj->otyp == POT_ACID
-            && !m_seenres(mtmp, M_SEEN_ACID)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_POT_ACID;
-        }
-        /* we can safely put this scroll here since the locations that
-         * are in a 1 square radius are a subset of the locations that
-         * are in wand or throwing range (in other words, always lined_up())
-         */
-        nomore(MUSE_SCR_EARTH);
-        if (obj->otyp == SCR_EARTH
-            && ((helmet && is_hard(helmet)) || mtmp->mconf
-                || amorphous(mtmp->data) || passes_walls(mtmp->data)
-                || noncorporeal(mtmp->data) || unsolid(mtmp->data)
-                || !rn2(10))
-            && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-            && mtmp->mcansee && haseyes(mtmp->data)
-            && !Is_rogue_level(&u.uz)
-            && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
-            m.offensive = obj;
-            m.has_offense = MUSE_SCR_EARTH;
-        }
-        nomore(MUSE_SCR_FIRE);
-        if (obj->otyp == SCR_FIRE && resists_fire(mtmp)
-            && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-            && mtmp->mcansee && haseyes(mtmp->data)
-            && !m_seenres(mtmp, M_SEEN_FIRE)) {
-            m.offensive = obj;
-            m.has_offense = MUSE_SCR_FIRE;
-        }
-    }
     return find_offensive_recurse(mtmp, mtmp->minvent, target,
-            reflection_skip);
-#undef nomore
+                                  reflection_skip);
 }
 
 STATIC_OVL boolean
@@ -1498,7 +1329,7 @@ boolean reflection_skip;
     struct obj *charge_scroll = (struct obj *) 0;
 
 #define nomore(x) if (m.has_offense == x) continue;
-    for (obj=start; obj; obj=obj->nobj) {
+    for (obj = start; obj; obj = obj->nobj) {
 	if (Is_container(obj)) {
 	    (void) find_offensive_recurse(mtmp, obj->cobj, target,
 	    reflection_skip);
@@ -2014,7 +1845,7 @@ struct monst *mtmp;
 	             (otmp->blessed) ? 1 : 0, mtmp);
 	}
 	m_useup(mtmp, otmp);
-	return (mtmp->mhp <= 0) ? 1 : 2;
+        return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_WAN_DEATH:
     case MUSE_WAN_SLEEP:
     case MUSE_WAN_FIRE:
@@ -2115,7 +1946,7 @@ struct monst *mtmp;
             num = (2 * (rn1(3, 3) + 2 * bcsign(otmp)) + 1) / 3;
             if (how_resistant(FIRE_RES) == 100)
                 You("are not harmed.");
-                monstseesu(M_SEEN_FIRE);
+            monstseesu(M_SEEN_FIRE);
             burn_away_slime();
             if (Half_spell_damage)
                 num = (num + 1) / 2;
@@ -2404,7 +2235,6 @@ struct obj *start;
 {
     register struct obj *obj;
     struct permonst *mdat = mtmp->data;
-    struct obj *charge_scroll = (struct obj *)0;
 #define nomore(x) if(m.has_misc==x) continue;
     for (obj=start; obj; obj=obj->nobj) {
         if (Is_container(obj)) {
@@ -3182,8 +3012,6 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
 
     /* give a "<mon> is slowing down" message and also remove
        intrinsic speed (comparable to similar effect on the hero) */
-    if (stoning)
-        /* mon_adjust_speed(mon, -3, (struct obj *) 0); */
 
     if (vis) {
         long save_quan = obj->quan;
@@ -3231,7 +3059,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         mon->mstun = 0;
         if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s eats %s.", Monnam(mon), distant_name(obj, doname));
-            pline("%s seems steadier now.", Monnam(mon));
+        pline("%s seems steadier now.", Monnam(mon));
     }
     if (mon->mtame && !mon->isminion && nutrit > 0) {
         struct edog *edog = EDOG(mon);
@@ -3604,8 +3432,8 @@ struct monst *mon;
                 otmp->oerodeproof = 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 3:
             if (wish_cloak) {
                 otmp = mksobj(CLOAK_OF_DISPLACEMENT, FALSE, FALSE);
@@ -3614,8 +3442,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 4:
             if (!resists_magm(mon) && wish_armor) {
                 otmp = mksobj(GRAY_DRAGON_SCALE_MAIL, FALSE, FALSE);
@@ -3624,8 +3452,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 5:
             if (!resists_magm(mon) && wish_cloak) {
                 otmp = mksobj(CLOAK_OF_MAGIC_RESISTANCE, FALSE, FALSE);
@@ -3634,8 +3462,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 6:
             if (!mon_reflects(mon, (char *) 0) && wish_armor) {
                 otmp = mksobj(SILVER_DRAGON_SCALE_MAIL, FALSE, FALSE);
@@ -3644,8 +3472,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 7:
             if (!mon_reflects(mon, (char *) 0) && wish_amulet) {
                 otmp = mksobj(AMULET_OF_REFLECTION, FALSE, FALSE);
@@ -3653,8 +3481,8 @@ struct monst *mon;
                 otmp->oerodeproof = 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 8:
             if (!can_wwalk(mon) && wish_boots) {
                 otmp = mksobj(WATER_WALKING_BOOTS, FALSE, FALSE);
@@ -3663,8 +3491,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 9:
             if (!mon_reflects(mon, (char *) 0) && wish_shield) {
                 otmp = mksobj(SHIELD_OF_REFLECTION, FALSE, FALSE);
@@ -3673,8 +3501,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 10:
             if (!strongmonst(mon->data) && wish_gloves) {
                 otmp = mksobj(GAUNTLETS_OF_POWER, FALSE, FALSE);
@@ -3683,8 +3511,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 11:
             if (mon->permspeed != MFAST && wish_boots) {
                 otmp = mksobj(SPEED_BOOTS, FALSE, FALSE);
@@ -3693,8 +3521,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 12:
             if (!has_telepathy(mon) && has_head(mon->data) && wish_helm) {
                 otmp = mksobj(HELM_OF_TELEPATHY, FALSE, FALSE);
@@ -3703,8 +3531,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 13:
             if (has_head(mon->data) && wish_helm) {
                 otmp = mksobj(HELM_OF_BRILLIANCE, FALSE, FALSE);
@@ -3713,8 +3541,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 14:
             if (wish_cloak) {
                 otmp = mksobj(CLOAK_OF_PROTECTION, FALSE, FALSE);
@@ -3723,8 +3551,8 @@ struct monst *mon;
                 otmp->spe = rn2(3) + 1;
                 (void) mpickobj(mon, otmp);
                 wearable = TRUE;
-                break;
             }
+            break;
         case 15: /* Monsters can wish for certain artifacts */
             otmp = mk_artifact((struct obj *) 0, mon->malign);
             if (otmp) {

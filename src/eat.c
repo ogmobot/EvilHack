@@ -1229,7 +1229,7 @@ int pm;
         count = 0; /* number of possible intrinsics */
         tmp = 0;   /* which one we will try to give */
         if (conveys_STR) {
-            count = 1;
+            count += 1;
             tmp = -1; /* use -1 as fake prop index for STR */
             debugpline1("\"Intrinsic\" strength, %d", tmp);
         }
@@ -1239,9 +1239,7 @@ int pm;
 	    givit(i, ptr);
         }
 
-        /* tmp = corpse_intrinsic(ptr);
-
-        /* if something was chosen, give it now (givit() might fail) */
+        /* if something was chosen, give it now givit() might fail) */
         if (tmp == -1)
             gainstr((struct obj *) 0, 0, TRUE);
         else if (tmp > 0)

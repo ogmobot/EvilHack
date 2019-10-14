@@ -1926,30 +1926,24 @@ int spell;
      */
     if (uwep && uwep->otyp >= STAFF_OF_DIVINATION && uwep->otyp <= STAFF_OF_WAR) {
 #define STAFFBONUS 50
-	if (spell_skilltype(spellid(spell)) == P_CLERIC_SPELL
-            && uwep->otyp == STAFF_OF_HOLINESS) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_HEALING_SPELL
-            && uwep->otyp == STAFF_OF_HEALING) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_DIVINATION_SPELL
-            && uwep->otyp == STAFF_OF_DIVINATION) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_MATTER_SPELL
-            && uwep->otyp == STAFF_OF_MATTER) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_ESCAPE_SPELL
-            && uwep->otyp == STAFF_OF_ESCAPE) {
-	    chance += STAFFBONUS;
-	}
-	if (spell_skilltype(spellid(spell)) == P_ATTACK_SPELL
-            && uwep->otyp == STAFF_OF_WAR) {
-	    chance += STAFFBONUS;
-	}
+        if (spell_skilltype(spellid(spell)) == P_CLERIC_SPELL
+            && uwep->otyp == STAFF_OF_HOLINESS)
+            chance += STAFFBONUS;
+        if (spell_skilltype(spellid(spell)) == P_HEALING_SPELL
+            && uwep->otyp == STAFF_OF_HEALING)
+            chance += STAFFBONUS;
+        if (spell_skilltype(spellid(spell)) == P_DIVINATION_SPELL
+            && uwep->otyp == STAFF_OF_DIVINATION)
+            chance += STAFFBONUS;
+        if (spell_skilltype(spellid(spell)) == P_MATTER_SPELL
+            && uwep->otyp == STAFF_OF_MATTER)
+            chance += STAFFBONUS;
+        if (spell_skilltype(spellid(spell)) == P_ESCAPE_SPELL
+            && uwep->otyp == STAFF_OF_ESCAPE)
+            chance += STAFFBONUS;
+        if (spell_skilltype(spellid(spell)) == P_ATTACK_SPELL
+            && uwep->otyp == STAFF_OF_WAR)
+            chance += STAFFBONUS;
 #undef STAFFBONUS
     }
 
@@ -1966,12 +1960,10 @@ int spell;
     if (uarm && uarm->otyp != CRYSTAL_PLATE_MAIL) {
 #define PENALTY_NON_CASTER (spellev(spell) * 10)
 #define PENALTY_PRI_CASTER (spellev(spell) * 10) - 30
-        if (primary_casters && spellev(spell) >= 4) {
-            chance = (chance -= PENALTY_PRI_CASTER);
-        }
-        if (non_casters) {
-            chance = (chance -= PENALTY_NON_CASTER);
-        }
+        if (primary_casters && spellev(spell) >= 4)
+            chance -= PENALTY_PRI_CASTER;
+        if (non_casters)
+            chance -= PENALTY_NON_CASTER;
 #undef PENALTY_NON_CASTER
 #undef PENALTY_PRI_CASTER
     }
@@ -1982,8 +1974,8 @@ int spell;
     if (chance < 0)
         chance = 0;
 
-    /* As an Illithid, you can always use your
-     * natural inherent 'ability' */
+    /* As an Illithid, you can always use
+     * your natural inherent 'ability' */
     if (spellid(spell) == SPE_PSIONIC_WAVE
         && Race_if(PM_ILLITHID))
         chance = 100;

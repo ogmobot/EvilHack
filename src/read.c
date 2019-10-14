@@ -24,6 +24,8 @@ STATIC_DCL char *FDECL(apron_text, (struct obj *, char *buf));
 STATIC_DCL void FDECL(stripspe, (struct obj *));
 STATIC_DCL void FDECL(p_glow1, (struct obj *));
 STATIC_DCL void FDECL(p_glow2, (struct obj *, const char *));
+STATIC_DCL void FDECL(mp_glow1, (struct monst *, struct obj *));
+STATIC_DCL void FDECL(mp_glow2, (struct monst *, struct obj *, const char *));
 STATIC_DCL void FDECL(forget_single_object, (int));
 #if 0 /* not used */
 STATIC_DCL void FDECL(forget_objclass, (int));
@@ -263,9 +265,9 @@ doread()
         } else {
             if (flags.verbose)
                 pline("It reads:");
-                mesg = scroll->oartifact
-                      ? card_msgs[SIZE(card_msgs) - 1]
-                      : card_msgs[scroll->o_id % (SIZE(card_msgs) - 1)];
+            mesg = scroll->oartifact
+                  ? card_msgs[SIZE(card_msgs) - 1]
+                  : card_msgs[scroll->o_id % (SIZE(card_msgs) - 1)];
             pline("\"%s\"", mesg);
             maybe_learn_elbereth(mesg);
         }
@@ -322,7 +324,7 @@ doread()
             You("feel the smooth plastic window.");
         else if (flags.verbose)
             pline("The Magic 8-Ball replies:");
-            switch (rn2(20)) {
+        switch (rn2(20)) {
             case 0:
                 pline("It is certain.");
                 break;
@@ -385,7 +387,7 @@ doread()
                 break;
             default:
                 break;
-            }
+        }
         if(!u.uconduct.literate++)
             livelog_write_string(LL_CONDUCT,
                     "became literate by reading the Magic 8-Ball");
@@ -533,6 +535,28 @@ register const char *color;
           Blind ? "" : " ", Blind ? "" : hcolor(color));
 }
 
+STATIC_OVL void
+mp_glow1(mtmp, otmp)
+register struct monst *mtmp;
+register struct obj *otmp;
+{
+    if (canseemon(mtmp) && !Blind)
+        pline("%s %s %s briefly.", s_suffix(Monnam(mtmp)), xname(otmp),
+              otense(otmp, "glow"));
+}
+
+STATIC_OVL void
+mp_glow2(mtmp, otmp, color)
+register struct monst *mtmp;
+register struct obj *otmp;
+register const char *color;
+{
+    if (canseemon(mtmp) && !Blind)
+        pline("%s %s %s %s for a moment.", s_suffix(Monnam(mtmp)),
+              xname(otmp), otense(otmp, "glow"),
+              hcolor(color));
+}
+
 /* Is the object chargeable?  For purposes of inventory display; it is
    possible to be able to charge things for which this returns FALSE. */
 boolean
@@ -564,6 +588,7 @@ struct monst *mtmp;
 {
     register int n;
     boolean is_cursed, is_blessed;
+    boolean yours = (mtmp == &youmonst);
 
     is_cursed = curse_bless < 0;
     is_blessed = curse_bless > 0;
@@ -594,7 +619,10 @@ struct monst *mtmp;
         n = (int) obj->recharged;
         if (n > 0 && (obj->otyp == WAN_WISHING || obj->otyp == WAN_DEATH
                       || (n * n * n > rn2(7 * 7 * 7)))) { /* recharge_limit */
-            wand_explode(obj, rnd(lim));
+            if (yours)
+                wand_explode(obj, rnd(lim));
+            else
+                mwand_explode(mtmp, obj);
             return;
         }
         /* didn't explode, so increment the recharge count */
@@ -613,13 +641,23 @@ struct monst *mtmp;
             else
                 obj->spe++;
             if (obj->otyp == WAN_WISHING && obj->spe > 3) {
-                wand_explode(obj, 1);
+                if (yours)
+                    wand_explode(obj, 1);
+                else
+                    mwand_explode(mtmp, obj);
                 return;
             }
-            if (obj->spe >= lim)
-                p_glow2(obj, NH_BLUE);
-            else
-                p_glow1(obj);
+            if (yours) {
+                if (obj->spe >= lim)
+                    p_glow2(obj, NH_BLUE);
+                else
+                    p_glow1(obj);
+            } else {
+                if (obj->spe >= lim)
+                    mp_glow2(mtmp, obj, NH_BLUE);
+                else
+                    mp_glow1(mtmp, obj);
+            }
 #if 0 /*[shop price doesn't vary by charge count]*/
             /* update shop bill to reflect new higher price */
             if (obj->unpaid)
@@ -630,17 +668,35 @@ struct monst *mtmp;
     } else if (obj->oclass == RING_CLASS && objects[obj->otyp].oc_charged) {
         /* charging does not affect ring's curse/bless status */
         int s = is_blessed ? rnd(3) : is_cursed ? -rnd(2) : 1;
-        boolean is_on = (obj == uleft || obj == uright);
+        boolean is_on = yours ? (obj == uleft || obj == uright)
+                              : 0; /* monsters wear but don't charge rings */
 
         /* destruction depends on current state, not adjustment */
         if (obj->spe > rn2(7) || obj->spe <= -5) {
-            pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
-                  otense(obj, "explode"));
-            if (is_on)
-                Ring_gone(obj);
-            s = rnd(3 * abs(obj->spe)); /* amount of damage */
-            useup(obj);
-            losehp(Maybe_Half_Phys(s), "exploding ring", KILLED_BY_AN);
+            if (yours) {
+                pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
+                      otense(obj, "explode"));
+                if (is_on)
+                    Ring_gone(obj);
+                s = rnd(3 * abs(obj->spe)); /* amount of damage */
+                useup(obj);
+                losehp(Maybe_Half_Phys(s), "exploding ring", KILLED_BY_AN);
+            } else {
+                if (canseemon(mtmp))
+                    pline("%s %s %s momentarily, then %s!",
+                          s_suffix(Monnam(mtmp)), xname(obj),
+                          otense(obj, "pulsate"), otense(obj,"explode"));
+                else
+                    You_hear("an explosion.");
+                m_useup(mtmp, obj);
+                mtmp->mhp -= 3 * abs(obj->spe);
+                if (mtmp->mhp <= 0) {
+                    if (canseemon(mtmp))
+                        pline("%s is killed by the explosion!",
+                              Monnam(mtmp));
+                    mondied(mtmp);
+                }
+           }
         } else {
             long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
 
@@ -787,12 +843,18 @@ struct monst *mtmp;
                 obj->spe += d(2, 4);
                 if (obj->spe > 20)
                     obj->spe = 20;
-                p_glow2(obj, NH_BLUE);
+                if (yours)
+                    p_glow2(obj, NH_BLUE);
+                else
+                    mp_glow2(mtmp, obj, NH_BLUE);
             } else {
                 obj->spe += rnd(4);
                 if (obj->spe > 20)
                     obj->spe = 20;
-                p_glow1(obj);
+                if (yours)
+                    p_glow1(obj);
+                else
+                    mp_glow1(mtmp, obj);
             }
             break;
         default:
@@ -803,7 +865,10 @@ struct monst *mtmp;
 
     } else {
     not_chargable:
-        You("have a feeling of loss.");
+        if (yours)
+            You("have a feeling of loss.");
+        else if (canseemon(mtmp))
+            pline("%s looks disappointed.", Monnam(mtmp));
     }
 }
 
@@ -2035,6 +2100,25 @@ int chg; /* recharging */
     exercise(A_STR, FALSE);
 }
 
+void
+mwand_explode(mon, obj)
+register struct monst *mon;
+register struct obj *obj;
+{
+    if (canseemon(mon))
+        pline("%s %s vibrates violently and explodes!",
+              s_suffix(Monnam(mon)), xname(obj));
+    else if (!Deaf)
+        You_hear("an explosion.");
+    mon->mhp -= rnd(2 * (mon->mhpmax + 1) / 3);
+    m_useup(mon, obj);
+    if (mon->mhp <= 0) {
+    	if (canseemon(mon))
+            pline("%s is killed by the explosion!", Monnam(mon));
+        mondied(mon);
+    }
+}
+
 /* used to collect gremlins being hit by light so that they can be processed
    after vision for the entire lit area has been brought up to date */
 struct litmon {
@@ -2256,7 +2340,7 @@ do_class_genocide()
 		     * to geno in the first place; we must get them all then.
 		     * finally, we have to make sure the self-geno cases always happen.
                      */
-                    if (!ll_done++)
+                    if (!ll_done++) {
                         if (!num_genocides())
                             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                                            "performed %s first genocide (two random monsters from class %c)",
@@ -2264,39 +2348,40 @@ do_class_genocide()
                         else
                             livelog_printf(LL_GENOCIDE, "genocided two random monsters from class %c",
                                            def_monsyms[class].sym);
-			if ((killed < 2 && (!rn2(goodcnt) || (killed+candidates > goodcnt-2))) ||
-			    Your_Own_Role(i) || Your_Own_Race(i)) {
-			    killed++;
-			    mvitals[i].mvflags |= (G_GENOD | G_NOCORPSE);
-			    reset_rndmonst(i);
-			    kill_genocided_monsters();
-			    update_inventory();	/* eggs & tins */
-			    pline("Wiped out all %s.", nam);
-			    if (Upolyd && i == u.umonnum) {
-			 	u.mh = -1;
-			        if (Unchanging) {
-				    if (!feel_dead++) You("die.");
-				        /* finish genociding this class of
-				           monsters before ultimately dying */
-				        gameover = TRUE;
-			        } else
-			            rehumanize();
+                    }
+		    if ((killed < 2 && (!rn2(goodcnt) || (killed+candidates > goodcnt-2)))
+			|| Your_Own_Role(i) || Your_Own_Race(i)) {
+			killed++;
+		        mvitals[i].mvflags |= (G_GENOD | G_NOCORPSE);
+	                reset_rndmonst(i);
+			kill_genocided_monsters();
+                        update_inventory();	/* eggs & tins */
+			pline("Wiped out all %s.", nam);
+			if (Upolyd && i == u.umonnum) {
+                            u.mh = -1;
+			    if (Unchanging) {
+			        if (!feel_dead++) You("die.");
+				    /* finish genociding this class of
+				       monsters before ultimately dying */
+			            gameover = TRUE;
+			    } else
+			        rehumanize();
+			}
+			/* Self-genocide if it matches either your race
+		 	   or role.  Assumption:  male and female forms
+			   share same monster class. */
+			if (i == urole.malenum || i == urace.malenum) {
+			    u.uhp = -1;
+			    if (Upolyd) {
+				if (!feel_dead++)
+                                    You_feel("dead inside.");
+			    } else {
+				if (!feel_dead++)
+                                    You("die.");
+			        gameover = TRUE;
 			    }
-			    /* Self-genocide if it matches either your race
-		 	       or role.  Assumption:  male and female forms
-			       share same monster class. */
-			    if (i == urole.malenum || i == urace.malenum) {
-			        u.uhp = -1;
-			        if (Upolyd) {
-				    if (!feel_dead++)
-                                        You_feel("dead inside.");
-			        } else {
-				    if (!feel_dead++)
-                                        You("die.");
-				        gameover = TRUE;
-			        }
-			    }
-		        }
+			}
+		    }
                 } else if (mvitals[i].mvflags & G_GENOD) {
                     if (!gameover)
                         pline("All %s are already nonexistent.", nam);

@@ -868,7 +868,7 @@ E boolean FDECL(debugcore, (const char *, BOOLEAN_P));
 E boolean FDECL(read_tribute, (const char *, const char *, int,
                                char *, int, unsigned));
 E boolean FDECL(Death_quote, (char *, int));
-E void FDECL(livelog_write_string, (unsigned int, char *));
+E void FDECL(livelog_write_string, (unsigned int, const char *));
 E void VDECL(livelog_printf, (unsigned int, const char *, ...)) PRINTF_F(2, 3);
 #ifdef EXTRAINFO_FN
 E void NDECL(mk_dgl_extrainfo);
@@ -2141,6 +2141,7 @@ E void FDECL(drop_boulder_on_player,
              (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(drop_boulder_on_monster, (int, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(wand_explode, (struct obj *, int));
+E void FDECL(mwand_explode, (struct monst *, struct obj *));
 #ifdef USE_TRAMPOLI
 E void FDECL(set_lit, (int, int, genericptr_t));
 #endif

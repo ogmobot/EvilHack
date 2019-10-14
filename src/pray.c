@@ -1285,7 +1285,6 @@ moffer(mtmp)
 register struct monst *mtmp;
 {
     register struct obj *otmp;
-    register struct obj *gift;
     /* loop based on select_hwep */
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
         if (otmp->otyp == AMULET_OF_YENDOR && In_endgame(&u.uz)
@@ -1853,19 +1852,11 @@ dosacrifice()
         } else {
             int nartifacts = nartifact_exist();
 	    int nchance = u.ulevel + 6;
-            boolean primary_casters, primary_casters_priest, secondary_casters, non_casters;
+            boolean primary_casters, primary_casters_priest;
 
             /* Primary casting roles */
             primary_casters = Role_if(PM_HEALER) || Role_if(PM_WIZARD);
             primary_casters_priest = Role_if(PM_PRIEST);
-
-            /* Secondary casting roles */
-            secondary_casters = Role_if(PM_ARCHEOLOGIST) || Role_if(PM_KNIGHT) || Role_if(PM_MONK)
-                                 || Role_if(PM_RANGER) || Role_if(PM_ROGUE) || Role_if(PM_TOURIST);
-
-            /* Little to none casting roles */
-            non_casters = Role_if(PM_BARBARIAN) || Role_if(PM_CAVEMAN) || Role_if(PM_SAMURAI)
-                           || Role_if(PM_VALKYRIE);
 
             /* you were already in pretty good standing
              *

@@ -1846,6 +1846,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             tmp = 0;
             break;
         }
+        break;
     case AD_WERE: /* no special effect on monsters */
     case AD_HEAL: /* likewise */
     case AD_PHYS:
@@ -2724,7 +2725,7 @@ register struct monst *mon;
             dieroll = rnd(20);
             dhit = (tmp > dieroll || u.uswallow);
 
-            if ((uwep || u.twoweap && uswapwep
+            if ((uwep || (u.twoweap && uswapwep)
                 || (!uwep && P_BARE_HANDED_COMBAT))
                 && (touch_petrifies(mon->data)
                     || is_rider(mon->data)
@@ -3038,7 +3039,7 @@ boolean wep_was_destroyed;
     /* Humanoid monsters wearing various dragon scale/dragon scale mail armor */
     for (m_armor = mon->minvent; m_armor; m_armor = m_armor->nobj) {
         t = rnd(6) + 1;
-        if (mhit && m_armor->owornmask & (W_ARM) != 0 && !rn2(3)) {
+        if ((mhit && m_armor->owornmask & (W_ARM)) != 0 && !rn2(3)) {
             switch (m_armor->otyp) {
                 case GREEN_DRAGON_SCALE_MAIL:
                 case GREEN_DRAGON_SCALES:
@@ -3280,25 +3281,27 @@ boolean wep_was_destroyed;
             if (!uwep && !wep_was_destroyed
                 && (aatyp == AT_WEAP || aatyp == AT_CLAW
                 || aatyp == AT_MAGC || aatyp == AT_TUCH)) {
-                if (uarmg)
+                if (uarmg) {
                     if (rn2(2) && (uarmg->oerodeproof
                         || is_supermaterial(uarmg)))
                         pline("%s being disintegrated!",
                               Yobjnam2(uarmg, "resist"));
                     else
                         (void) destroy_arm(uarmg);
+                }
                 break;
             }
         }
         if (mhit && !mon->mcan && weapon && !rn2(10)) {
             if (aatyp == AT_KICK) {
-                if (uarmf)
+                if (uarmf) {
                     if (rn2(2) && (uarmf->oerodeproof
                         || is_supermaterial(uarmf)))
                         pline("%s being disintegrated!",
                               Yobjnam2(uarmf, "resist"));
                     else
                         (void) destroy_arm(uarmf);
+                }
                 break;
             } else if (aatyp == AT_WEAP || aatyp == AT_CLAW
                        || aatyp == AT_MAGC || aatyp == AT_TUCH) {

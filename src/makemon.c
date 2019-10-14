@@ -285,7 +285,7 @@ unsigned short chance;
     struct obj *obj;
     struct trobj temptrop;
     register struct trobj *trop = &temptrop;
-    int otyp, i;
+    int otyp;
 
     memcpy(&temptrop, origtrop, sizeof(struct trobj));
 
@@ -341,28 +341,28 @@ unsigned short chance;
 		   if (objects[otyp].oc_charged && obj->spe <= 0)
 		       obj->spe = rne(3);
 
-		       /* Heavily relies on the fact that 1) we create wands
-			* before rings, 2) that we create rings before
-			* spellbooks, and that 3) not more than 1 object of a
-			* particular symbol is to be prohibited.  (For more
-			* objects, we need more nocreate variables...)
-			*/
-		       switch (otyp) {
-		           case WAN_POLYMORPH:
-			   case RIN_POLYMORPH:
-		           case POT_POLYMORPH:
-			       nocreate = RIN_POLYMORPH_CONTROL;
-			       break;
-			   case RIN_POLYMORPH_CONTROL:
-			       nocreate = RIN_POLYMORPH;
-			       nocreate2 = SPE_POLYMORPH;
-			       nocreate3 = POT_POLYMORPH;
-		       }
-		       /* Don't have 2 of the same ring or spellbook */
-		       if (obj->oclass == RING_CLASS
-		           || obj->oclass == SPBOOK_CLASS)
-			   nocreate4 = otyp;
-		       }
+                   /* Heavily relies on the fact that 1) we create wands
+                    * before rings, 2) that we create rings before
+                    * spellbooks, and that 3) not more than 1 object of a
+                    * particular symbol is to be prohibited.  (For more
+                    * objects, we need more nocreate variables...)
+                    */
+                   switch (otyp) {
+	               case WAN_POLYMORPH:
+		       case RIN_POLYMORPH:
+	               case POT_POLYMORPH:
+		           nocreate = RIN_POLYMORPH_CONTROL;
+		           break;
+		       case RIN_POLYMORPH_CONTROL:
+		           nocreate = RIN_POLYMORPH;
+		           nocreate2 = SPE_POLYMORPH;
+		           nocreate3 = POT_POLYMORPH;
+                   }
+                   /* Don't have 2 of the same ring or spellbook */
+                   if (obj->oclass == RING_CLASS
+                       || obj->oclass == SPBOOK_CLASS)
+                       nocreate4 = otyp;
+                   }
 
 		   if (trop->trclass == COIN_CLASS) {
 		       /* no "blessed" or "identified" money */
@@ -420,7 +420,7 @@ register struct monst *mtmp;
 {
     register struct permonst *ptr = mtmp->data;
     register int mm = monsndx(ptr);
-    struct obj *otmp;
+    struct obj *otmp = mtmp->minvent;
     int bias, w1, w2, randwand;
 
     if (Is_rogue_level(&u.uz))
@@ -429,7 +429,7 @@ register struct monst *mtmp;
     /* treat mplayers differently */
     if (is_mplayer(mtmp->data) && !In_endgame(&u.uz)) {
 	if (mtmp->m_lev > 1) {
-	    if (mtmp->m_lev > 10 || !rn2(10))
+	    if (mtmp->m_lev > 10 || !rn2(10)) {
                 if (rn2(2)) {
 		    ini_mon_inv(mtmp, !rn2(2) ? Level20Kit1 : Level20Kit2,
                                 (mtmp->m_lev >= 20) ? 1 : isqrt(23 - mtmp->m_lev));
@@ -437,8 +437,9 @@ register struct monst *mtmp;
                     ini_mon_inv(mtmp, !rn2(2) ? Level20Kit3 : Level20Kit4,
                                 (mtmp->m_lev >= 20) ? 1 : isqrt(23 - mtmp->m_lev));
                 }
-		ini_mon_inv(mtmp, !rn2(2) ? Level10Kit1 : Level10Kit2,
-	                    (mtmp->m_lev >= 10) ? 1 : isqrt(13 - mtmp->m_lev));
+            }
+	    ini_mon_inv(mtmp, !rn2(2) ? Level10Kit1 : Level10Kit2,
+	                (mtmp->m_lev >= 10) ? 1 : isqrt(13 - mtmp->m_lev));
         }
 
     switch (mtmp->mnum) {
@@ -540,10 +541,10 @@ register struct monst *mtmp;
 	    break;
 	default: /* impossible */
 	    break;
-	}
+    }
 
     {
-        struct obj *otmp = mtmp->minvent, *bag = (struct obj *) 0;
+        struct obj *bag = (struct obj *) 0;
 	if (mtmp->m_lev > 1) {
 	    for (; otmp; otmp = otmp->nobj) {
 	        if (otmp->oclass == WEAPON_CLASS) {
@@ -798,7 +799,7 @@ register struct monst *mtmp;
                              || mm == PM_ELF_LADY || mm == PM_ELVEN_WIZARD
                              || mm == PM_ELVEN_KING || mm == PM_ELVEN_QUEEN))
 			     ? ELVEN_HELM : ELVEN_CLOAK);
-            if (rn2(2) && !mm == PM_ELVEN_WIZARD) {
+            if (rn2(2) && mm != PM_ELVEN_WIZARD) {
                 struct obj* mail = m_carrying(mtmp, ELVEN_CHAIN_MAIL);
                 if (mail)
                     set_material(mail, MITHRIL);
@@ -809,7 +810,7 @@ register struct monst *mtmp;
                 (void) mongets(mtmp, ELVEN_DAGGER);
             switch (rn2(3)) {
             case 0:
-                if (!mm == PM_ELVEN_WIZARD) {
+                if (mm != PM_ELVEN_WIZARD) {
                     if (!rn2(4))
                         (void) mongets(mtmp, ELVEN_SHIELD);
                     if (rn2(3))
@@ -819,14 +820,14 @@ register struct monst *mtmp;
                 }
                 break;
             case 1:
-                if (!mm == PM_ELVEN_WIZARD) {
+                if (mm != PM_ELVEN_WIZARD) {
                     (void) mongets(mtmp, rn2(2) ? ELVEN_LONG_SWORD : ELVEN_BROADSWORD);
                     if (rn2(2))
                         (void) mongets(mtmp, ELVEN_SHIELD);
                 }
                 break;
             case 2:
-                if (!mm == PM_ELVEN_WIZARD) {
+                if (mm != PM_ELVEN_WIZARD) {
                     if (rn2(2)) {
                         (void) mongets(mtmp, ELVEN_SPEAR);
                         (void) mongets(mtmp, ELVEN_SHIELD);
@@ -2137,7 +2138,10 @@ int mmflags;
     case S_JABBERWOCK:
         break;
     case S_EYE:
-        if (mtmp->data != &mons[PM_BEHOLDER])
+        if (mtmp->data == &mons[PM_BEHOLDER]) {
+            if (rn2(5) && !u.uhave.amulet)
+                mtmp->msleeping = 1;
+        }
         break;
     case S_NYMPH:
         if (rn2(5) && !u.uhave.amulet)
@@ -2864,8 +2868,8 @@ int otyp;
         if (mtmp->data == &mons[PM_MEDUSA]) {
             if (otmp->oclass == WEAPON_CLASS && otmp->spe < 7)
                 otmp->spe = rn2(3) + 3;
-                otmp->blessed = TRUE;
-                otmp->oerodeproof = TRUE;
+            otmp->blessed = TRUE;
+            otmp->oerodeproof = TRUE;
         }
 
         /* if mtmp would hate the material of the object they're getting,

@@ -88,7 +88,7 @@ struct attack *mattk;
                           rn2(2) ? "lash out at" : "bite");
             else
                 pfmt = "%s tentacles suck you!";
-                Monst_name = s_suffix(Monst_name);
+            Monst_name = s_suffix(Monst_name);
             break;
         case AT_EXPL:
         case AT_BOOM:
@@ -203,7 +203,7 @@ struct attack *mattk;
     if (could_seduce(mtmp, &youmonst, mattk) && !mtmp->mcan)
         pline("%s pretends to be friendly.", Monnam(mtmp));
     else {
-    if (!flags.verbose || !nearmiss && !blocker)
+    if (!flags.verbose || (!nearmiss && !blocker))
 	pline("%s misses.", Monnam(mtmp));
     else if (!blocker)
         rn2(2) ? You("dodge %s attack!", s_suffix(mon_nam(mtmp)))
@@ -852,8 +852,8 @@ register struct monst *mtmp;
                                 const char *kname = mtmp->data->mname;
 
                                 if (mtmp->data->geno & G_UNIQ) {
-                                if (!type_is_pname(mtmp->data))
-                                    kname = the(kname);
+                                    if (!type_is_pname(mtmp->data))
+                                        kname = the(kname);
                                     kformat = KILLED_BY;
                                 }
                                 make_stoned(5L, (char *) 0, kformat, kname);
@@ -1069,17 +1069,17 @@ struct monst *mon;
         if ((o->owornmask & W_ARMOR) != 0L) {
             armpro = objects[o->otyp].a_can;
             /* mithril armor grants a level of MC due to its magical origins */
-            if ((o->owornmask & (W_ARM | W_ARMC) != 0)
+            if (((o->owornmask & (W_ARM | W_ARMC)) != 0)
                 && o->material == MITHRIL
                 && Race_if(PM_ELF) && !Upolyd && armpro < 3) {
                 armpro = 3;
-            } else if ((o->owornmask & (W_ARM | W_ARMC) != 0)
+            } else if (((o->owornmask & (W_ARM | W_ARMC)) != 0)
                 && o->material == MITHRIL
                 && !Race_if(PM_ELF) && armpro < 2) {
                 armpro = 2;
             }
             /* bone or stone armor grants MC to Orcs */
-            if ((o->owornmask & (W_ARM | W_ARMC) != 0)
+            if (((o->owornmask & (W_ARM | W_ARMC)) != 0)
                 && (o->material == BONE || o->material == MINERAL)
                 && Race_if(PM_ORC) && !Upolyd && armpro < 3) {
                 armpro = 3;
@@ -1930,7 +1930,7 @@ do_rust:
         hitmsg(mtmp, mattk);
         if (uncancelled && !Slow && !defends(AD_SLOW, uwep) && !rn2(3))
             u_slow_down();
-            stop_occupation();
+        stop_occupation();
         break;
     case AD_DREN:
         hitmsg(mtmp, mattk);
@@ -2705,8 +2705,8 @@ struct attack *mattk;
                     if (mtmp->data->geno & G_UNIQ) {
                         if (!type_is_pname(mtmp->data))
                             kname = the(kname);
-                            kformat = KILLED_BY;
-                        }
+                        kformat = KILLED_BY;
+                    }
                     make_stoned(5L, (char *) 0, kformat, kname);
                     return 1;
                 }
@@ -3441,12 +3441,7 @@ screamu(mtmp, mattk)
 struct monst *mtmp;
 struct attack *mattk;
 {
-    static const char *const reactions[] = {
-        "stunned",               /* [1] */
-    };
-
-    int react = -1;
-    boolean cancelled = (mtmp->mcan != 0), already = FALSE;
+    boolean cancelled = (mtmp->mcan != 0);
 
     /* assumes that the hero has to hear the monster's
        scream in order to be affected */
@@ -3457,8 +3452,6 @@ struct attack *mattk;
     case AD_LOUD:
         if (m_canseeu(mtmp) && !mtmp->mspec_used && rn2(5)) {
             if (cancelled) {
-                react = 1; /* "stunned" */
-                already = (mtmp->mstun != 0);
                 if (m_canseeu(mtmp) && canseemon(mtmp) && (Deaf)) {
                     pline("It looks as if %s is yelling at you.", mon_nam(mtmp));
                 }
@@ -3530,8 +3523,6 @@ struct attack *mattk;
 {
     int i, tmp;
     struct attack *oldu_mattk = 0;
-
-    char plurbuf[BUFSZ];
 
     if (uarm) {
 	switch (uarm->otyp) {
@@ -3688,7 +3679,7 @@ struct attack *mattk;
                 if (mtmp->mhp < 1) {
                     if (canseemon(mtmp))
                         pline("Dragonbane's power overwhelms %s!", mon_nam(mtmp));
-                        pline("%s dies!", Monnam(mtmp));
+                    pline("%s dies!", Monnam(mtmp));
                     xkilled(mtmp, XKILL_NOMSG);
                     if (!DEADMONSTER(mtmp))
                         return 1;

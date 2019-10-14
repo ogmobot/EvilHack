@@ -275,7 +275,7 @@ boolean allow_detrimental;
     if (!otmp) {
         int type = 0, skill = P_NONE,
             candidates[128], ccount,
-            threshold = P_EXPERT, i;
+            threshold = P_EXPERT;
         /* This probably is only ever done for weapons, y'know?
          * Find an appropriate type of weapon */
         while (threshold > P_UNSKILLED) {
@@ -919,7 +919,7 @@ struct monst *mon;
 
     if (((badclass || badalign) && self_willed)
         || (badalign && (!yours || !rn2(4)))) {
-        int dmg, tmp;
+        int dmg;
         char buf[BUFSZ];
 
         if (!yours)
@@ -1673,7 +1673,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		    *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
 		} else if (youdefend && is_were(youmonst.data) && k) {
                     pline("The silver blade gravely burns you!");
-			  *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+			  *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
 		} else {
 	   	    return FALSE;
 		}
@@ -1684,7 +1684,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                         *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 } else if (youdefend && maybe_polyd(is_giant(youmonst.data), Race_if(PM_GIANT)) && k) {
                     pline("The magical sword eviscerates you!");
-                          *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+                          *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 } else {
                     return FALSE;
                 }
@@ -1695,7 +1695,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			*dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
 		} else if (youdefend && is_ogre(youmonst.data) && k) {
 		    pline("The monstrous hammer crushes your skull!");
-		 	  *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+		 	  *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
 		} else {
 		    return FALSE;
 		}
@@ -1706,7 +1706,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			  *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
 		} else if (youdefend && is_troll(youmonst.data) && k) {
 		    You("burst into flame as you are hit!");
-			*dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+			*dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
 		} else {
 		    return FALSE;
 		}
@@ -1717,7 +1717,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                         *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 } else if (youdefend && maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)) && k) {
                     You("feel Orcrist slice deep across your neck!");
-                        *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+                        *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 } else {
                     return FALSE;
                 }
@@ -1728,7 +1728,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                         *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 } else if (youdefend && maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)) && k) {
                     You("feel Sting stab deep into your heart!");
-                        *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+                        *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 } else {
                     return FALSE;
                 }
@@ -1739,7 +1739,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                         *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 } else if (youdefend && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)) && k) {
                     pline("Grimtooth penetrates your soft flesh, disembowelling you!");
-                          *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+                          *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 } else {
                     return FALSE;
                 }
@@ -1750,7 +1750,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                           *dmgptr = (2 * mdef->mhp + FATAL_DAMAGE_MODIFIER);
                 } else if (youdefend && is_undead(youmonst.data) && k) {
                     pline("The holy power of Sunsword incinerates your undead flesh!");
-                          *dmgptr = (2 * Upolyd ? u.mh : u.uhp + FATAL_DAMAGE_MODIFIER);
+                          *dmgptr = (2 * (Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER);
                 } else {
                     return FALSE;
                 }
@@ -2557,7 +2557,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
 
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
-        int dmg = 0, tmp;
+        int dmg = 0;
         boolean hatemat = Hate_material(obj->material),
                 bane = bane_applies(get_artifact(obj), &youmonst);
 
