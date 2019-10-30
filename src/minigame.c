@@ -94,7 +94,7 @@ struct obj *obj;
 struct monst *mon;
 {
     int cidx, loadlev;
-    long itemcount = count_contents(obj, FALSE, TRUE, TRUE);
+    long itemcount = count_contents(obj, FALSE, TRUE, TRUE, FALSE);
     struct obj *otmp;
     if (obj->otyp != DECK_OF_CARDS) {
         impossible("Trying to draw a card from %s?", xname(obj));
@@ -387,7 +387,8 @@ struct monst *mon;
     if (!(odeck && odeck->where == OBJ_MINVENT && odeck->ocarry == mon)) {
         /* Try to find a suitable deck... */
         odeck = m_carrying(mon, DECK_OF_CARDS);
-        if (!(odeck && count_contents(odeck, FALSE, TRUE, TRUE) > 11 - (5 * game_stage))) {
+        if (!(odeck && count_contents(odeck, FALSE, TRUE, TRUE, FALSE)
+                       > 11 - (5 * game_stage))) {
             /* If number of cards isn't at least this many, they could run out */
             verbalize("Blast, my cards are missing!");
             return 0;
@@ -449,7 +450,8 @@ struct monst *mon;
                     }
                     if (num_cards < 5)
                         cards[num_cards] = otmp;
-                    /* Cards don't stack, but just in case... */
+                    /* We shouldn't have more than one of each card,
+                     * but just in case... */
                     num_cards += otmp->quan;
                 }
             }

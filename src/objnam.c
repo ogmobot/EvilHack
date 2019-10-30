@@ -620,7 +620,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
 #ifdef MINIGAME
         if (typ == PLAYING_CARD) {
-            Sprintf(eos(buf), playing_card_name(obj->spe));
+            Sprintf(eos(buf), "%s", playing_card_name(obj->spe));
             break;
         } else if (typ == DECK_OF_CARDS && obj->cobj
                    && !obj->cobj->nobj && obj->cobj->quan == 1L) {
@@ -1228,7 +1228,7 @@ unsigned doname_flags;
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
-        long itemcount = count_contents(obj, FALSE, FALSE, TRUE);
+        long itemcount = count_contents(obj, FALSE, FALSE, TRUE, FALSE);
 #ifdef MINIGAME
         if (!(obj->otyp == DECK_OF_CARDS && itemcount == 1L))
 #endif
