@@ -556,14 +556,14 @@ register struct monst *mtmp;
         break;
 #ifdef MINIGAME
     case MS_GAME:
-        if (has_egam(mtmp) && EGAM(mtmp)->game_fn) {
-            (*(EGAM(mtmp)->game_fn))(mtmp);
-        } else {
-            if (mtmp->mpeaceful)
-                pline("%s mutters to %sself.", Monnam(mtmp), mhim(mtmp));
+        if (mtmp->mpeaceful) {
+            if (has_egam(mtmp) && EGAM(mtmp)->game_fn)
+                (*(EGAM(mtmp)->game_fn))(mtmp);
             else
-                pline_msg = "threatens you.";
-        }
+                pline("%s mutters to %sself.",
+                      Monnam(mtmp), mhim(mtmp));
+        } else
+            pline_msg = "threatens you.";
         break;
 #endif
     case MS_VAMPIRE: {

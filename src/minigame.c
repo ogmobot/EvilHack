@@ -113,19 +113,8 @@ struct monst *mon;
         otmp = splitobj(otmp, 1);
     obj_extract_self(otmp);
     obj->owt = weight(obj);
-    if (!mon) {
-        addinv(otmp);
-        loadlev = near_capacity();
-        prinv(loadlev ? ((loadlev < MOD_ENCUMBER)
-                            ? "You have a little trouble taking"
-                            : "You have much trouble taking")
-                      : (char *) 0,
-              otmp, 1);
-    } else {
-        if (!Blind && cansee(mon->mx, mon->my))
-            pline("%s draws %s.", Monnam(mon), yname(otmp));
-        mpickobj(mon, otmp);
-    }
+
+    /* Check if deck is empty here, so the slot can be used by the card */
     if (itemcount == 1L) {
         if (obj->where == OBJ_INVENT)
             useup(obj);
@@ -133,6 +122,15 @@ struct monst *mon;
             m_useup(obj->ocarry, obj);
         else
             useupf(obj, 1);
+    }
+
+    if (!mon) {
+        hold_another_object(otmp, "Oops! %s away from you!",
+                            Tobjnam(otmp, "slip"), (const char *) 0);
+    } else {
+        if (!Blind && cansee(mon->mx, mon->my))
+            pline("%s draws %s.", Monnam(mon), yname(otmp));
+        mpickobj(mon, otmp);
     }
     return otmp;
 }
@@ -163,15 +161,16 @@ struct monst *mon;
         otmp->bknown = obj->bknown;
         if (!mon) {
             You("turn your card%s face-down.", obj->quan == 1L ? "" : "s");
-            addinv(otmp);
         } else {
             mpickobj(mon, otmp);
         }
     }
     obj_extract_self(obj);
     add_to_container(otmp, obj);
-    if (!mon)
-        prinv("", otmp, 1);
+    if (otmp->where == 0) /* New deck was created */
+        hold_another_object(otmp, (const char *) 0, (const char *) 0,
+                            (const char *) 0);
+    return;
 }
 
 void
@@ -191,6 +190,7 @@ struct obj **osrc;
     odest->owt = weight(odest);
     useupf(*osrc, 1);
     *osrc = odest;
+    return;
 }
 
 STATIC_OVL int
@@ -204,18 +204,24 @@ long *wager;
     */
     char buf[BUFSZ] = DUMMY;
     long umoney = money_cnt(invent);
+    struct obj *mongold = findgold(mon->minvent, TRUE);
     if (game) {
-        pline("\"%s, %s!\"", Hello(mon),
-              is_demon(mon->data) ? (is_demon(youmonst.data)
-                                      ? (flags.female ? "sister" : "brother" )
-                                      : "mortal")
-                                  : "adventurer");
+        verbalize("%s, %s!", Hello(mon),
+                  is_demon(mon->data) ? (is_demon(youmonst.data)
+                                          ? (flags.female ? "sister"
+                                                          : "brother" )
+                                          : "mortal")
+                                      : "adventurer");
+    }
+    if (!mongold) {
+        verbalize("Spare a few coins?");
+        return 0;
     }
     switch(ynq("\"Willst thou play a game?\"")) {
     case 'y':
         if (game)
-            pline("\"%s we are playing %s.\"",
-                  night() ? "Tonight" : "Today", game);
+            verbalize("%s we are playing %s.",
+                      night() ? "Tonight" : "Today", game);
         getlin("\"How much willst thou wager?\"", buf);
         if (sscanf(buf, "%ld", wager) != 1)
             *wager = 0;
@@ -267,7 +273,7 @@ struct monst* mon;
             if (!odice)
                 odice = m_carrying(mon, FAIR_DICE);
             if (!odice) {
-                pline("\"Blast, my dice are missing!\"");
+                verbalize("Blast, my dice are missing!");
                 return 0;
             }
         }
@@ -275,31 +281,33 @@ struct monst* mon;
             game_stage = 1;
             pline("%s gives you %s %s.", Monnam(mon), mhis(mon), xname(odice));
             obj_extract_self(odice);
-            addinv(odice);
-            prinv("", odice, 1);
+            hold_another_object(odice, "Oops! %s to the floor.",
+                                Tobjnam(odice, "tumble"), (const char *) 0);
             games_played++;
         }
         break;
     case 1: {
         struct obj *mongold = findgold(mon->minvent, TRUE);
         if (!(carrying(FAIR_DICE) || carrying(LOADED_DICE))) {
-            pline("\"Where art thy dice?\"");
+            verbalize("Where art thy dice?");
             return 0;
         }
         switch(ynq("\"Art thou ready?\"")) {
         case 'y':
             odice = getobj(valid_dice, "use");
             if (!odice || odice == &zeroobj
-                || (odice->otyp != LOADED_DICE && odice->otyp != FAIR_DICE))
+                || (odice->otyp != LOADED_DICE
+                    && odice->otyp != FAIR_DICE)) {
                 pline("You can't roll that!");
                 return 0;
+            }
             player_roll = use_dice(odice);
             break;
         default:
             return 0;
         }
         if (player_roll == 0) { /* Dice are lost */
-            pline("\"My dice!\"");
+            verbalize("My dice!");
             pline("%s gets angry!", Monnam(mon));
             odice = (struct obj *) 0;
             mon->mpeaceful = 0;
@@ -324,16 +332,16 @@ struct monst* mon;
         pline("%s rolls a %d and a %d (%d).", Monnam(mon),
               mresult[0], mresult[1], mresult[0] + mresult[1]);
         if (mresult[0] + mresult[1] >= player_roll) {
-            pline("\"I win!\"");
+            verbalize("I win!");
             game_stage = 0;
             return -1;
         } else {
-            pline("\"Blast! Thou hast won!\"");
+            verbalize("Blast! Thou hast won!");
             pline("%s gives you your winnings.", Monnam(mon));
             wager *= 2;
             if (wager >= mongold->quan) {
                 wager = mongold->quan;
-                pline("\"Thou hast taken everything from me...\"");
+                verbalize("Thou hast taken everything from me...");
                 game_stage = -1;
             } else {
                 game_stage = 0;
@@ -381,7 +389,7 @@ struct monst *mon;
         odeck = m_carrying(mon, DECK_OF_CARDS);
         if (!(odeck && count_contents(odeck, FALSE, TRUE, TRUE) > 11 - (5 * game_stage))) {
             /* If number of cards isn't at least this many, they could run out */
-            pline("\"Blast, my cards are missing!\"");
+            verbalize("Blast, my cards are missing!");
             return 0;
         }
     }
@@ -418,7 +426,7 @@ struct monst *mon;
     case 2: {
         struct obj *otmp;
         struct obj *mongold = findgold(mon->minvent, TRUE);
-        struct obj *cards[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        struct obj *cards[10] = {0};
         int uscore = 0, mscore = 0, aces = 0, num_cards = 0, ret = 0;
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             if (otmp->otyp == PLAYING_CARD) {
@@ -441,12 +449,13 @@ struct monst *mon;
                     }
                     if (num_cards < 5)
                         cards[num_cards] = otmp;
-                    num_cards++;
+                    /* Cards don't stack, but just in case... */
+                    num_cards += otmp->quan;
                 }
             }
         }
         if (num_cards != cards_drawn) {
-            pline("\"Hey! What'rt thou trying to pull?\"");
+            verbalize("Hey! What'rt thou trying to pull?");
             pline("%s gets angry!", Monnam(mon));
             mon->mpeaceful = 0;
             set_malign(mon);
@@ -458,7 +467,7 @@ struct monst *mon;
             aces--;
         }
         if (uscore > 21) {
-            pline("\"Thy score is %d!\"", uscore);
+            verbalize("Thy score is %d!", uscore);
             ret = -1;
         } else if (num_cards == 2 && uscore == 21) {
             pline("Blackjack!");
@@ -467,7 +476,7 @@ struct monst *mon;
             pline("5 card Charlie!");
             ret = 1;
         } else {
-            pline("\"Thy score is %d. Now, my turn.\"", uscore);
+            verbalize("Thy score is %d. Now, my turn.", uscore);
             aces = 0;
             for (int i = 0; i < 2 || (i < 5 && mscore < uscore); i++) {
                 otmp = drawcard(odeck, mon);
@@ -489,10 +498,10 @@ struct monst *mon;
                     }
                     if (num_cards < 10)
                         cards[num_cards] = otmp;
-                    num_cards++;
+                    num_cards += otmp->quan;
                 } else {
                     /* Odd-looking card */
-                    pline("\"What's this? %s?\"", An(xname(otmp)));
+                    verbalize("What's this? %s?", An(xname(otmp)));
                     pline("%s gets angry!", Monnam(mon));
                     mon->mpeaceful = 0;
                     set_malign(mon);
@@ -504,23 +513,23 @@ struct monst *mon;
                     aces--;
                 }
             }
-            pline("\"That's %d.\"", mscore);
+            verbalize("That's %d.", mscore);
             ret = (uscore > mscore || mscore > 21) ? 1 : -1;
         }
         switch (ret) {
         case -1:
-            pline("\"You lose!\"");
+            verbalize("You lose!");
             pline("%s snatches the cards back.", Monnam(mon));
             game_stage = 0;
             break;
         case 1:
-            pline("\"Blast! Thou hast won!\"");
+            verbalize("Blast! Thou hast won!");
             pline("%s gives you your winnings and snatches the cards back.",
                   Monnam(mon));
             wager *= 2;
             if (wager >= mongold->quan) {
                 wager = mongold->quan;
-                pline("\"Thou hast taken everything from me...\"");
+                verbalize("Thou hast taken everything from me...");
                 game_stage = -1;
             } else {
                 game_stage = 0;
@@ -529,8 +538,10 @@ struct monst *mon;
             context.botl = TRUE;
             break;
         }
-        while (--num_cards >= 0) {
-            returncard(cards[num_cards], mon);
+        while (num_cards >= 0) {
+            if (num_cards < 10 && cards[num_cards])
+                returncard(cards[num_cards], mon);
+            num_cards--;
         }
         return ret;
     }
