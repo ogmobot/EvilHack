@@ -136,7 +136,7 @@ struct attack *mattk;
 {
 
     register boolean nearmiss = (target == roll);
-    register struct obj *blocker = (struct obj *)0;
+    register struct obj *blocker = (struct obj *) 0;
 	/* 3 values for blocker
 	 *	No blocker:  (struct obj *) 0
 	 * 	Piece of armour:  object
@@ -144,57 +144,65 @@ struct attack *mattk;
 	 */
 
     if (target < roll) {
-	/* get object responsible
-	 * Work from the closest to the skin outwards
-	 */
+        /* get object responsible
+         * Work from the closest to the skin outwards
+         */
 
         /* Try undershirt */
-	if (uarmu && target <= roll) {
-		target += ARM_BONUS(uarmu);
-		if (target > roll) blocker = uarmu;
-	}
+        if (uarmu && target <= roll) {
+            target += ARM_BONUS(uarmu);
+            if (target > roll)
+                 blocker = uarmu;
+        }
 
-	/* Try body armour */
-	if (uarm && target <= roll) {
-		target += ARM_BONUS(uarm);
-		if (target > roll) blocker = uarm;
-	}
+        /* Try body armour */
+        if (uarm && target <= roll) {
+            target += ARM_BONUS(uarm);
+            if (target > roll)
+                 blocker = uarm;
+        }
 
-	if (uarmg && !rn2(10)) {
-		/* Try gloves */
-		target += ARM_BONUS(uarmg);
-		if (target > roll) blocker = uarmg;
-	}
+        if (uarmg && !rn2(10)) {
+            /* Try gloves */
+            target += ARM_BONUS(uarmg);
+            if (target > roll)
+                blocker = uarmg;
+        }
 
-	if (uarmf && !rn2(10)) {
-		/* Try boots */
-		target += ARM_BONUS(uarmf);
-		if (target > roll) blocker = uarmf;
-	}
+        if (uarmf && !rn2(10)) {
+            /* Try boots */
+            target += ARM_BONUS(uarmf);
+            if (target > roll)
+                blocker = uarmf;
+        }
 
-	if (uarmh && !rn2(5)) {
-		/* Try helm */
-		target += ARM_BONUS(uarmh);
-		if (target > roll) blocker = uarmh;
-	}
+        if (uarmh && !rn2(5)) {
+            /* Try helm */
+            target += ARM_BONUS(uarmh);
+            if (target > roll)
+                blocker = uarmh;
+        }
 
-	if (uarmc && target <= roll) {
-		/* Try cloak */
-		target += ARM_BONUS(uarmc);
-		if (target > roll) blocker = uarmc;
-	}
+        if (uarmc && target <= roll) {
+            /* Try cloak */
+            target += ARM_BONUS(uarmc);
+            if (target > roll)
+                blocker = uarmc;
+        }
 
-	if (uarms && target <= roll) {
-		/* Try shield */
-		target += ARM_BONUS(uarms);
-		if (target > roll) blocker = uarms;
-	}
+        if (uarms && target <= roll) {
+            /* Try shield */
+            target += ARM_BONUS(uarms);
+            if (target > roll)
+                blocker = uarms;
+        }
 
-	if (target <= roll) {
-		/* Try spell protection */
-		target += u.uspellprot;
-		if (target > roll) blocker = (struct obj *) &zeroobj;
-	}
+        if (target <= roll) {
+            /* Try spell protection */
+            target += u.uspellprot;
+            if (target > roll)
+                blocker = (struct obj *) &zeroobj;
+        }
     }
 
     if (!canspotmon(mtmp))
@@ -203,20 +211,20 @@ struct attack *mattk;
     if (could_seduce(mtmp, &youmonst, mattk) && !mtmp->mcan)
         pline("%s pretends to be friendly.", Monnam(mtmp));
     else {
-    if (!flags.verbose || (!nearmiss && !blocker))
-	pline("%s misses.", Monnam(mtmp));
-    else if (!blocker)
-        rn2(2) ? You("dodge %s attack!", s_suffix(mon_nam(mtmp)))
-            : rn2(2) ? You("evade %s attack!", s_suffix(mon_nam(mtmp)))
-                     : pline("%s narrowly misses!", Monnam(mtmp));
-    else if (blocker == &zeroobj)
-	pline("%s is stopped by your golden haze.", Monnam(mtmp));
-    else
-	Your("%s %s%s %s attack.",
-		simple_typename(blocker->otyp),
-		rn2(2) ? "block" : "deflect",
-		(blocker == uarmg || blocker == uarmf) ? "" : "s",
-		s_suffix(mon_nam(mtmp)));
+        if (!flags.verbose || (!nearmiss && !blocker))
+            pline("%s misses.", Monnam(mtmp));
+        else if (!blocker)
+            rn2(2) ? You("dodge %s attack!", s_suffix(mon_nam(mtmp)))
+                   : rn2(2) ? You("evade %s attack!", s_suffix(mon_nam(mtmp)))
+                            : pline("%s narrowly misses!", Monnam(mtmp));
+        else if (blocker == &zeroobj)
+            pline("%s is stopped by your golden haze.", Monnam(mtmp));
+        else
+            Your("%s %s%s %s attack.",
+                 simple_typename(blocker->otyp),
+                 rn2(2) ? "block" : "deflect",
+                 (blocker == uarmg || blocker == uarmf) ? "" : "s",
+                 s_suffix(mon_nam(mtmp)));
     }
     stop_occupation();
 }
@@ -1177,9 +1185,23 @@ register struct attack *mattk;
     }
 
     /* elementals on their home plane hit very hard */
-    if(is_home_elemental(mdat)) {
+    if (is_home_elemental(mdat)) {
+        /* air elementals hit hard enough already */
 	if (mtmp->mnum != PM_AIR_ELEMENTAL)
-		dmg += d((int)mattk->damn, (int)mattk->damd);  /* air elementals hit hard enough already */
+            dmg += d((int) mattk->damn, (int) mattk->damd);
+    }
+
+    if (is_berserker(mdat)) {
+        if (!rn2(7)) {
+            if (mdat->mlet == S_HUMAN || mdat->mlet == S_ORC
+                || mdat->mlet == S_GIANT || mdat->mlet == S_OGRE
+                || mdat->mlet == S_HUMANOID)
+                pline("%s flies into a berserker rage!", Monnam(mtmp));
+            else
+                pline("%s %s with rage!", Monnam(mtmp),
+                      rn2(2) ? "roars" : "howls");
+            dmg += d((int) mattk->damn, (int) mattk->damd);
+        }
     }
 
     /*  Next a cancellation factor.
@@ -1277,11 +1299,22 @@ register struct attack *mattk;
             } else if (mattk->aatyp != AT_TUCH || dmg != 0
                        || mtmp != u.ustuck) {
                 hitmsg(mtmp, mattk);
+                /* Monster is hitting you barehanded. It might be made of a
+                 * material you hate. */
+                int mat = monmaterial(monsndx(mdat));
+                if (Hate_material(mat)) {
+                    if (mat == SILVER)
+                        pline_The("silver sears your flesh!");
+                    else
+                        You("flinch at the touch of %s!",
+                            materialnm[mat]);
+                    exercise(A_CON, FALSE);
+                    dmg += rnd(sear_damage(mat));
                 }
             }
 	    if (mtmp->data == &mons[PM_WATER_ELEMENTAL]
                 || mtmp->data == &mons[PM_BABY_SEA_DRAGON]
-                || mtmp->data == &mons[PM_SEA_DRAGON]) {
+                || mtmp->data == &mons[PM_SEA_DRAGON])
 		goto do_rust;
 	}
         break;
@@ -3849,7 +3882,9 @@ struct attack *mattk;
             u.mh += tmp / 2;
             if (u.mhmax < u.mh)
                 u.mhmax = u.mh;
-            if (u.mhmax > ((youmonst.data->mlevel + 1) * 8))
+            if (u.mhmax > ((youmonst.data->mlevel + 1) * 8)
+                && (youmonst.data->mlet == S_JELLY
+                    || youmonst.data->mlet == S_FUNGUS))
                 (void) split_mon(&youmonst, mtmp);
             break;
         case AD_STUN: /* Yellow mold */

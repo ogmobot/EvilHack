@@ -605,6 +605,44 @@ register char sym;
             knows_object(ct);
 }
 
+int attk_melee_types [] =
+    { AT_CLAW, AT_BITE, AT_KICK, AT_BUTT, AT_TUCH,
+      AT_STNG, AT_TENT, AT_WEAP
+    };
+
+int attk_spec_types [] =
+    { AT_HUGS, AT_SPIT, AT_ENGL, AT_BREA, AT_GAZE,
+      AT_MAGC
+    };
+
+int damg_melee_types [] =
+    { AD_PHYS, AD_FIRE, AD_COLD, AD_SLEE, AD_ELEC,
+      AD_ELEC, AD_DRST, AD_ACID, AD_STUN, AD_SLOW,
+      AD_PLYS, AD_DRLI, AD_DREN, AD_LEGS, AD_STCK,
+      AD_SGLD, AD_SITM, AD_SEDU, AD_TLPT, AD_RUST,
+      AD_CONF, AD_DRDX, AD_DRCO, AD_DRIN, AD_DISE,
+      AD_DCAY, AD_HALU, AD_ENCH, AD_CORR, AD_BHED
+    };
+
+int damg_breath_types [] =
+    { AD_MAGM, AD_FIRE, AD_COLD, AD_SLEE, AD_ELEC,
+      AD_DRST, AD_WATR, AD_ACID
+    };
+
+int damg_spit_types [] =
+    { AD_BLND, AD_ACID, AD_DRST };
+
+int damg_gaze_types [] =
+    { AD_FIRE, AD_COLD, AD_SLEE, AD_STUN, AD_SLOW,
+      AD_CNCL
+    };
+
+int damg_engulf_types [] =
+    { AD_PLYS, AD_DGST, AD_WRAP };
+
+int damg_magic_types [] =
+    { AD_SPEL, AD_CLRC };
+
 void
 u_init()
 {
@@ -612,6 +650,7 @@ u_init()
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
     struct permonst* shambler = &mons[PM_SHAMBLING_HORROR];
     struct attack* attkptr;
+    int shambler_attacks;
 
     flags.female = flags.initgend;
     flags.beginner = 1;
@@ -1056,51 +1095,56 @@ u_init()
     }
 
     /* what a horrible night to have a curse */
-    shambler->mlevel += rnd(12) - 3;	/* shuffle level */
+    shambler->mlevel += rnd(15) - 3;	/* shuffle level */
     shambler->mmove = rn2(10) + 9;	/* slow to very fast */
-    shambler->ac = rn2(21) - 10;	/* any AC */
+    shambler->ac = rn2(31) - 20;	/* any AC */
     shambler->mr = rn2(5) * 25;		/* varying amounts of MR */
     shambler->maligntyp = rn2(21) - 10;
 
-    for (i = 0; i < rnd(4); i++) {
+    shambler_attacks = rnd(4);
+    for (i = 0; i < shambler_attacks; i++) {
         attkptr = &shambler->mattk[i];
-        attkptr->aatyp = rnd(AT_TENT); /* uchar */
-        attkptr->adtyp = rn2(AD_BHED);
-
-        if (attkptr->aatyp == AT_GAZE) {
-            attkptr->aatyp = AT_MAGC;
-        } else if (attkptr->aatyp == AT_EXPL || attkptr->aatyp == AT_BOOM) {
-                   attkptr->aatyp = AT_CLAW + rn2(12);
-        }
-
-        if (attkptr->aatyp == AT_MAGC) {
-            attkptr->adtyp = AD_CLRC + rn2(2);         /* AT_MAGC must correspond to a spell type */
-        } else if (attkptr->aatyp == AT_BREA) {
-                   attkptr->adtyp = AD_MAGM + rn2(8);
-        } else if (attkptr->aatyp == AT_SPIT) {
-                   attkptr->adtyp = AD_ACID;
-        } else if (attkptr->aatyp == AT_ENGL) {
-                   attkptr->adtyp = AD_DGST + rn2(3);  /* This could either be really bad, or very good */
-        }
-
-        if (attkptr->adtyp == AD_DETH || attkptr->adtyp == AD_PEST
-            || attkptr->adtyp == AD_FAMN || attkptr->adtyp == AD_SPC1
-            || attkptr->adtyp == AD_SPC2) {
-            attkptr->adtyp = AD_ENCH + rn2(4);
-        } else if (attkptr->adtyp == AD_STCK || attkptr->adtyp == AD_SSEX) {
-                   attkptr->adtyp = AD_SLOW + rn2(4);
-        } else if (attkptr->adtyp == AD_DISN) {
-                   attkptr->adtyp = AD_ACID;
-        }
-
-        attkptr->damn = 3 + rn2(3);
+        attkptr->aatyp = attk_melee_types[rn2(SIZE(attk_melee_types))];
+        attkptr->adtyp = damg_melee_types[rn2(SIZE(damg_melee_types))];
+        attkptr->damn = 2 + rn2(4);
         attkptr->damd = 6 + rn2(3);
     }
 
-    shambler->msize = rn2(MZ_HUGE);		/* any size */
-    shambler->cwt = 20;				/* fortunately moot as it's flagged NOCORPSE */
-    shambler->cnutrit = 20;			/* see above */
-    shambler->msound = rn2(MS_HUMANOID);	/* any but the specials */
+    shambler_attacks = shambler_attacks + (rnd(9) / 3) - 1;
+    for (; i < shambler_attacks; i++) {
+        attkptr = &shambler->mattk[i];
+        attkptr->aatyp = attk_spec_types[rn2(SIZE(attk_spec_types))];
+        attkptr->damn = 2 + rn2(4);
+        attkptr->damd = 6 + rn2(3);
+        switch (attkptr->aatyp) {
+            case AT_BREA:
+                attkptr->adtyp = damg_breath_types[rn2(SIZE(damg_breath_types))];
+                break;
+            case AT_SPIT:
+                attkptr->adtyp = damg_spit_types[rn2(SIZE(damg_spit_types))];
+                break;
+            case AT_GAZE:
+                attkptr->adtyp = damg_gaze_types[rn2(SIZE(damg_gaze_types))];
+                break;
+            case AT_ENGL:
+                attkptr->adtyp = damg_engulf_types[rn2(SIZE(damg_engulf_types))];
+                break;
+            case AT_MAGC:
+                attkptr->adtyp = damg_magic_types[rn2(SIZE(damg_magic_types))];
+                break;
+            case AT_HUGS:
+                attkptr->adtyp = AD_PHYS;
+                break;
+            default:
+                attkptr->adtyp = AD_PHYS;
+                break;
+        }
+    }
+
+    shambler->msize = !rn2(6) ? MZ_GIGANTIC : rn2(MZ_HUGE); /* any size */
+    shambler->cwt = 20;                                     /* fortunately moot as it's flagged NOCORPSE */
+    shambler->cnutrit = 20;                                 /* see above */
+    shambler->msound = rn2(MS_HUMANOID);                    /* any but the specials */
     shambler->mresists = 0;
 
     for (i = 0; i < rnd(6); i++)
@@ -1115,7 +1159,6 @@ u_init()
      * every so often something will dial up nasty stuff
      */
     shambler->mflags1 = 0;
-
     for (i = 0; i < rnd(17); i++)
         shambler->mflags1 |= (1 << rn2(33));	/* rn2() should equal the number of M1_ flags in
                                                  * include/monflag.h */
@@ -1136,9 +1179,14 @@ u_init()
     shambler->mflags2 &= ~M2_PRINCE;		/* still isn't royalty */
     shambler->mflags2 &= ~M2_DOMESTIC;		/* no taming */
 
+    shambler->mflags3 = 0;
     for (i = 0; i < rnd(5); i++)
-        shambler->mflags3 |= (0x100 << rn2(6));	/* no covetous, but any of the middle */
-                                                /* M3_ flags are OK */
+        shambler->mflags3 |= (1 << rn2(16));    /* rn2() should equal the number of M3_ flags in
+                                                 * include/monflag.h */
+    shambler->mflags3 &= ~M3_WANTSALL;
+    shambler->mflags3 &= ~M3_COVETOUS;          /* no covetous behavior */
+    shambler->mflags3 &= ~M3_WAITMASK;          /* no waiting either */
+
     return;
 }
 

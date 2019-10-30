@@ -1,4 +1,4 @@
-/* NetHack 3.6	objnam.c	$NHDT-Date: 1562186589 2019/07/03 20:43:09 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.245 $ */
+/* NetHack 3.6	objnam.c	$NHDT-Date: 1571436005 2019/10/18 22:00:05 $  $NHDT-Branch: NetHack-3.6 $:$NHDT-Revision: 1.247 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -156,7 +156,7 @@ register int otyp;
     default:
         if (nn) {
             Strcpy(buf, actualn);
-            if (GemStone(otyp))
+            if (GemStone(otyp) && ocl->oc_class != ARMOR_CLASS)
                 Strcat(buf, " stone");
             if (un)
                 Sprintf(eos(buf), " called %s", un);
@@ -1208,7 +1208,7 @@ unsigned doname_flags;
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
-        long itemcount = count_contents(obj, FALSE, FALSE, TRUE);
+        long itemcount = count_contents(obj, FALSE, FALSE, TRUE, FALSE);
 
         Sprintf(eos(bp), " containing %ld item%s", itemcount,
                 plur(itemcount));
@@ -1356,10 +1356,14 @@ unsigned doname_flags;
                     (obj->otyp == AKLYS) ? "tethered " : "", hand_s);
 
             if (warn_obj_cnt && obj == uwep && (EWarn_of_mon & W_WEP) != 0L) {
-                if (!Blind) /* we know bp[] ends with ')'; overwrite that */
-                    Sprintf(eos(bp) - 1, ", %s %s)",
-                            glow_verb(warn_obj_cnt, TRUE),
-                            glow_color(obj->oartifact));
+                if (!obj->oartifact)
+                    impossible("glowing non-artifact?");
+                if (strcmp(glow_color(obj->oartifact), "no color")) {
+                    if (!Blind) /* we know bp[] ends with ')'; overwrite that */
+                        Sprintf(eos(bp) - 1, ", %s %s)",
+                                glow_verb(warn_obj_cnt, TRUE),
+                                glow_color(obj->oartifact));
+                }
             }
         }
     }
@@ -1367,10 +1371,14 @@ unsigned doname_flags;
         if (u.twoweap) {
             Sprintf(eos(bp), " (wielded in other %s)", body_part(HAND));
             if (warn_obj_cnt && obj == uswapwep && (EWarn_of_mon & W_SWAPWEP) != 0L) {
-                if (!Blind) /* we know bp[] ends with ')'; overwrite that */
-                    Sprintf(eos(bp) - 1, ", %s %s)",
-                            glow_verb(warn_obj_cnt, TRUE),
-                            glow_color(obj->oartifact));
+                if (!obj->oartifact)
+                    impossible("glowing non-artifact?");
+                if (strcmp(glow_color(obj->oartifact), "no color")) {
+                    if (!Blind) /* we know bp[] ends with ')'; overwrite that */
+                        Sprintf(eos(bp) - 1, ", %s %s)",
+                                glow_verb(warn_obj_cnt, TRUE),
+                                glow_color(obj->oartifact));
+                }
             }
         } else {
             Strcat(bp, " (alternate weapon; not wielded)");
@@ -4128,7 +4136,7 @@ struct obj *no_wish;
         && (wizard || cnt < rnd(6) || (cnt <= 7 && Is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
                               || typ == ROCK || is_missile(otmp))))) {
-        if (oclass = COIN_CLASS && !wizard && cnt > 5000) {
+        if (oclass == COIN_CLASS && !wizard && cnt > 5000) {
             cnt = 5000;
         }
         otmp->quan = (long) cnt;
@@ -4615,6 +4623,14 @@ struct obj *no_wish;
 
         if (otmp->oclass == WEAPON_CLASS || is_weptool(otmp))
             objprops &= ~(ITEM_DRLI | ITEM_FUMBLING | ITEM_HUNGER);
+
+        if (is_launcher(otmp))
+            objprops &= ~(ITEM_FIRE | ITEM_FROST | ITEM_DRLI
+                          | ITEM_SHOCK | ITEM_VENOM | ITEM_OILSKIN);
+
+        if (is_ammo(otmp) || is_missile(otmp))
+            objprops &= ~(ITEM_DRLI | ITEM_OILSKIN | ITEM_ESP | ITEM_SEARCHING
+                          | ITEM_WARNING | ITEM_FUMBLING | ITEM_HUNGER);
 
         if (otmp->material != CLOTH)
             objprops &= ~ITEM_OILSKIN;

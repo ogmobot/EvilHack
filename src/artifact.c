@@ -351,6 +351,11 @@ boolean allow_detrimental;
            && (j & (ITEM_DRLI | ITEM_FUMBLING | ITEM_HUNGER)))
            continue;
 
+       if (is_launcher(otmp)
+           &&  (j & (ITEM_FIRE | ITEM_FROST | ITEM_SHOCK
+                     | ITEM_VENOM | ITEM_DRLI | ITEM_OILSKIN)))
+           continue;
+
        if ((is_ammo(otmp) || is_missile(otmp))
            && (j & (ITEM_DRLI | ITEM_OILSKIN | ITEM_ESP
                     | ITEM_SEARCHING | ITEM_WARNING | ITEM_FUMBLING | ITEM_HUNGER)))
@@ -1661,7 +1666,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
      * love. Just be warned, this can be used against the player depending
      * on the race they choose...
      */
-    atmp = &artilist[otmp->oartifact];
+    atmp = &artilist[(unsigned char)otmp->oartifact];
 
     if (atmp->spfx & (SPFX_DFLAGH | SPFX_DCLAS)) {
 	j = !rn2(10);	  /* 10% chance of instakill for some artifacts */
@@ -2481,10 +2486,8 @@ void
 Sting_effects(orc_count)
 int orc_count; /* new count (warn_obj_cnt is old count); -1 is a flag value */
 {
-    if (uwep
-        && (uwep->oartifact == ART_STING
-            || uwep->oartifact == ART_ORCRIST
-            || uwep->oartifact == ART_GRIMTOOTH)) {
+    if (uwep && uwep->oartifact
+        && artilist[(int) uwep->oartifact].acolor != NO_COLOR) {
         int oldstr = glow_strength(warn_obj_cnt),
             newstr = glow_strength(orc_count);
 
@@ -2515,10 +2518,8 @@ void
 Sting_effects_offhand(orc_count)
 int orc_count; /* new count (warn_obj_cnt is old count); -1 is a flag value */
 {
-    if (u.twoweap
-        && (uswapwep->oartifact == ART_STING
-            || uswapwep->oartifact == ART_ORCRIST
-            || uswapwep->oartifact == ART_GRIMTOOTH)) {
+    if (u.twoweap && uswapwep->oartifact
+        && artilist[(int) uswapwep->oartifact].acolor != NO_COLOR) {
         int oldstr = glow_strength(warn_obj_cnt),
             newstr = glow_strength(orc_count);
 
